@@ -1,0 +1,8 @@
+Package: rdc
+Version: 0.1
+License: bsd
+Description: direct and dynamic calls to arbitrary C libraries
+Title: R/DynCall
+Author: Daniel Adler <dadler@uni-goettingen.de>
+Maintainer: Daniel Adler <dadler@uni-goettingen.de>
+

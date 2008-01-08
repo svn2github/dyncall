@@ -1,0 +1,2 @@
+useDynLib(rdc)
+export(rdcLoad,rdcFree,rdcFind,rdcCall,rdcPath,rdcUnpath,rdcShowPath)
