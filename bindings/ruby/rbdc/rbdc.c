@@ -8,9 +8,9 @@
 //////////////////////////////////////////////////////////////////////*/
 
 #include <ruby.h>
-#include "../../../dyncall/dyncall.h"
-#include "../../../dynload/dynload.h"
-#include "../../../dyncall/dyncall_signature.h"
+#include "../../../dyncall/dyncall/dyncall.h"
+#include "../../../dyncall/dynload/dynload.h"
+#include "../../../dyncall/dyncall/dyncall_signature.h"
 
 /* Our ruby module and its classes. */
 static VALUE rb_dcModule;

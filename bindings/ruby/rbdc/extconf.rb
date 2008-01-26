@@ -19,7 +19,7 @@ require 'mkmf'
 #  $CFLAGS = "#($CFLAGS)"
 #end
 #have_header "stdint.h" 
-$LOCAL_LIBS = 'dyncall/libdyncall_s.lib dynload/libdynload_s.lib'
+$LOCAL_LIBS = '../../../dyncall/dyncall/libdyncall_s.lib ../../../dyncall/dynload/libdynload_s.lib'
 
 
 dir_config "rbdc"
