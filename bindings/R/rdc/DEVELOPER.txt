@@ -1,0 +1,7 @@
+BOOTSTRAP R PACKAGE
+pull dyncall library sources from subversion repository:
+$ ( cd rdc ; sh bootstrap )
+
+BUILD AND INSTALL R PACKAGE
+as usual in R.
+
