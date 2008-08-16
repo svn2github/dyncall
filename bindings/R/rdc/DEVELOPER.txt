@@ -1,5 +1,9 @@
 BOOTSTRAP R PACKAGE
-pull dyncall library sources from subversion repository:
+
+Make sure, you have "svn" subversion command-line tool installed and in path.
+On Windows, "sliksvn" worked so far for me.
+
+Pull dyncall library sources from subversion repository:
 $ ( cd rdc ; sh bootstrap )
 
 BUILD AND INSTALL R PACKAGE

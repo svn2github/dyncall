@@ -1,10 +1,7 @@
-DC_PREFIX=./dyncall/install
+DC_PREFIX=dyncall
 PKG_CPPFLAGS=-I$(DC_PREFIX)/include
 PKG_LIBS=-L$(DC_PREFIX)/lib -ldyncall_s -ldynload_s
-# default: local-install-dyncall $(SHLIB)
-# $(SHLIB): local-install-dyncall
-clean:
-	make -C dyncall clean
-before:
+before: dyncall-install
+dyncall-install:
 	make -C dyncall install
 
