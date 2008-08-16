@@ -1,9 +1,3 @@
-echo PROLOG: rdc/configure.win
 cd src/dyncall
-sh ./configure --target-x86 --target-windows --tool-gcc --prefix="\$(TOP)/install"
-cat ./ConfigVars
-# ./configure.bat /tool-gcc /prefix $CWD
-# ( cd src/dyncall ; sh ./configure --arch-x86 --os-windows --tool-gcc --prefix $CWD )
-# ( cd src/dyncall ; sh ./configure )
-echo EPILOG: rdc/configure.win
+sh ./configure --target-x86 --target-windows --tool-gcc --prefix=\$\(TOP\)
 
