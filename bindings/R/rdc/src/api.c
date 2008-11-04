@@ -72,7 +72,7 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
   void* funcPtr;
   const char* signature;
   const char* ptr;
-  int i,l;
+  int i,l,protect_count;
   SEXP r;
 
   funcPtr = R_ExternalPtrAddr(sFuncPtr);
@@ -87,8 +87,8 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
   ptr = signature;
 
   l = LENGTH(sArgs);
-  
   i = 0;
+  protect_count = 0;
   for(;;) {
     char ch = *ptr++;
     SEXP arg;
@@ -103,89 +103,127 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
     switch(ch) {
       case DC_SIGCHAR_BOOL:
       {
-        PROTECT(arg = coerceVector(arg, LGLSXP));
-	dcArgBool(gCall, ( LOGICAL(arg)[0] == 0 ) ? DC_FALSE : DC_TRUE );
-	UNPROTECT(1);
-	break;
+        if ( !isLogical(arg) )
+        {
+          PROTECT(arg = coerceVector(arg, LGLSXP));
+          protect_count++;
+        }
+        dcArgBool(gCall, ( LOGICAL(arg)[0] == 0 ) ? DC_FALSE : DC_TRUE );
+        // UNPROTECT(1);
+        break;
       }
       case DC_SIGCHAR_INT:
       {
-	PROTECT(arg = coerceVector(arg, INTSXP));
+        if ( !isInteger(arg) )
+        {
+          PROTECT(arg = coerceVector(arg, INTSXP));          
+          protect_count++;
+        }
         dcArgInt(gCall, INTEGER(arg)[0]);
-        UNPROTECT(1);
+        // UNPROTECT(1);
         break;
-      }
+      }      
+      /*
       case DC_SIGCHAR_FLOAT:
       {
         PROTECT(arg = coerceVector(arg, REALSXP) );
-	dcArgFloat( gCall, REAL(arg)[0] );
-	UNPROTECT(1);
-	break;
+        dcArgFloat( gCall, REAL(arg)[0] );
+        UNPROTECT(1);
+        break;
       }
+      */
       case DC_SIGCHAR_DOUBLE:
       {
-        PROTECT(arg = coerceVector(arg, REALSXP) );
-	dcArgDouble( gCall, REAL(arg)[0] );
-	UNPROTECT(1);
-	break;      
+        if ( !isReal(arg) )
+        {
+          PROTECT(arg = coerceVector(arg, REALSXP) );
+          protect_count++;
+        }
+      	dcArgDouble( gCall, REAL(arg)[0] );
+      	// UNPROTECT(1);
+      	break;      
       }
+      /*
       case DC_SIGCHAR_LONG:
       {
         PROTECT(arg = coerceVector(arg, REALSXP) );
-	dcArgLong( gCall, (DClong) ( REAL(arg)[0] ) );
-	UNPROTECT(1);
-	break;
+        dcArgLong( gCall, (DClong) ( REAL(arg)[0] ) );
+        UNPROTECT(1);
+        break;
       }
+      */
       case DC_SIGCHAR_POINTER:
       {
         DCpointer ptr;
-	if ( arg == R_NilValue ) ptr = (DCpointer) 0;
-	else if (isString(arg) ) ptr = (DCpointer) CHAR( STRING_ELT(arg,0) );
-	else { error("invalid signature"); break; }
+        if ( arg == R_NilValue )  ptr = (DCpointer) 0;
+        else if (isString(arg) )  ptr = (DCpointer) CHAR( STRING_ELT(arg,0) );
+        else if (isReal(arg) )    ptr = (DCpointer) REAL(arg);
+        else if (isInteger(arg) ) ptr = (DCpointer) INTEGER(arg);
+        else if (isLogical(arg) ) ptr = (DCpointer) LOGICAL(arg);
+        else { 
+          if (protect_count) UNPROTECT(protect_count);
+          error("invalid signature"); break; 
+        }
         dcArgPointer(gCall, ptr);
-	break;
+        break;
       }
     }
     ++i;
   }
   
-  if ( i != l ) error ("signature claims to have %d arguments while %d arguments are given", i, l); 
+  if ( i != l ) 
+  {
+    if (protect_count) 
+      UNPROTECT(protect_count);
+    error ("signature claims to have %d arguments while %d arguments are given", i, l); 
+  }
   
   switch(*ptr) {
     case DC_SIGCHAR_BOOL:
       PROTECT( r = allocVector(LGLSXP, 1) );
+      protect_count++;
       LOGICAL(r)[0] = ( dcCallBool(gCall, funcPtr) == DC_FALSE ) ? FALSE : TRUE;
-      UNPROTECT(1);
+      UNPROTECT(protect_count);
       return r;
     case DC_SIGCHAR_INT:       
       PROTECT( r = allocVector(INTSXP, 1) );
+      protect_count++;
       INTEGER(r)[0] = dcCallInt(gCall, funcPtr);
-      UNPROTECT(1);
+      UNPROTECT(protect_count);
       return r;
     case DC_SIGCHAR_LONG:
       PROTECT( r = allocVector(REALSXP, 1) );
+      protect_count++;
       REAL(r)[0] = (double) ( dcCallLong(gCall, funcPtr) );
-      UNPROTECT(1);
+      UNPROTECT(protect_count);
       return r;
     case DC_SIGCHAR_FLOAT:
       PROTECT( r = allocVector(REALSXP, 1) );
+      protect_count++;
       REAL(r)[0] = (double) ( dcCallFloat(gCall, funcPtr) );
-      UNPROTECT(1);
+      UNPROTECT(protect_count);
       return r;
     case DC_SIGCHAR_DOUBLE:
       PROTECT( r = allocVector(REALSXP, 1) );
+      protect_count++;
       REAL(r)[0] = dcCallDouble(gCall, funcPtr);
-      UNPROTECT(1);
+      UNPROTECT(protect_count);
       return r;
     case DC_SIGCHAR_POINTER:
       PROTECT( r = R_MakeExternalPtr( dcCallPointer(gCall,funcPtr), R_NilValue, R_NilValue ) );
-      UNPROTECT(1);
+      protect_count++;
+      UNPROTECT(protect_count);
       return r;
     case DC_SIGCHAR_VOID:
       dcCallVoid(gCall,funcPtr);
+      if (protect_count) UNPROTECT(protect_count);
       break;
     default:
-      error("invalid return type signature");
+      {
+        if (protect_count) 
+          UNPROTECT(protect_count);
+        error("invalid return type signature");
+      }
   }
   return R_NilValue;
 }
