@@ -1,9 +1,9 @@
 download_zip()
 {
-  wget http://dyncall.org/r0.2/dyncall-0.2.zip
-  unzip dyncall-0.2
-  mv dyncall-0.2 src/dyncall
-  rm -Rf dyncall-0.2.zip
+  wget http://dyncall.org/r0.3/dyncall-0.3.zip
+  unzip dyncall-0.3
+  mv dyncall-0.3 src/dyncall
+  rm -Rf dyncall-0.3.zip
 }
 
 checkout_src()

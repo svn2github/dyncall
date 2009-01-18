@@ -123,7 +123,6 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
         // UNPROTECT(1);
         break;
       }      
-      /*
       case DC_SIGCHAR_FLOAT:
       {
         PROTECT(arg = coerceVector(arg, REALSXP) );
@@ -131,7 +130,6 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
         UNPROTECT(1);
         break;
       }
-      */
       case DC_SIGCHAR_DOUBLE:
       {
         if ( !isReal(arg) )
@@ -152,6 +150,16 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
         break;
       }
       */
+      case DC_SIGCHAR_STRING:
+      {
+        DCpointer ptr;
+        if (arg == R_NilValue) ptr = (DCpointer) 0;
+        else if (isString(arg)) ptr = (DCpointer) CHAR( STRING_ELT(arg,0) );
+        else {
+          if (protect_count) UNPROTECT(protect_count);
+          error("invalid value for C string argument"); break;
+        }
+      }
       case DC_SIGCHAR_POINTER:
       {
         DCpointer ptr;
@@ -160,6 +168,7 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
         else if (isReal(arg) )    ptr = (DCpointer) REAL(arg);
         else if (isInteger(arg) ) ptr = (DCpointer) INTEGER(arg);
         else if (isLogical(arg) ) ptr = (DCpointer) LOGICAL(arg);
+        else if (TYPEOF(arg) == EXTPTRSXP) ptr = R_ExternalPtrAddr(arg);
         else { 
           if (protect_count) UNPROTECT(protect_count);
           error("invalid signature"); break; 
@@ -228,6 +237,21 @@ SEXP rdcCall(SEXP sFuncPtr, SEXP sSignature, SEXP sArgs)
   return R_NilValue;
 }
 
+SEXP rdcUnpack1(SEXP ptr_x, SEXP offset, SEXP sig_x)
+{
+  char* ptr = ( (char*) R_ExternalPtrAddr(ptr_x) ) + INTEGER(offset)[0];
+  char* sig = CHAR(STRING_ELT(sig_x,0) );    
+  switch(sig[0])
+  {
+    case DC_SIGCHAR_CHAR: return ScalarInteger( ( (unsigned char*)ptr)[0] );
+    case DC_SIGCHAR_INT: return ScalarInteger( ( (int*)ptr )[0] );
+    case DC_SIGCHAR_FLOAT: return ScalarReal( (double) ( (float*) ptr )[0] );
+    case DC_SIGCHAR_DOUBLE: return ScalarReal( ((double*)ptr)[0] );
+    default: error("invalid signature");
+  }
+  return R_NilValue;
+}
+
 /* register R to C calls */
 
 R_CallMethodDef callMethods[] =
@@ -236,8 +260,7 @@ R_CallMethodDef callMethods[] =
  {"rdcFree", (DL_FUNC) &rdcFree, 1},
  {"rdcFind", (DL_FUNC) &rdcFind, 2},
  {"rdcCall", (DL_FUNC) &rdcCall, 3},
-
-
+ {"rdcUnpack1", (DL_FUNC) &rdcUnpack1, 3},
  {NULL, NULL, 0}
 };
 

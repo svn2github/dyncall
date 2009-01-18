@@ -40,3 +40,6 @@ rdcShowPath <- function()
   Sys.getenv("PATH")
 
   
+rdcUnpack1 <- function(ptr, offset, sigchar)
+  .Call("rdcUnpack1", ptr, as.integer(offset), as.character(sigchar) )
+  

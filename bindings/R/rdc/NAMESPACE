@@ -1,2 +1,2 @@
 useDynLib(rdc)
-export(rdcLoad,rdcFree,rdcFind,rdcCall,rdcPath,rdcUnpath,rdcShowPath)
+export(rdcLoad,rdcFree,rdcFind,rdcCall,rdcPath,rdcUnpath,rdcShowPath,rdcUnpack1)
