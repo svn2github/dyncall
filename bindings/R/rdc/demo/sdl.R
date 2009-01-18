@@ -1,14 +1,28 @@
 library(rdc)
 # ----------------------------------------------------------------------------
 # C memory allocation
-dyn.load("/windows/system32/msvcrt")
+
+if (.Platform$OS.type == "windows") {
+  .libC <- "/windows/system32/msvcrt"
+  .libSDL <- "/dll/sdl"
+  .libGL <- "/windows/system32/OPENGL32"
+  .libGLU <- "/windows/system32/GLU32"
+} else {
+  .libC <- "/lib/libc.so.6"
+  .libSDL <- "/usr/lib/libSDL.so"
+  .libGL <- "/usr/lib/libGL.so"
+  .libGLU <- "/usr/lib/libGLU.so"
+}
+
+
+dyn.load(.libC)
 .malloc <- getNativeSymbolInfo("malloc")$address
 .free   <- getNativeSymbolInfo("free")$free
 malloc <- function(size) rdcCall(.malloc, "i)p", as.integer(size) )
 free   <- function(ptr) rdcCall(.free, "p)v", ptr)
 # ----------------------------------------------------------------------------
 # SDL library
-dyn.load("/dll/sdl")
+dyn.load(.libSDL)
 .SDL_Init <- getNativeSymbolInfo("SDL_Init")$address
 .SDL_Quit <- getNativeSymbolInfo("SDL_Quit")$address
 .SDL_SetVideoMode <- getNativeSymbolInfo("SDL_SetVideoMode")$address
@@ -16,6 +30,7 @@ dyn.load("/dll/sdl")
 .SDL_GL_SwapBuffers <- getNativeSymbolInfo("SDL_GL_SwapBuffers")$address
 .SDL_PollEvent <- getNativeSymbolInfo("SDL_PollEvent")$address
 .SDL_GetTicks <- getNativeSymbolInfo("SDL_GetTicks")$address
+.SDL_Delay <- getNativeSymbolInfo("SDL_Delay")$address
 # init flags:
 SDL_INIT_TIMER		= 0x00000001L
 SDL_INIT_AUDIO		= 0x00000010L
@@ -53,7 +68,7 @@ SDL_WM_SetCaption <- function(title, icon) rdcCall(.SDL_WM_SetCaption,"SS)v",as.
 SDL_PollEvent <- function(eventptr) rdcCall(.SDL_PollEvent,"p)i", eventptr)
 SDL_GL_SwapBuffers <- function() rdcCall(.SDL_GL_SwapBuffers,")v")
 SDL_GetTicks <- function() rdcCall(.SDL_GetTicks,")i")
-
+SDL_Delay <- function(ms) rdcCall(.SDL_Delay,"i)v",ms)
 
 SDL_NOEVENT = 0
 SDL_ACTIVEEVENT = 1
@@ -89,12 +104,46 @@ SDL_EventType <- function(event) offset(event, 0, "integer", 1)
 
 # ----------------------------------------------------------------------------
 # OpenGL bindings
-dyn.load("/windows/system32/OPENGL32")
+dyn.load(.libGL)
 .glClearColor <- getNativeSymbolInfo("glClearColor")$address
 .glClear <- getNativeSymbolInfo("glClear")$address
+.glMatrixMode <- getNativeSymbolInfo("glMatrixMode")$address
+.glLoadIdentity <- getNativeSymbolInfo("glLoadIdentity")$address
+.glBegin <- getNativeSymbolInfo("glBegin")$address
+.glEnd <- getNativeSymbolInfo("glEnd")$address
+.glVertex3d <- getNativeSymbolInfo("glVertex3d")$address
+.glRotated <- getNativeSymbolInfo("glRotated")$address
 glClearColor <- function(red,green,blue,alpha) rdcCall(.glClearColor, "ffff)v",red,green,blue,alpha)
 glClear <- function(flags) rdcCall(.glClear, "i)v", flags)
 GL_COLOR_BUFFER_BIT = 0x00004000L
+GL_MODELVIEW = 0x1700
+GL_PROJECTION =  0x1701
+GL_TEXTURE = 0x1702
+glMatrixMode <- function(mode) rdcCall(.glMatrixMode,"i)v", mode)
+glLoadIdentity <- function() rdcCall(.glLoadIdentity,")v")
+GL_POINTS                         = 0x0000
+GL_LINES                          = 0x0001
+GL_LINE_LOOP                      = 0x0002
+GL_LINE_STRIP                     = 0x0003
+GL_TRIANGLES                      = 0x0004
+GL_TRIANGLE_STRIP                 = 0x0005
+GL_TRIANGLE_FAN                   = 0x0006
+GL_QUADS                          = 0x0007
+GL_QUAD_STRIP                     = 0x0008
+GL_POLYGON                        = 0x0009
+glBegin <- function(primitiveType) rdcCall(.glBegin,"i)v", primitiveType)
+glEnd <- function() rdcCall(.glEnd,")v")
+glVertex3d <- function(x,y,z) rdcCall(.glVertex3d,"ddd)v",x,y,z)
+glRotated <- function(angle,x,y,z) rdcCall(.glRotated,"dddd)v",angle,x,y,z)
+# ----------------------------------------------------------------------------
+# OpenGL utility library
+dyn.load(.libGLU)
+.gluLookAt <- getNativeSymbolInfo("gluLookAt")$address
+.gluPerspective <- getNativeSymbolInfo("gluPerspective")$address
+gluLookAt <- function(eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ)
+  rdcCall(.gluLookAt,"ddddddddd)v", eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ)
+gluPerspective <- function(fovy,aspect,znear,zfar)
+  rdcCall(.gluPerspective,"dddd)v",fovy,aspect,znear,zfar)
 
 # ----------------------------------------------------------------------------
 # demo
@@ -117,6 +166,23 @@ mainloop <- function()
     tdemo <- ( tnow - tbase ) / 1000
     glClearColor(0,0,blink,0)
     glClear(GL_COLOR_BUFFER_BIT)
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    gluLookAt(0,0,30,0,0,0,0,1,0)
+    glRotated(tdemo, 0, 1, 0);
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(60, 1, 15, 1000)
+
+    glBegin(GL_TRIANGLES)
+    glVertex3d(-1,-1,-1)
+    glVertex3d( 1,-1,-1)
+    glVertex3d( 1, 1,-1)
+    glVertex3d(-1,-1,-1)
+    glVertex3d( 1, 1,-1)
+    glVertex3d(-1, 1,-1)
+    glEnd()
+
     SDL_GL_SwapBuffers()  
     
     SDL_WM_SetCaption(paste("time:", tdemo),0)    
@@ -133,6 +199,7 @@ mainloop <- function()
         cat("button down: ",button,"\n")
       }
     }
+    SDL_Delay(30)
   }
   # free(eventobj)
 }
@@ -142,8 +209,10 @@ cleanup <- function()
   SDL_Quit()
 }
 
-demo <- function()
+run <- function()
 {
   init()
   mainloop()
 }
+run()
+

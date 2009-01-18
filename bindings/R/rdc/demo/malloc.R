@@ -1,10 +1,11 @@
 # File: rdc/demo/malloc.R
 # Description: sample demo to get malloc/free functions
  
-if( .Platform$OS.type == "windows" ) 
-{
+if( .Platform$OS.type == "windows" ) {
  .windir <- paste(Sys.getenv("windir")[[1]],"\\system32\\",sep="")
  .libC <- paste(.windir,"msvcrt",sep="")
+} else {
+ .libC <- "/lib/libc.so.6"
 }
 
 dyn.load(.libC)
