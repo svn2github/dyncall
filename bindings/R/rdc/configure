@@ -1,2 +1,7 @@
-cd src/dyncall ; ./configure --prefix=\$\(TOP\)
+#!/bin/sh
+# rdc package
+# coonfigure script (unix style)
+# (C) 2009 Daniel Adler
+cd src/dyncall
+sh ./configure --prefix=\$\(TOP\)
 

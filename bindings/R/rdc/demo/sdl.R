@@ -3,10 +3,27 @@ library(rdc)
 # C memory allocation
 
 if (.Platform$OS.type == "windows") {
+  OS <- "windows"
+} else if ( Sys.info()[["sysname"]] == "Darwin" ) {
+  OS <- "darwin"
+} else {
+  OS <- "unix"
+}
+
+if (OS == "windows") {
   .libC <- "/windows/system32/msvcrt"
   .libSDL <- "/dll/sdl"
   .libGL <- "/windows/system32/OPENGL32"
   .libGLU <- "/windows/system32/GLU32"
+} else if (OS == "darwin") {
+  .libCocoa <- "/System/Library/Frameworks/Cocoa.framework/Cocoa"
+  dyn.load(.libCocoa)
+  .NSApplicationLoad <- getNativeSymbolInfo("NSApplicationLoad")$address
+  NSApplicationLoad <- function() rdcCall(.NSApplicationLoad, ")B" )
+  .libC   <- "/usr/lib/libc.dylib"
+  .libSDL <- "/Library/Framworks/SDL.framework/SDL"
+  .libGL  <- "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib"
+  .libGLU <- "/System/Library/Frameworks/OpenGL.framework/Libraries/libGLU.dylib"
 } else {
   .libC <- "/lib/libc.so.6"
   .libSDL <- "/usr/lib/libSDL.so"
@@ -149,6 +166,10 @@ gluPerspective <- function(fovy,aspect,znear,zfar)
 # demo
 init <- function()
 {
+  if (OS == "darwin")
+  {
+    NSApplicationLoad()
+  }
   err <- SDL_Init(SDL_INIT_VIDEO)
   if (err != 0) error("SDL_Init failed")  
   surface <- SDL_SetVideoMode(640,480,24,SDL_HWSURFACE+SDL_DOUBLEBUF+SDL_OPENGL)
@@ -214,5 +235,5 @@ run <- function()
   init()
   mainloop()
 }
-run()
+# run()
 

@@ -5,7 +5,13 @@ if( .Platform$OS.type == "windows" ) {
  .windir <- paste(Sys.getenv("windir")[[1]],"\\system32\\",sep="")
  .libC <- paste(.windir,"msvcrt",sep="")
 } else {
- .libC <- "/lib/libc.so.6"
+  sysname <- Sys.info()[["sysname"]]
+  if (sysname == "Darwin")
+  {
+  .libC <- "/usr/lib/libc.dylib"
+  } else { 
+  .libC <- "/lib/libc.so.6"
+  }
 }
 
 dyn.load(.libC)
