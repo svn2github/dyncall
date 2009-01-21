@@ -6,6 +6,8 @@
 \alias{rdcPath}
 \alias{rdcUnpath}
 \alias{rdcShowPath}
+\alias{rdcUnpack1}
+\alias{rdcDataPtr}
 \title{invoke dynamic calls to foreign code}
 \description{  
 Invoke foreign function calls with support for loading modules and resolving symbols.
@@ -18,6 +20,8 @@ result  <- rdcCall(funcptr, signature, ...)
 rdcPath(addpath)
 rdcUnpath(delpath)
 rdcShowPath()
+rdcUnpack1(object, offset, sigchar)
+rdcDataPtr(object, offset = 0)
 }
 
 \arguments{
@@ -27,6 +31,8 @@ rdcShowPath()
   \item{funcptr}{an external pointer representing a pointer to function resolved by a symbol}
   \item{signature}{a character string specifying the argument and return type of a function call, see Details below for more information.}
   \item{addpath,delpath}{a directory path from where dynamic linked libraries should be loaded.}
+  \item{object}{An atomic object (scalar, vector, matrix or array).}
+  \item{offset}{An integer specifying an offset from the start of the linear data memory in bytes.}
 }
 
 \details{

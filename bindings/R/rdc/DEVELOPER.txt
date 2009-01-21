@@ -1,11 +1,14 @@
 BOOTSTRAP R PACKAGE
 
-Make sure, you have "svn" subversion command-line tool installed and in path.
-On Windows, "sliksvn" worked so far for me.
+Download DynCall C library zip package and unpack in rdc/src as "dyncall" folder.
+For your convienience ... do
 
-Pull dyncall library sources from subversion repository:
-$ ( cd rdc ; sh bootstrap )
+   cd rdc ; sh bootstrap
 
-BUILD AND INSTALL R PACKAGE
-as usual in R.
 
+Then build
+
+   cd ..
+   R CMD INSTALL rdc
+
+LazyLoad: yes

@@ -1,14 +1,18 @@
 library(rdc)
 # ----------------------------------------------------------------------------
+# Platform specific issues
+
+if (.Platform$OS.type == "windows") { 
+	OS <- "windows"
+} else if ( Sys.info()[["sysname"]] == "Darwin" ) { 
+	OS <- "darwin"
+} else {
+	OS <- "unix"
+}
+
+# ----------------------------------------------------------------------------
 # C memory allocation
 
-if (.Platform$OS.type == "windows") {
-  OS <- "windows"
-} else if ( Sys.info()[["sysname"]] == "Darwin" ) {
-  OS <- "darwin"
-} else {
-  OS <- "unix"
-}
 
 if (OS == "windows") {
   .libC <- "/windows/system32/msvcrt"
@@ -40,6 +44,7 @@ free   <- function(ptr) rdcCall(.free, "p)v", ptr)
 # ----------------------------------------------------------------------------
 # SDL library
 dyn.load(.libSDL)
+
 .SDL_Init <- getNativeSymbolInfo("SDL_Init")$address
 .SDL_Quit <- getNativeSymbolInfo("SDL_Quit")$address
 .SDL_SetVideoMode <- getNativeSymbolInfo("SDL_SetVideoMode")$address
@@ -122,45 +127,140 @@ SDL_EventType <- function(event) offset(event, 0, "integer", 1)
 # ----------------------------------------------------------------------------
 # OpenGL bindings
 dyn.load(.libGL)
-.glClearColor <- getNativeSymbolInfo("glClearColor")$address
-.glClear <- getNativeSymbolInfo("glClear")$address
-.glMatrixMode <- getNativeSymbolInfo("glMatrixMode")$address
-.glLoadIdentity <- getNativeSymbolInfo("glLoadIdentity")$address
-.glBegin <- getNativeSymbolInfo("glBegin")$address
-.glEnd <- getNativeSymbolInfo("glEnd")$address
-.glVertex3d <- getNativeSymbolInfo("glVertex3d")$address
-.glRotated <- getNativeSymbolInfo("glRotated")$address
-glClearColor <- function(red,green,blue,alpha) rdcCall(.glClearColor, "ffff)v",red,green,blue,alpha)
-glClear <- function(flags) rdcCall(.glClear, "i)v", flags)
+
+.cdecl   <- dcNewCallVM(1024)
+.stdcall <- dcNewCallVM(1024)
+dcMode(.stdcall, rdc:::DC_CALL_C_X86_WIN32_STD )
+
+.importsGL <- "
+    glGetError()i;
+    glClearColor(ffff)v;
+    glClear(i)v;
+    glMatrixMode(i)v;
+    glLoadIdentity()v;
+    glBegin(i)v;
+    glEnd()v;
+    glVertex3d(ddd)v;
+    glRotated(dddd)v;
+    glGenLists(i)i;
+    glNewList(ii)v;
+    glEnableClientState(i)v;
+    glVertexPointer(iiip)v;
+    glColorPointer(iiip)v;
+    glDrawElements(iiip)v;
+    glDisableClientState(i)v;
+    glEndList()v;
+    glCallList(i)v;
+"
+
+if (OS == "windows") { 
+  .callGL  <- .stdcall
+  .callGLU <- .stdcall
+} else {
+  .callGL  <- .cdecl
+  .callGLU <- .cdecl
+}
+
+# Import OpenGL symbols
+rdcBind(.libGL,.importsGL, .callGL)
+
+GL_FALSE                                = 0x0L
+GL_TRUE                                 = 0x1L
+
+GL_BYTE                           =      0x1400L
+GL_UNSIGNED_BYTE                  =      0x1401L
+GL_SHORT                          =      0x1402L
+GL_UNSIGNED_SHORT                 =      0x1403L
+GL_INT                            =      0x1404L
+GL_UNSIGNED_INT                   =      0x1405L
+GL_FLOAT                          =      0x1406L
+GL_DOUBLE                         =      0x140AL
+GL_2_BYTES                        =      0x1407L
+GL_3_BYTES                        =      0x1408L
+GL_4_BYTES                        =      0x1409L
+
+
+GL_COMPILE                        =     0x1300L
+GL_COMPILE_AND_EXECUTE            =     0x1301L
+GL_LIST_BASE                      =     0x0B32L
+GL_LIST_INDEX                     =     0x0B33L
+GL_LIST_MODE                      =     0x0B30L
+
+GL_VERTEX_ARRAY                    =     0x8074L
+ GL_NORMAL_ARRAY                   =      0x8075L
+ GL_COLOR_ARRAY                    =      0x8076L
+ GL_INDEX_ARRAY                    =      0x8077L
+ GL_TEXTURE_COORD_ARRAY            =      0x8078L
+ GL_EDGE_FLAG_ARRAY                =      0x8079L
+ GL_VERTEX_ARRAY_SIZE              =      0x807AL
+ GL_VERTEX_ARRAY_TYPE              =      0x807BL
+ GL_VERTEX_ARRAY_STRIDE            =      0x807CL
+ GL_NORMAL_ARRAY_TYPE              =      0x807EL
+ GL_NORMAL_ARRAY_STRIDE            =      0x807FL
+ GL_COLOR_ARRAY_SIZE               =      0x8081L
+ GL_COLOR_ARRAY_TYPE               =      0x8082L
+ GL_COLOR_ARRAY_STRIDE             =      0x8083L
+ GL_INDEX_ARRAY_TYPE               =      0x8085L
+ GL_INDEX_ARRAY_STRIDE             =      0x8086L
+ GL_TEXTURE_COORD_ARRAY_SIZE       =      0x8088L
+ GL_TEXTURE_COORD_ARRAY_TYPE       =      0x8089L
+ GL_TEXTURE_COORD_ARRAY_STRIDE     =      0x808AL
+ GL_EDGE_FLAG_ARRAY_STRIDE         =      0x808CL
+ GL_VERTEX_ARRAY_POINTER           =      0x808EL
+ GL_NORMAL_ARRAY_POINTER           =      0x808FL
+ GL_COLOR_ARRAY_POINTER            =      0x8090L
+ GL_INDEX_ARRAY_POINTER            =      0x8091L
+ GL_TEXTURE_COORD_ARRAY_POINTER    =      0x8092L
+ GL_EDGE_FLAG_ARRAY_POINTER        =      0x8093L
+ GL_V2F                            =      0x2A20L
+ GL_V3F                            =      0x2A21L
+ GL_C4UB_V2F                       =      0x2A22L
+ GL_C4UB_V3F                       =      0x2A23L
+ GL_C3F_V3F                        =      0x2A24L
+ GL_N3F_V3F                        =      0x2A25L
+ GL_C4F_N3F_V3F                     =     0x2A26L
+ GL_T2F_V3F                        =      0x2A27L
+ GL_T4F_V4F                        =      0x2A28L
+ GL_T2F_C4UB_V3F                   =      0x2A29L
+ GL_T2F_C3F_V3F                    =      0x2A2AL
+ GL_T2F_N3F_V3F                    =      0x2A2BL
+ GL_T2F_C4F_N3F_V3F                =      0x2A2CL
+ GL_T4F_C4F_N3F_V4F                =      0x2A2DL
+
+
 GL_COLOR_BUFFER_BIT = 0x00004000L
-GL_MODELVIEW = 0x1700
-GL_PROJECTION =  0x1701
-GL_TEXTURE = 0x1702
-glMatrixMode <- function(mode) rdcCall(.glMatrixMode,"i)v", mode)
-glLoadIdentity <- function() rdcCall(.glLoadIdentity,")v")
-GL_POINTS                         = 0x0000
-GL_LINES                          = 0x0001
-GL_LINE_LOOP                      = 0x0002
-GL_LINE_STRIP                     = 0x0003
-GL_TRIANGLES                      = 0x0004
-GL_TRIANGLE_STRIP                 = 0x0005
-GL_TRIANGLE_FAN                   = 0x0006
-GL_QUADS                          = 0x0007
-GL_QUAD_STRIP                     = 0x0008
-GL_POLYGON                        = 0x0009
-glBegin <- function(primitiveType) rdcCall(.glBegin,"i)v", primitiveType)
-glEnd <- function() rdcCall(.glEnd,")v")
-glVertex3d <- function(x,y,z) rdcCall(.glVertex3d,"ddd)v",x,y,z)
-glRotated <- function(angle,x,y,z) rdcCall(.glRotated,"dddd)v",angle,x,y,z)
+
+GL_MODELVIEW = 0x1700L
+GL_PROJECTION =  0x1701L
+GL_TEXTURE = 0x1702L
+
+GL_POINTS                         = 0x0000L
+GL_LINES                          = 0x0001L
+GL_LINE_LOOP                      = 0x0002L
+GL_LINE_STRIP                     = 0x0003L
+GL_TRIANGLES                      = 0x0004L
+GL_TRIANGLE_STRIP                 = 0x0005L
+GL_TRIANGLE_FAN                   = 0x0006L
+GL_QUADS                          = 0x0007L
+GL_QUAD_STRIP                     = 0x0008L
+GL_POLYGON                        = 0x0009L
+
 # ----------------------------------------------------------------------------
 # OpenGL utility library
-dyn.load(.libGLU)
-.gluLookAt <- getNativeSymbolInfo("gluLookAt")$address
-.gluPerspective <- getNativeSymbolInfo("gluPerspective")$address
-gluLookAt <- function(eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ)
-  rdcCall(.gluLookAt,"ddddddddd)v", eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ)
-gluPerspective <- function(fovy,aspect,znear,zfar)
-  rdcCall(.gluPerspective,"dddd)v",fovy,aspect,znear,zfar)
+
+.importsGLU <- "
+  gluLookAt(ddddddddd)v;
+  gluPerspective(dddd)v;
+"
+rdcBind(.libGLU,.importsGLU, .callGLU)
+
+#dyn.load(.libGLU)
+#.gluLookAt <- getNativeSymbolInfo("gluLookAt")$address
+#.gluPerspective <- getNativeSymbolInfo("gluPerspective")$address
+#luLookAt <- function(eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ)
+#  rdcCall(.gluLookAt,"ddddddddd)v", eyeX,eyeY,eyeZ,centerX,centerY,centerZ,upX,upY,upZ)
+#gluPerspective <- function(fovy,aspect,znear,zfar)
+#  rdcCall(.gluPerspective,"dddd)v",fovy,aspect,znear,zfar)
 
 # ----------------------------------------------------------------------------
 # demo
@@ -172,11 +272,64 @@ init <- function()
   }
   err <- SDL_Init(SDL_INIT_VIDEO)
   if (err != 0) error("SDL_Init failed")  
-  surface <- SDL_SetVideoMode(640,480,24,SDL_HWSURFACE+SDL_DOUBLEBUF+SDL_OPENGL)
+  surface <- SDL_SetVideoMode(512,512,24,SDL_HWSURFACE+SDL_DOUBLEBUF+SDL_OPENGL)
 }
+
+makeCubeDisplaylist <- function()
+{
+  vertices <- c(
+  -1,-1,-1,
+   1,-1,-1,
+  -1, 1,-1,
+   1, 1,-1,
+  -1,-1, 1,
+   1,-1, 1,
+  -1, 1, 1,
+   1, 1, 1
+  )
+  
+  colors <- as.raw( col2rgb( rainbow(8) ) )
+  
+  triangleIndices <- as.integer(c(
+    0, 2, 1, 
+    2, 3, 1,
+    1, 3, 7, 
+    1, 7, 5,
+    4, 5, 7, 
+    4, 7, 6,
+    6, 2, 0, 
+    6, 0, 4,
+    2, 7, 3, 
+    2, 6, 7,
+    4, 0, 5, 
+    0, 1, 5
+  ))
+  
+  glEnableClientState(GL_VERTEX_ARRAY)
+  glVertexPointer(3, GL_DOUBLE, 0, rdcDataPtr(vertices) )
+  
+  glEnableClientState(GL_COLOR_ARRAY)  
+  glColorPointer(3, GL_UNSIGNED_BYTE, 0, rdcDataPtr(colors) )
+  
+  displaylistId <- glGenLists(1)
+  glNewList( displaylistId, GL_COMPILE )    
+  glDrawElements(GL_TRIANGLES, 36L, GL_UNSIGNED_INT, rdcDataPtr(triangleIndices))
+  glEndList()
+  
+  glDisableClientState(GL_VERTEX_ARRAY)
+  glDisableClientState(GL_COLOR_ARRAY)
+    
+  return(displaylistId)
+}
+#buffers <- integer(2)  
+#glGenBuffersARG(length(buffers), rdcDataPtr(buffers))
+#glBindBufferARB(GL_ARRAY_BUFFER_ARB, buffers[[1]] )
+#glBufferDataARB(GL_ARRAY_BUFFER_ARB, rdcSizeOf(typeof(vertices)) * length(vertices)  , rdcDataPtr(vertices) )
+
 
 mainloop <- function()
 {
+  displaylistId <- makeCubeDisplaylist()
   eventobj <- malloc(256)
   blink <- 0
   tbase <- SDL_GetTicks()
@@ -185,24 +338,30 @@ mainloop <- function()
   {
     tnow <- SDL_GetTicks()
     tdemo <- ( tnow - tbase ) / 1000
+    
     glClearColor(0,0,blink,0)
     glClear(GL_COLOR_BUFFER_BIT)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    gluLookAt(0,0,30,0,0,0,0,1,0)
-    glRotated(tdemo, 0, 1, 0);
+    
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(60, 1, 15, 1000)
+    aspect <- 512/512
+    gluPerspective(60, aspect, 15, 1000)
+    
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    gluLookAt(0,0,20,0,0,0,0,1,0)
+    glRotated(tdemo*30.0, 0, 1, 0);
 
-    glBegin(GL_TRIANGLES)
-    glVertex3d(-1,-1,-1)
-    glVertex3d( 1,-1,-1)
-    glVertex3d( 1, 1,-1)
-    glVertex3d(-1,-1,-1)
-    glVertex3d( 1, 1,-1)
-    glVertex3d(-1, 1,-1)
-    glEnd()
+    glCallList(displaylistId)       
+    
+    #glBegin(GL_TRIANGLES)
+    #glVertex3d(-1,-1,-1)
+    #glVertex3d( 1,-1,-1)
+    #glVertex3d( 1, 1,-1)
+    #glVertex3d(-1,-1,-1)
+    #glVertex3d( 1, 1,-1)
+    #glVertex3d(-1, 1,-1)
+    #glEnd()
 
     SDL_GL_SwapBuffers()  
     
@@ -217,12 +376,19 @@ mainloop <- function()
       else if (eventType == SDL_MOUSEBUTTONDOWN)
       {
         button <- rdcUnpack1(eventobj, 1L, "c")
-        cat("button down: ",button,"\n")
+        cat("button down: ",button,"\n") 
       }
+    }
+    glerr <- glGetError()
+    if (glerr != 0)
+    {
+      cat("GL Error:", glerr)
+      quit <- 1
     }
     SDL_Delay(30)
   }
-  # free(eventobj)
+  free(eventobj)
+  #glDeleteLists(displaylistId, 1)
 }
 
 cleanup <- function()
