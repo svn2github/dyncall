@@ -35,6 +35,20 @@ if (OS == "windows") {
   dyn.load(.libCocoa)
   .NSApplicationLoad <- getNativeSymbolInfo("NSApplicationLoad")$address
   NSApplicationLoad <- function() rdcCall(.NSApplicationLoad, ")B" )
+  # dyn.load("rdc")
+  .newPool <- getNativeSymbolInfo("newPool")$address
+  .releasePool <- getNativeSymbolInfo("releasePool")$address
+  releasePool <- function(x) 
+  {
+    rdcCall( .releasePool, "p)v", x )
+  }
+  newPool <- function() 
+  {
+    x <- rdcCall( .newPool, ")p" )
+    reg.finalizer( x, releasePool )
+    return(x)
+  }
+  .pool   <- newPool()
   .libC   <- "/usr/lib/libc.dylib"
   .libSDL <- "/Library/Framworks/SDL.framework/SDL"
   .libGL  <- "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib"
@@ -293,7 +307,7 @@ init <- function()
   }
   err <- SDL_Init(SDL_INIT_VIDEO)
   if (err != 0) error("SDL_Init failed")  
-  surface <- SDL_SetVideoMode(512,512,24,SDL_HWSURFACE+SDL_DOUBLEBUF+SDL_OPENGL)
+  surface <- SDL_SetVideoMode(512,512,32,SDL_DOUBLEBUF+SDL_OPENGL)
 }
 
 makeCubeDisplaylist <- function()
@@ -366,12 +380,13 @@ mainloop <- function()
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     aspect <- 512/512
-    gluPerspective(60, aspect, 15, 1000)
+    gluPerspective(60, aspect, 3, 1000)
     
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    gluLookAt(0,0,20,0,0,0,0,1,0)
-    glRotated(tdemo*30.0, 0, 1, 0);
+    gluLookAt(0,0,5,0,0,0,0,1,0)
+    glRotated(sin(tdemo)*60.0, 0, 1, 0);
+    glRotated(cos(tdemo)*90.0, 1, 0, 0);
 
     glCallList(displaylistId)       
     
