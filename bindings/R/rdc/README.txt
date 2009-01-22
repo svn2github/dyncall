@@ -1,34 +1,42 @@
 rdc package: dyncall R bindings
 ===============================
-(C) 2007 Daniel Adler
+(C) 2007-2009 Daniel Adler
+
 
 Requirement
-- dyncall 0.1 (url: http://dyncall.org)
+- dyncall >=0.1 (url: http://dyncall.org)
 
 
-Building
+Status
+  unreleased
+
   
-  1. build and install dyncall (see dyncall manual)
-  2. run R CMD INSTALL with configure option --with-dc-prefix e.g.
-
-  $ R CMD INSTALL --configure-args="--with-dc-prefix=/usr/local" rdc
+Building from source
 
 
-Build on Windows platforms
+  1. Check out source 
+    
+     > svn checkout https://dyncall.org/svn/dyncall/trunk/bindings/R/rdc rdc
 
-  1. build and install dyncall (see dyncall manual) 
-     e.g.
-     > cd dyncall-src
-     > .\configure.bat /install:c:\tmp\dyncall
-     > sh ./configure --prefix c:/tmp/dyncall
-     > make
-     > make install
-
-  2. set DC_PREFIX variable to installation prefix path 
-     e.g.
-     > set DC_PREFIX=c:\tmp\dyncall
      
-  3. run R CMD INSTALL
-     e.g.
+  2. Bootstrap dyncall source
+  
+    * Method A: download zip file method: 
+          
+     > cd rdc
+     > sh bootstrap
+     > cd ..
+     
+    * Method B: checkout dyncall
+    
+     > svn checkout https://dyncall.org/svn/dyncall/trunk/dyncall rdc/src/dyncall
+     
+    * Method C: place dyncall source tree rooted at rdc/src/dyncall 
+
+     > cp -R /tmp/dyncall-0.3 rdc/src/dyncall
+
+     
+  3. Build R package from source
+  
      > R CMD INSTALL rdc
 
