@@ -24,6 +24,7 @@ dcMode(.stdcall, rdc:::DC_CALL_C_X86_WIN32_STD )
 .callGL <- .cdecl
 .callGLU <- .cdecl
 .callR   <- .cdecl
+.libR <- "R"
 if (OS == "windows") {
   .libC <- "/windows/system32/msvcrt"
   .libSDL <- "/dll/sdl"
