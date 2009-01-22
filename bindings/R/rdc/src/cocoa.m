@@ -1,3 +1,4 @@
+#ifdef __APPLE__
 #import <Foundation/NSAutoreleasePool.h>
 
 NSAutoreleasePool* newPool()
@@ -10,4 +11,5 @@ void releasePool(NSAutoreleasePool* pool)
 {
   [pool release];
 }
+#endif
 
