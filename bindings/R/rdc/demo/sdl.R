@@ -11,14 +11,25 @@ if (.Platform$OS.type == "windows") {
 }
 
 # ----------------------------------------------------------------------------
+# dynbind environment
+
+.cdecl   <- dcNewCallVM(1024)
+.stdcall <- dcNewCallVM(1024)
+dcMode(.stdcall, rdc:::DC_CALL_C_X86_WIN32_STD )
+
+# ----------------------------------------------------------------------------
 # C memory allocation
-
-
+.callC <- .cdecl
+.callSDL <- .cdecl
+.callGL <- .cdecl
+.callGLU <- .cdecl
+.callR   <- .cdecl
 if (OS == "windows") {
   .libC <- "/windows/system32/msvcrt"
   .libSDL <- "/dll/sdl"
   .libGL <- "/windows/system32/OPENGL32"
   .libGLU <- "/windows/system32/GLU32"
+  .callGL <- .stdcall
 } else if (OS == "darwin") {
   .libCocoa <- "/System/Library/Frameworks/Cocoa.framework/Cocoa"
   dyn.load(.libCocoa)
@@ -28,19 +39,33 @@ if (OS == "windows") {
   .libSDL <- "/Library/Framworks/SDL.framework/SDL"
   .libGL  <- "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib"
   .libGLU <- "/System/Library/Frameworks/OpenGL.framework/Libraries/libGLU.dylib"
-} else {
+  .libR   <- Sys.getenv("R_HOME")
+  .libR   <- paste(.libR,"/lib/libR.dylib",sep="")
+} else { # unix
   .libC <- "/lib/libc.so.6"
   .libSDL <- "/usr/lib/libSDL.so"
   .libGL <- "/usr/lib/libGL.so"
   .libGLU <- "/usr/lib/libGLU.so"
 }
 
+#dyn.load(.libC)
+#.malloc <- getNativeSymbolInfo("malloc")$address
+#.free   <- getNativeSymbolInfo("free")$free
+#malloc <- function(size) rdcCall(.malloc, "i)p", as.integer(size) )
+#free   <- function(ptr) rdcCall(.free, "p)v", ptr)
 
-dyn.load(.libC)
-.malloc <- getNativeSymbolInfo("malloc")$address
-.free   <- getNativeSymbolInfo("free")$free
-malloc <- function(size) rdcCall(.malloc, "i)p", as.integer(size) )
-free   <- function(ptr) rdcCall(.free, "p)v", ptr)
+.importsR <- "
+R_chk_calloc(ii)p;
+R_chk_realloc(ii)p;
+R_chk_free(p)v;
+"
+
+rdcBind(.libR,.importsR,.callR)
+
+malloc <- function(size) R_chk_calloc(as.integer(size),1L)
+free <- function(ptr) R_chk_free(ptr)
+
+
 # ----------------------------------------------------------------------------
 # SDL library
 dyn.load(.libSDL)
@@ -127,10 +152,6 @@ SDL_EventType <- function(event) offset(event, 0, "integer", 1)
 # ----------------------------------------------------------------------------
 # OpenGL bindings
 dyn.load(.libGL)
-
-.cdecl   <- dcNewCallVM(1024)
-.stdcall <- dcNewCallVM(1024)
-dcMode(.stdcall, rdc:::DC_CALL_C_X86_WIN32_STD )
 
 .importsGL <- "
     glGetError()i;
