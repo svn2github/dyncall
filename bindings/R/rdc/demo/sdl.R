@@ -24,12 +24,12 @@ dcMode(.stdcall, rdc:::DC_CALL_C_X86_WIN32_STD )
 .callGL <- .cdecl
 .callGLU <- .cdecl
 .callR   <- .cdecl
-.libR <- "R"
 if (OS == "windows") {
   .libC <- "/windows/system32/msvcrt"
   .libSDL <- "/dll/sdl"
   .libGL <- "/windows/system32/OPENGL32"
   .libGLU <- "/windows/system32/GLU32"
+  .libR <- "R"
   .callGL <- .stdcall
 } else if (OS == "darwin") {
   .libCocoa <- "/System/Library/Frameworks/Cocoa.framework/Cocoa"
@@ -61,6 +61,7 @@ if (OS == "windows") {
   .libSDL <- "/usr/lib/libSDL.so"
   .libGL <- "/usr/lib/libGL.so"
   .libGLU <- "/usr/lib/libGLU.so"
+  .libR <- paste(R.home(),"/lib/libR.so",sep="")
 }
 
 #dyn.load(.libC)
