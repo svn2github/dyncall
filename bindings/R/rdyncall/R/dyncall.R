@@ -2,52 +2,65 @@
 # Description: dyncall bindings for R
 
 # ----------------------------------------------------------------------------
+# available call modes
+
+.callmodes <- c("cdecl","stdcall","fastcall.gcc","fastcall.msvc","this.gcc","this.msvc")
+
+# ----------------------------------------------------------------------------
 # call vm alloc/free
 
-new.callvm <- function(mode = c("cdecl","stdcall"), size = 4096L)
+new.callvm <- function( callmode = c("cdecl","stdcall","fastcall.gcc","fastcall.msvc","this.gcc","this.msvc"), size = 4096L )
 {
-  mode <- switch(mode, cdecl=DC_CALL_C_DEFAULT, stdcall=DC_CALL_C_X86_WIN32_STD)
-  x <- .External("new_callvm", mode, size)
+  callmode <- match.arg(callmode)
+  x <- .Call("new_callvm", callmode, size, PACKAGE="rdyncall")
   reg.finalizer(x, free.callvm)
   return(x)
 }
 
 free.callvm <- function(x)
 {
-  .External("free_callvm", x)
+  .Call("free_callvm", x, PACKAGE="rdyncall")
 }
 
 # ----------------------------------------------------------------------------
 # calling convention: cdecl 
 
-callvm.cdecl   <- new.callvm("cdecl")
+# callvm.cdecl   <- new.callvm("cdecl")
+
 
 .dyncall.cdecl <- function( address, signature, ... )
 {
-  .External("r_dcCall", callvm.cdecl, address, signature, ..., PACKAGE="rdyncall")
+  .External("dyncall", callvm.cdecl, address, signature, ..., PACKAGE="rdyncall")
 }
 
 # ----------------------------------------------------------------------------
 # calling convention: stdcall on win32 / otherwise fallback to cdecl
 
-if (.Platform$OS == "windows") 
-{  
-  callvm.stdcall <- new.callvm("stdcall")
-} else 
-{
-  callvm.stdcall <- .callvm.cdecl
+if (.Platform$OS == "windows") {  
+  # callvm.stdcall <- new.callvm("stdcall")
+} else {
+  # callvm.stdcall <- .callvm.cdecl
 }
 
 .dyncall.stdcall <- function( address, signature, ... )
 {
-  .External("r_dcCall", callvm.stdcall, address, signature, ..., PACKAGE="rdyncall")
+  .External("dyncall", callvm.stdcall, address, signature, ..., PACKAGE="rdyncall")
 }  
 
 # ----------------------------------------------------------------------------
 # generic call
 
-.dyncall <- function( address, signature, ... , CALLMODE="cdecl" )
+.dyncall <- function( address, signature, ... , callmode = .callmodes )
 {
-  callvm <- switch(CALLMODE, cdecl=callvm.cdecl, stdcall=callvm.stdcall)
-  .External("r_dcCall", callvm, address, signature, ..., PACKAGE="rdyncall")
+  callvm <- switch(callmode, cdecl=callvm.cdecl, stdcall=callvm.stdcall)
+  .External("dyncall", callvm, address, signature, ..., PACKAGE="rdyncall")
+}
+
+callvm.cdecl <- NULL
+callvm.stdcall <- NULL
+
+.onLoad <- function(libname,pkgname)
+{
+  callvm.cdecl <<- new.callvm("cdecl")
+  callvm.stdcall <<- new.callvm("stdcall")
 }

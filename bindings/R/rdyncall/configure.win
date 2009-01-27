@@ -1,0 +1,8 @@
+#!/bin/sh
+# R Package: rdyncall
+# File: rdyncall/configure
+# Description: configure script (windows flavour)
+# Copyright (C) 2007-2009 Daniel Adler
+
+cd src/dyncall
+sh ./configure --target-x86 --target-windows --tool-gcc --prefix=\$\(TOP\)

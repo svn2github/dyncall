@@ -1,2 +1,8 @@
 useDynLib(rdyncall)
-export(.dyncall, .dyncall.cdecl, .dyncall.stdcall)
+export(
+  .dyncall, .dyncall.cdecl, .dyncall.stdcall, 
+  dynbind, 
+  dynport, dynport.unload,
+  .dynload, .dynunload, .dynfind,
+  .unpack1, .dataptr
+)

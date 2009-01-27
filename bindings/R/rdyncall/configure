@@ -1,0 +1,9 @@
+#!/bin/sh
+# R Package: rdyncall
+# File: rdyncall/configure
+# Description: configure script (unix flavour)
+# Copyright (C) 2007-2009 Daniel Adler
+
+cd src/dyncall
+sh ./configure --prefix=\$\(TOP\)
+

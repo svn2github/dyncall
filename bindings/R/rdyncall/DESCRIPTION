@@ -1,8 +1,9 @@
 Package: rdyncall
 Version: 0.1
 License: bsd
-Description: flexible foreign function call interface for direct and dynamic calls to arbitrary C libraries and compiled with different calling conventions.
+Description: foreign function call interface to precompiled libraries with support for multiple calling conventions.
 Title: R bindings for dyncall library
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
 URL: http://dyncall.org
+LazyLoad: no

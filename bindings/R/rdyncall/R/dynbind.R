@@ -1,21 +1,47 @@
-dynbind1 <- function(libh, symbol, signature, callvm, env)
-{
-  funcptr <- .dynfind(libh, symbol)
-  
-  f <- function(...) NULL
-  body(f) <- substitute( call(".dyncall", MODE=mode)
-  assign( symbol, f, env=env,  )
-  
-}
+# R-Package: rdyncall
+# File: rdyncall/R/dynbind.R
+# Description: single-entry front-end to dynamic binding of library functions 
 
-dynbind <- function(libname, signature, env=parent.frame(), .callvm=.cdecl)
+dynbind <- function(libname, lib.signature, envir=parent.frame(), callmode="cdecl")
 {
   # load library
-  libh <- dynload(libname)
-  # parse signature
-  sigtab <- gsub("[ \n\t]*","",signature)
+  libh <- .dynload(libname)
+  
+  envir$.libs <- c(envir$.libs,libh)
+    
+  # convert library signature to signature table
+  
+  # eat white spaces
+  sigtab <- gsub("[ \n\t]*","",lib.signature)
+  
+  # split functions at ';'
   sigtab <- strsplit(sigtab, ";")[[1]]
+  
+  # split name/call signature at '('
   sigtab <- strsplit(sigtab, "\\(")
+  
+  
+  dyncallfunc <- as.symbol( paste(".dyncall.",callmode, sep="") )
+  
   # install functions
-  for (i in seq(along=sigs)) bind1(libh, sigtab[[i]][[1]], sigtab[[i]][[2]], callvm, envir )    
+  for (i in seq(along=sigtab)) 
+  {
+    symname   <- sigtab[[i]][[1]]
+    signature <- sigtab[[i]][[2]]
+    address  <- .dynfind( libh, symname )
+    if (!is.null(address))
+    {
+      f <- function(...) NULL
+      body(f) <- substitute( dyncallfunc(address, signature,...), list(dyncallfunc=dyncallfunc,address=address,signature=signature) )
+      environment(f) <- envir # NEW
+      assign( symname, f, envir=envir)  
+    }
+    else
+    {
+      warning("unable to find symbol ", symname, " in shared library ", libname)
+    }
+  }
+  
+  reg.finalizer(envir, function(x) { sapply( x$.libs, .dynunload ) } )
+  
 }
