@@ -1,0 +1,2 @@
+useDynLib(rdyncall)
+export(.dyncall, .dyncall.cdecl, .dyncall.stdcall)
