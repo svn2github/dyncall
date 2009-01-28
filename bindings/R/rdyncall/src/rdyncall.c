@@ -262,6 +262,7 @@ SEXP r_dyncall(SEXP args)
     case DC_SIGCHAR_FLOAT:    return ScalarReal( (double) dcCallFloat(pvm,addr) );
     case DC_SIGCHAR_DOUBLE:   return ScalarReal( dcCallDouble(pvm,addr) );
     case DC_SIGCHAR_POINTER:  return R_MakeExternalPtr( dcCallPointer(pvm,addr), R_NilValue, R_NilValue );
+    case DC_SIGCHAR_STRING:   return ScalarString( dcCallPointer(pvm, addr) );
     case DC_SIGCHAR_VOID: dcCallVoid(pvm,addr); return R_NilValue;
     default: error("invalid return type signature"); return NULL;
   }

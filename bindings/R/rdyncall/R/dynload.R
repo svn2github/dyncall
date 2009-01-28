@@ -2,9 +2,22 @@
 # Description: R bindings for dynload library
 #
 
-.dynload <- function(path)
+.dynload <- function(libname)
 {
-  .Call("dynload", path, PACKAGE="rdyncall")
+  try.prefixes <- c("","lib")
+  try.suffixes <- c("",.Platform$dynlib.ext)  
+  
+  for (prefix in try.prefixes)
+  {
+    for(suffix in try.suffixes)
+    {
+      path <- paste( prefix, libname, suffix, sep="" )
+      x <- .Call("dynload", path, PACKAGE="rdyncall")
+      if (!is.null(x))
+      	return(x)
+    }
+  }
+
 }
 
 .dynunload <- function(libh)

@@ -63,7 +63,7 @@ sizeof.SDL_Event    = 64
 
 # bindings:
 
-dynbind("sdl","
+dynbind("SDL","
 SDL_Init(i)i;
 SDL_Quit()v;
 SDL_SetVideoMode(iiii)p;

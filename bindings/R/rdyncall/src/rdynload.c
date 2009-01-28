@@ -24,9 +24,8 @@ SEXP r_dynload(SEXP libpath_x)
   libpath_S = CHAR(STRING_ELT(libpath_x,0));
   libHandle = dlLoadLibrary(libpath_S);
   
-  if (!libHandle) {
-    error("r_dynload failed on path %s", libpath_S );
-  }
+  if (!libHandle) 
+    return R_NilValue;
 
   return R_MakeExternalPtr(libHandle, R_NilValue, R_NilValue);
 }
