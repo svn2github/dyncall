@@ -1,6 +1,6 @@
 useDynLib(rdyncall)
 export(
-  .dyncall, .dyncall.cdecl, .dyncall.stdcall, 
+  .dyncall, .callmodes, .dyncall.cdecl, .dyncall.stdcall, 
   dynbind, 
   dynport, dynport.unload,
   .dynload, .dynunload, .dynfind,

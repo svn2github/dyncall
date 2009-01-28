@@ -1,3 +1,21 @@
+EXPLORE:
+- Fortran calling conventions
+- 'R' R expression pointer type
+BUGS:
+- character encoding support, R supports UTF-8.
+FIXES:
+- void return function calls should not display on R console (interactively) .. hidden
+- Mac OS X objective-c cocoa support C code (src/support_cocoa.m)
+  conditional compilation ONLY on Mac OS X / Darwin  
+TASKS:
+- R package manual pages
+- vignette package
+- complete SDL bindings
+FUTURE:
+- rdyncall options
+- zip file download
+
+
 Package: rdyncall
 
 Components:

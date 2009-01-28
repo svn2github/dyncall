@@ -20,10 +20,10 @@ SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
 {
   int mode_i;
   int size_i = INTEGER(size_x)[0];
-    
+
   const char* mode_S = CHAR( STRING_ELT( mode_x, 0 ) );
-  
-  if (strcmp(mode_S,"cdecl") == 0) 
+
+  if (strcmp(mode_S,"cdecl") == 0)
     mode_i = DC_CALL_C_DEFAULT;
   else if (strcmp(mode_S,"stdcall") == 0)
     mode_i = DC_CALL_C_X86_WIN32_STD;
@@ -40,8 +40,8 @@ SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
     error("invalid callmode");
     return R_NilValue;
   }
-    
-  DCCallVM* pvm = dcNewCallVM(size_i);    
+
+  DCCallVM* pvm = dcNewCallVM(size_i);
   dcMode( pvm, mode_i);
   return R_MakeExternalPtr( pvm, R_NilValue, R_NilValue );
 }
@@ -64,27 +64,27 @@ SEXP r_free_callvm(SEXP callvm_x)
  **/
 
 SEXP r_dyncall(SEXP args)
-{  
+{
   DCCallVM*   pvm;
   void*       addr;
   const char* sig;
   SEXP        arg;
 
   args = CDR(args);
-  
+
   pvm  = (DCCallVM*) R_ExternalPtrAddr( CAR(args) ); args = CDR(args);
   addr = R_ExternalPtrAddr( CAR(args) ); args = CDR(args);
   sig  = CHAR( STRING_ELT( CAR(args), 0 ) ); args = CDR(args);
-  
-  if (!pvm) error("callvm is null");  
+
+  if (!pvm) error("callvm is null");
   if (!addr) error("addr is null");
-  
+
   dcReset(pvm);
 
   /* process arguments */
-  
+
   for(;;) {
-  
+
     char ch = *sig++;
 
     if (ch == '\0') error("invalid signature - no return type specified");
@@ -93,68 +93,72 @@ SEXP r_dyncall(SEXP args)
 
     if (args == R_NilValue)
       error("expect more arguments");
-          
+
     arg = CAR(args); args = CDR(args);
-    
+
+    int type_id = TYPEOF(arg);
+
+    if ( type_id != NILSXP && LENGTH(arg) == 0 ) error("invalid argument with zero length");
+
     switch(ch) {
       case DC_SIGCHAR_BOOL:
       {
         DCbool boolValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case LGLSXP:  boolValue = ( LOGICAL(arg)[0] == 0 ) ? DC_FALSE : DC_TRUE; break;
           case INTSXP:  boolValue = ( INTEGER(arg)[0] == 0 ) ? DC_FALSE : DC_TRUE; break;
           case REALSXP: boolValue = ( REAL(arg)[0]    == 0.0 ) ? DC_FALSE : DC_TRUE; break;
           case RAWSXP:  boolValue = ( RAW(arg)[0]     == 0 ) ? DC_FALSE : DC_TRUE; break;
-          default:      error("expected bool value"); return NULL;
+          default:      error("expected bool castable argument value"); return NULL;
         }
         dcArgBool(pvm, boolValue );
-      }      
+      }
       break;
       case DC_SIGCHAR_CHAR:
-      {        
+      {
       	char charValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case LGLSXP:  charValue = (char) LOGICAL(arg)[0]; break;
           case INTSXP:  charValue = (char) INTEGER(arg)[0];        break;
           case REALSXP: charValue = (char) REAL(arg)[0];    break;
           case RAWSXP:  charValue = (char) RAW(arg)[0];     break;
-          default:      error("expected int value"); return NULL;
+          default:      error("expected int castable argument value"); return NULL;
         }
       	dcArgChar(pvm, charValue);
       }
       break;
       case DC_SIGCHAR_SHORT:
-      {        
+      {
       	short shortValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case LGLSXP:  shortValue = (short) LOGICAL(arg)[0]; break;
           case INTSXP:  shortValue = (short) INTEGER(arg)[0];        break;
           case REALSXP: shortValue = (short) REAL(arg)[0];    break;
           case RAWSXP:  shortValue = (short) RAW(arg)[0];     break;
-          default:      error("expected int argument type"); return NULL;
+          default:      error("expected int castable argument type"); return NULL;
         }
       	dcArgShort(pvm, shortValue);
       }
       break;
       case DC_SIGCHAR_LONG:
-      {        
+      {
       	long longValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case LGLSXP:  longValue = (long) LOGICAL(arg)[0]; break;
           case INTSXP:  longValue = (long) INTEGER(arg)[0];        break;
           case REALSXP: longValue = (long) REAL(arg)[0];    break;
           case RAWSXP:  longValue = (long) RAW(arg)[0];     break;
-          default:      error("expected long argument type"); return NULL;
+          default:      error("expected long castable argument type"); return NULL;
         }
       	dcArgLong(pvm, longValue);
       }
       break;
       case DC_SIGCHAR_INT:
-      {        
+      {
       	int intValue;
         switch(TYPEOF(arg))
         {
@@ -170,7 +174,7 @@ SEXP r_dyncall(SEXP args)
       case DC_SIGCHAR_FLOAT:
       {
         float floatValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case LGLSXP: floatValue = (float) LOGICAL(arg)[0]; break;
           case INTSXP: floatValue = (float) INTEGER(arg)[0]; break;
@@ -184,21 +188,21 @@ SEXP r_dyncall(SEXP args)
       case DC_SIGCHAR_DOUBLE:
       {
       	DCdouble doubleValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case LGLSXP: doubleValue = (double) LOGICAL(arg)[0]; break;
           case INTSXP: doubleValue = (double) INTEGER(arg)[0]; break;
           case REALSXP: doubleValue = REAL(arg)[0]; break;
           case RAWSXP:  doubleValue = (double) RAW(arg)[0]; break;
           default: error("expected double argument type"); return NULL;
-        }        
+        }
         dcArgDouble( pvm, doubleValue );
       }
       break;
-      case DC_SIGCHAR_LONGLONG:        
+      case DC_SIGCHAR_LONGLONG:
       {
         DClonglong longlongValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case LGLSXP:  longlongValue = (DClonglong) LOGICAL(arg)[0]; break;
           case INTSXP:  longlongValue = (DClonglong) INTEGER(arg)[0]; break;
@@ -212,9 +216,11 @@ SEXP r_dyncall(SEXP args)
       case DC_SIGCHAR_POINTER:
       {
         DCpointer ptrValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case NILSXP:    ptrValue = (DCpointer) 0; break;
+          case CHARSXP:   ptrValue = (DCpointer) CHAR(arg); break;
+          case SYMSXP:    ptrValue = (DCpointer) PRINTNAME(arg); break;
           case STRSXP:    ptrValue = (DCpointer) CHAR( STRING_ELT(arg,0) ); break;
           case LGLSXP:    ptrValue = (DCpointer) LOGICAL(arg); break;
           case INTSXP:    ptrValue = (DCpointer) INTEGER(arg); break;
@@ -230,7 +236,7 @@ SEXP r_dyncall(SEXP args)
       case DC_SIGCHAR_STRING:
       {
         DCpointer cstringValue;
-        switch(TYPEOF(arg))
+        switch(type_id)
         {
           case NILSXP:    cstringValue = (DCpointer) 0; break;
           case CHARSXP:   cstringValue = (DCpointer) CHAR(arg); break;
@@ -242,16 +248,16 @@ SEXP r_dyncall(SEXP args)
         dcArgPointer(pvm, cstringValue);
       }
       break;
-      default: error("invalid argument signature"); return NULL;      
+      default: error("invalid argument signature"); return NULL;
     }
   }
 
-  
+
   if (args != R_NilValue)
     error ("too many arguments");
 
   /* process return type */
-  
+
   switch(*sig) {
     case DC_SIGCHAR_BOOL:     return ScalarLogical( ( dcCallBool(pvm, addr) == DC_FALSE ) ? FALSE : TRUE );
     case DC_SIGCHAR_CHAR:     return ScalarInteger( (int) dcCallChar(pvm, addr)  );
@@ -266,10 +272,10 @@ SEXP r_dyncall(SEXP args)
     case DC_SIGCHAR_VOID: dcCallVoid(pvm,addr); return R_NilValue;
     default: error("invalid return type signature"); return NULL;
   }
-  
+
 }
 
-    
+
 #if 0
   switch(*sig) {
     case DC_SIGCHAR_BOOL:

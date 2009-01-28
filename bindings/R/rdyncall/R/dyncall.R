@@ -9,7 +9,7 @@
 # ----------------------------------------------------------------------------
 # call vm alloc/free
 
-new.callvm <- function( callmode = c("cdecl","stdcall","fastcall.gcc","fastcall.msvc","this.gcc","this.msvc"), size = 4096L )
+new.callvm <- function( callmode = c("cdecl","stdcall"), size = 4096L )
 {
   callmode <- match.arg(callmode)
   x <- .Call("new_callvm", callmode, size, PACKAGE="rdyncall")
