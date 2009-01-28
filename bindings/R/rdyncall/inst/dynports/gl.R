@@ -1,4 +1,6 @@
-# dynport file for R
+# Dynport: gl
+# Description: OpenGL 1.1
+# Maintainer: dadler@uni-goettingen.de
 
 if (.Platform$OS == "windows") {
   libname <- "OPENGL32"

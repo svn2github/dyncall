@@ -76,10 +76,10 @@ SDL_Delay(i)v;
 
 # R utility:
 
-SDL_Event.type <- function(event) .unpack1(event, 0, "c")
+SDL_Event.type   <- function(event) .unpack1(event, 0, "c")
 SDL_Event.button <- function(event) .unpack1(event, 1, "c")
-SDL_Event.gain <- function(event) .unpack1(event, 1, "c")
-SDL_Event.state <- function(even) .unpack1(event, 2, "c")
+SDL_Event.gain   <- function(event) .unpack1(event, 1, "c")
+SDL_Event.state  <- function(event) .unpack1(event, 2, "c")
 
 # SDL_ActiveEvent <- .cstruct( type="uint8",gain="uint8",state="uint8")
 # SDL_KeyboardEvent <- .cstruct( type="uint8", state="uint8", keysym="SDL_keysym")

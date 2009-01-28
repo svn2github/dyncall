@@ -1,3 +1,7 @@
+# Dynport: glu
+# Description: OpenGL Utility library
+# Maintainer: dadler@uni-goettingen.de
+
 if (.Platform$OS == "windows") {
   libname <- "GLU32"
 } else {
