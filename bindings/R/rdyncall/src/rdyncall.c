@@ -82,7 +82,7 @@ SEXP r_dyncall(SEXP args)
   dcReset(pvm);
 
   /* process arguments */
-
+#define DC_SIGCHAR_SEXP	'x'
   for(;;) {
 
     char ch = *sig++;
@@ -95,6 +95,11 @@ SEXP r_dyncall(SEXP args)
       error("expect more arguments");
 
     arg = CAR(args); args = CDR(args);
+
+    if (ch == DC_SIGCHAR_SEXP) {
+      dcArgPointer(pvm, (void*)arg);
+      continue;
+    }
 
     int type_id = TYPEOF(arg);
 

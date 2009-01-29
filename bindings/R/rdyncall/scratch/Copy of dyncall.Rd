@@ -36,21 +36,6 @@ uses cdecl.
 The correct function call signature and calling convention specifies a full qualified
 foreign function call for the dyncall library.
 }   
-\section{Dyncall Signature}{
-When calling foreign functions, dyncall needs to know exact type information for
-argument and return types.
-
-A \code{signature} is a character string that encodes the 
-arity (number of arguments) and formal argument- and return-types using a character-based
-type code.
-
-The general form of a dyncall signature string is:
-    
-\deqn{sigchar_{arg_0} sigchar_{arg_1} \ldots ')' sigchar_{return}}{<sigchar-arg0> <sigchar-arg1> \ldots ')' <sigchar-return>}
-
-Each low-level function call argument and return type is encoded with a character code. 
-A closing bracket character (")") separates the argument with the return type.
-}
 \section{Table of dyncall signature characters}{
 
 \tabular{clll}{
@@ -129,7 +114,7 @@ no return type: void
 \section{By-value scalar types}{
 
 Any R vector type such as raw, logical, integer and double atomic R vector is accepted
-for by-value.
+as call-by-value.
 
 By-value scalar argument types such as bool, char, short, int, long, float, double and long long
 accept .
@@ -185,7 +170,7 @@ The signature
 
 
 The rdyncall package provides tools to establish flexible function calls to low-level precompiled code.
-It is more flexible than \code{\link{.C}} and has the same type-unsafety dangers.
+It is much more flexible than \code{\link{.C}} and has stronger demands for the end user type-unsafety dangers.
 One can make arbitrary C (and C++ member-) function calls.
 
 The language binding was designed to help write glue code to low-level C libraries in R (if the target library function is compatible with

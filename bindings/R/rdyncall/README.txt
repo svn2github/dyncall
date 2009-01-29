@@ -1,5 +1,6 @@
 EXPLORE:
 - Fortran calling conventions
+DONE:
 - 'R' R expression pointer type
 BUGS:
 - character encoding support, R supports UTF-8.
