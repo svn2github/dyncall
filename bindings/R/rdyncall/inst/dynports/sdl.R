@@ -1,3 +1,11 @@
+# Dynport: sdl
+# Description: Simple Directmedia Layer library
+# Dynport-Maintainer: dadler@uni-goettingen.de
+# -----------------------------------------------------------------------------
+
+
+# -----------------------------------------------------------------------------
+# constants:
 
 # init flags:
 
@@ -61,6 +69,7 @@ SDL_NUMEVENTS       = 32
 
 sizeof.SDL_Event    = 64
 
+# -----------------------------------------------------------------------------
 # bindings:
 
 dynbind("SDL","
@@ -74,7 +83,8 @@ SDL_GetTicks()i;
 SDL_Delay(i)v;
 ")
 
-# R utility:
+# -----------------------------------------------------------------------------
+# C structure helpers:
 
 SDL_Event.type   <- function(event) .unpack1(event, 0, "c")
 SDL_Event.button <- function(event) .unpack1(event, 1, "c")
@@ -85,3 +95,6 @@ SDL_Event.state  <- function(event) .unpack1(event, 2, "c")
 # SDL_KeyboardEvent <- .cstruct( type="uint8", state="uint8", keysym="SDL_keysym")
 
 new.SDL_event <- function() malloc(sizeof.SDL_Event)
+
+
+

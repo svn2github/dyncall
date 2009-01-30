@@ -18,28 +18,21 @@
 
 SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
 {
-  int mode_i;
+  /* default call mode is "cdecl" */
+  int mode_i = DC_CALL_C_DEFAULT;
   int size_i = INTEGER(size_x)[0];
 
   const char* mode_S = CHAR( STRING_ELT( mode_x, 0 ) );
 
-  if (strcmp(mode_S,"cdecl") == 0)
-    mode_i = DC_CALL_C_DEFAULT;
-  else if (strcmp(mode_S,"stdcall") == 0)
-    mode_i = DC_CALL_C_X86_WIN32_STD;
-  else if (strcmp(mode_S,"fastcall.gcc") == 0)
-    mode_i = DC_CALL_C_X86_WIN32_FAST_GNU;
-  else if (strcmp(mode_S,"fastcall.msvc") == 0)
-    mode_i = DC_CALL_C_X86_WIN32_FAST_MS;
-  else if (strcmp(mode_S,"thiscall.gcc") == 0)
-    mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
-  else if (strcmp(mode_S,"thiscall.msvc") == 0)
-    mode_i = DC_CALL_C_X86_WIN32_THIS_MS;
-  else
-  {
-    error("invalid callmode");
-    return R_NilValue;
-  }
+  if      (strcmp(mode_S,"cdecl") == 0)         mode_i = DC_CALL_C_DEFAULT;
+  else if (strcmp(mode_S,"stdcall") == 0)	    mode_i = DC_CALL_C_X86_WIN32_STD;
+  else if (strcmp(mode_S,"fastcall.gcc") == 0)  mode_i = DC_CALL_C_X86_WIN32_FAST_GNU;
+  else if (strcmp(mode_S,"fastcall.msvc") == 0) mode_i = DC_CALL_C_X86_WIN32_FAST_MS;
+  else if (strcmp(mode_S,"thiscall") == 0)		mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
+  else if (strcmp(mode_S,"thiscall.gcc") == 0)  mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
+  else if (strcmp(mode_S,"thiscall.msvc") == 0) mode_i = DC_CALL_C_X86_WIN32_THIS_MS;
+  else error("unknown callmode");
+
 
   DCCallVM* pvm = dcNewCallVM(size_i);
   dcMode( pvm, mode_i);
@@ -129,7 +122,7 @@ SEXP r_dyncall(SEXP args)
           case INTSXP:  charValue = (char) INTEGER(arg)[0];        break;
           case REALSXP: charValue = (char) REAL(arg)[0];    break;
           case RAWSXP:  charValue = (char) RAW(arg)[0];     break;
-          default:      error("expected int castable argument value"); return NULL;
+          default:      error("expected char castable argument value"); return NULL;
         }
       	dcArgChar(pvm, charValue);
       }
@@ -143,7 +136,7 @@ SEXP r_dyncall(SEXP args)
           case INTSXP:  shortValue = (short) INTEGER(arg)[0];        break;
           case REALSXP: shortValue = (short) REAL(arg)[0];    break;
           case RAWSXP:  shortValue = (short) RAW(arg)[0];     break;
-          default:      error("expected int castable argument type"); return NULL;
+          default:      error("expected short castable argument type"); return NULL;
         }
       	dcArgShort(pvm, shortValue);
       }
@@ -248,12 +241,12 @@ SEXP r_dyncall(SEXP args)
           case SYMSXP:    cstringValue = (DCpointer) PRINTNAME(arg); break;
           case STRSXP:    cstringValue = (DCpointer) CHAR( STRING_ELT(arg,0) ); break;
           case EXTPTRSXP: cstringValue = R_ExternalPtrAddr(arg); break;
-          default: error("expected cstring argument type"); return NULL;
+          default: error("expected string argument type"); return NULL;
         }
         dcArgPointer(pvm, cstringValue);
       }
       break;
-      default: error("invalid argument signature"); return NULL;
+      default: error("invalid argument type signature"); return NULL;
     }
   }
 

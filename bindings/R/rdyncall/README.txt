@@ -1,20 +1,22 @@
+TASKS:
+- R package manual pages
+- vignette package
+- complete SDL bindings
 EXPLORE:
 - Fortran calling conventions
-DONE:
-- 'R' R expression pointer type
+- dynbind resolving library path by libname ; Mac OS X 
 BUGS:
+- library live time management:
 - character encoding support, R supports UTF-8.
 FIXES:
 - void return function calls should not display on R console (interactively) .. hidden
 - Mac OS X objective-c cocoa support C code (src/support_cocoa.m)
   conditional compilation ONLY on Mac OS X / Darwin  
-TASKS:
-- R package manual pages
-- vignette package
-- complete SDL bindings
 FUTURE:
 - rdyncall options
 - zip file download
+DONE:
+- 'R' R expression pointer type
 
 
 Package: rdyncall
