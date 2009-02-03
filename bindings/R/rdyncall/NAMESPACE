@@ -1,8 +1,28 @@
 useDynLib(rdyncall)
 export(
-  .dyncall, .callmodes, .dyncall.cdecl, .dyncall.stdcall, 
-  dynbind, 
-  dynport, dynport.unload,
+  # dyncall.R
+  .dyncall, .callmodes, .dyncall.cdecl, .dyncall.stdcall,
+  # dynload.R
   .dynload, .dynunload, .dynfind,
-  .unpack1, .dataptr
+  # dynbind.R 
+  dynbind, 
+  # dynport.R
+  dynport, dynport.unload,
+  # pack.R
+  .pack1, .unpack1, 
+  # struct.R
+  .sigsizes, structinfo, new.struct, sizeof, structinfo,
+  # callback.R
+  new.callback,
+  # utils.R 
+  .dataptr, .addrval, is.externalptr, is.nullptr, as.externalptr
 )
+
+S3method(str,struct)
+S3method(sizeof,struct)
+S3method(sizeof,structinfo)
+S3method("$<-", struct)
+S3method("$", struct)
+S3method(structinfo,character)
+S3method(structinfo,struct)
+

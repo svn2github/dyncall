@@ -8,7 +8,7 @@
 
 #include <Rinternals.h>
 #include "dyncall.h"
-#include "dyncall_signature.h"
+#include "rdyncall_signature.h"
 #include <string.h>
 
 /** ---------------------------------------------------------------------------
@@ -31,11 +31,11 @@ SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
   else if (strcmp(mode_S,"thiscall") == 0)		mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
   else if (strcmp(mode_S,"thiscall.gcc") == 0)  mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
   else if (strcmp(mode_S,"thiscall.msvc") == 0) mode_i = DC_CALL_C_X86_WIN32_THIS_MS;
-  else error("unknown callmode");
+  else error("invalid 'callmode'");
 
 
   DCCallVM* pvm = dcNewCallVM(size_i);
-  dcMode( pvm, mode_i);
+  dcMode( pvm, mode_i );
   return R_MakeExternalPtr( pvm, R_NilValue, R_NilValue );
 }
 
@@ -56,7 +56,7 @@ SEXP r_free_callvm(SEXP callvm_x)
  ** R-Interface: .External
  **/
 
-SEXP r_dyncall(SEXP args)
+SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
 {
   DCCallVM*   pvm;
   void*       addr;
@@ -75,7 +75,6 @@ SEXP r_dyncall(SEXP args)
   dcReset(pvm);
 
   /* process arguments */
-#define DC_SIGCHAR_SEXP	'x'
   for(;;) {
 
     char ch = *sig++;
@@ -89,6 +88,8 @@ SEXP r_dyncall(SEXP args)
 
     arg = CAR(args); args = CDR(args);
 
+    /* dispatch 'x' (R's SEXP) as pointers */
+
     if (ch == DC_SIGCHAR_SEXP) {
       dcArgPointer(pvm, (void*)arg);
       continue;
@@ -96,7 +97,7 @@ SEXP r_dyncall(SEXP args)
 
     int type_id = TYPEOF(arg);
 
-    if ( type_id != NILSXP && LENGTH(arg) == 0 ) error("invalid argument with zero length");
+    if ( type_id != NILSXP && type_id != EXTPTRSXP && LENGTH(arg) == 0 ) error("invalid argument with zero length");
 
     switch(ch) {
       case DC_SIGCHAR_BOOL:
@@ -254,7 +255,7 @@ SEXP r_dyncall(SEXP args)
   if (args != R_NilValue)
     error ("too many arguments");
 
-  /* process return type */
+  /* process return type, invoke call and return R value  */
 
   switch(*sig) {
     case DC_SIGCHAR_BOOL:     return ScalarLogical( ( dcCallBool(pvm, addr) == DC_FALSE ) ? FALSE : TRUE );
@@ -266,76 +267,13 @@ SEXP r_dyncall(SEXP args)
     case DC_SIGCHAR_FLOAT:    return ScalarReal( (double) dcCallFloat(pvm,addr) );
     case DC_SIGCHAR_DOUBLE:   return ScalarReal( dcCallDouble(pvm,addr) );
     case DC_SIGCHAR_POINTER:  return R_MakeExternalPtr( dcCallPointer(pvm,addr), R_NilValue, R_NilValue );
-    case DC_SIGCHAR_STRING:   return ScalarString( dcCallPointer(pvm, addr) );
-    case DC_SIGCHAR_VOID: dcCallVoid(pvm,addr); return R_NilValue;
+    case DC_SIGCHAR_STRING:   return mkString( dcCallPointer(pvm, addr) );
+    case DC_SIGCHAR_VOID:     dcCallVoid(pvm,addr); return R_NilValue;
+    case DC_SIGCHAR_UCHAR:    return ScalarInteger( (int) ( (unsigned char) dcCallChar(pvm, addr ) ) );
+    case DC_SIGCHAR_USHORT:   return ScalarInteger( (int) ( (unsigned short) dcCallShort(pvm,addr) ) );
+    case DC_SIGCHAR_UINT:     return ScalarReal( (double) ( (unsigned int) dcCallInt(pvm, addr) ) );
+    case DC_SIGCHAR_ULONG:    return ScalarReal( (double) ( (unsigned long long) dcCallLongLong(pvm, addr) ) );
     default: error("invalid return type signature"); return NULL;
   }
 
 }
-
-
-#if 0
-  switch(*sig) {
-    case DC_SIGCHAR_BOOL:
-      PROTECT( r = allocVector(LGLSXP, 1) ); protect_count++;
-      LOGICAL(r)[0] = ( dcCallBool(pvm, addr) == DC_FALSE ) ? FALSE : TRUE;
-      UNPROTECT(protect_count);
-      return r;
-    case DC_SIGCHAR_CHAR:
-        PROTECT( r = allocVector(INTSXP, 1) ); protect_count++;
-        INTEGER(r)[0] = dcCallChar(pvm, addr);
-        UNPROTECT(protect_count);
-        return r;
-    case DC_SIGCHAR_SHORT:
-        PROTECT( r = allocVector(INTSXP, 1) ); protect_count++;
-        INTEGER(r)[0] = dcCallShort(pvm, addr);
-        UNPROTECT(protect_count);
-        return r;
-    case DC_SIGCHAR_LONG:
-        PROTECT( r = allocVector(INTSXP, 1) ); protect_count++;
-        INTEGER(r)[0] = dcCallLong(pvm, addr);
-        UNPROTECT(protect_count);
-        return r;
-    case DC_SIGCHAR_INT:
-      PROTECT( r = allocVector(INTSXP, 1) ); protect_count++;
-      INTEGER(r)[0] = dcCallInt(pvm, addr);
-      UNPROTECT(protect_count);
-      return r;
-    case DC_SIGCHAR_LONGLONG:
-      PROTECT( r = allocVector(REALSXP, 1) ); protect_count++;
-      REAL(r)[0] = (double) ( dcCallLong(pvm, addr) );
-      UNPROTECT(protect_count);
-      return r;
-    case DC_SIGCHAR_FLOAT:
-      PROTECT( r = allocVector(REALSXP, 1) ); protect_count++;
-      REAL(r)[0] = (double) ( dcCallFloat(pvm, addr) );
-      UNPROTECT(protect_count);
-      return r;
-    case DC_SIGCHAR_DOUBLE:
-      PROTECT( r = allocVector(REALSXP, 1) );
-      protect_count++;
-      REAL(r)[0] = dcCallDouble(pvm, addr);
-      UNPROTECT(protect_count);
-      return r;
-    case DC_SIGCHAR_POINTER:
-      PROTECT( r = R_MakeExternalPtr( dcCallPointer(pvm,addr), R_NilValue, R_NilValue ) );
-      protect_count++;
-      UNPROTECT(protect_count);
-      return r;
-    case DC_SIGCHAR_VOID:
-      dcCallVoid(pvm,addr);
-      if (protect_count) UNPROTECT(protect_count);
-      break;
-    default:
-      {
-        if (protect_count)
-          UNPROTECT(protect_count);
-        error("invalid return type signature");
-      }
-      break;
-  }
-
-  return R_NilValue;
-}
-#endif
-

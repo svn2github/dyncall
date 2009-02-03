@@ -13,6 +13,9 @@ FIXES:
 - Mac OS X objective-c cocoa support C code (src/support_cocoa.m)
   conditional compilation ONLY on Mac OS X / Darwin  
 FUTURE:
+- dynports: privacy e.g. see rmalloc
+- callbacks
+- C++ proxies
 - rdyncall options
 - zip file download
 DONE:

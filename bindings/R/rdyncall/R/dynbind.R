@@ -43,5 +43,5 @@ dynbind <- function(libname, libsignature, envir=parent.frame(), callmode="cdecl
   }
   
   reg.finalizer(envir, function(x) { sapply( x$.libs, .dynunload ) } )
-  
+  return(libh)
 }

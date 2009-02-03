@@ -13,19 +13,26 @@
  ** Package contents:
  */
 
-/* dyncall */
+/* rdyncall.c */
 SEXP r_new_callvm(SEXP callmode, SEXP size);
 SEXP r_free_callvm(SEXP callvm);
 SEXP r_dyncall(SEXP args); /* .External() with args = callvm, address, signature, args */
 
-/* dynload */
+/* rdynload.c */
 SEXP r_dynload(SEXP libpath);
 SEXP r_dynfind(SEXP libobj, SEXP symname);
 SEXP r_dynunload(SEXP libobj);
 
-/* utils */
-SEXP r_unpack1(SEXP ptr_x, SEXP offset, SEXP sig_x);
+/* rpack.c */
+SEXP r_pack1(SEXP ptr, SEXP offset, SEXP sig, SEXP value);
+SEXP r_unpack1(SEXP ptr, SEXP offset, SEXP sig);
+
+/* rcallback.c */
+SEXP r_new_callback(SEXP sig, SEXP fun, SEXP rho, SEXP mode);
+
+/* rutils.c */
 SEXP r_dataptr(SEXP x, SEXP offset);
+SEXP r_addrval(SEXP x);
 
 /** ---------------------------------------------------------------------------
  ** R Interface .External registry
@@ -33,7 +40,7 @@ SEXP r_dataptr(SEXP x, SEXP offset);
 
 R_ExternalMethodDef externalMethods[] =
 {
-  /* dyncall */
+  /* rdyncall.c */
   {"dyncall",     (DL_FUNC) &r_dyncall,      -1},
   /* end */
   {NULL,NULL,0}
@@ -45,16 +52,21 @@ R_ExternalMethodDef externalMethods[] =
 
 R_CallMethodDef callMethods[] =
 {
-  /* dyncall */
+  /* rdyncall.c */
   {"new_callvm",  (DL_FUNC) &r_new_callvm,    2},
   {"free_callvm", (DL_FUNC) &r_free_callvm,   1},
-  /* dynload */
+  /* rdynload.c */
   {"dynload",     (DL_FUNC) &r_dynload,       1},
   {"dynfind",     (DL_FUNC) &r_dynfind,       2},
   {"dynunload",   (DL_FUNC) &r_dynunload,     1},
-  /* utils */
+  /* rpack.c */
+  {"pack1",       (DL_FUNC) &r_pack1,         4},
   {"unpack1",     (DL_FUNC) &r_unpack1,       3},
+  /* rutils */
   {"dataptr",     (DL_FUNC) &r_dataptr,       2},
+  {"addrval",     (DL_FUNC) &r_addrval,       1},
+  /* rcallback.c */
+  {"new_callback",(DL_FUNC) &r_new_callback,  4},
   /* end */
   {NULL,NULL, 0}
 };

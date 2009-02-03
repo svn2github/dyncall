@@ -1,0 +1,217 @@
+/** ===========================================================================
+ ** R-Package: rdyncall
+ ** File: rdyncall/src/rpack
+ ** Description: (un-)packing of C structure data
+ **
+ ** Copyright (C) 2007-2009 Daniel Adler
+ **
+ ** TODO
+ ** - support for bitfields
+ **/
+
+// #define USE_RINTERNALS
+#include <Rinternals.h>
+#include "rdyncall_signature.h"
+
+/** ---------------------------------------------------------------------------
+ ** C-Function: r_pack1
+ ** Description: poke R values into C-like structures.
+ ** R-Calling Convention: .Call
+ **
+ **/
+
+static char* r_dataptr(SEXP data_x)
+{
+  int type_of = TYPEOF(data_x);
+  switch(type_of)
+  {
+    case CHARSXP:   return (char*) CHAR(data_x);
+    case LGLSXP:    return (char*) LOGICAL(data_x);
+    case INTSXP:    return (char*) INTEGER(data_x);
+    case REALSXP:   return (char*) REAL(data_x);
+    case CPLXSXP:   return (char*) COMPLEX(data_x);
+    case STRSXP:    return (char*) CHAR( STRING_ELT(data_x,0) );
+	case EXTPTRSXP: return (char*) R_ExternalPtrAddr(data_x);
+	case RAWSXP:    return (char*) RAW(data_x);
+	default: return NULL;
+  }
+}
+
+SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
+{
+  char* ptr = r_dataptr(ptr_x);
+
+  if (ptr == NULL) error("invalid address pointer");
+
+  ptr += INTEGER(offset)[0];
+
+  const char* sig = CHAR(STRING_ELT(sig_x,0) );
+
+  int type_of = TYPEOF(value_x);
+  switch(sig[0])
+  {
+	case DC_SIGCHAR_BOOL:
+	{
+	  int* Bp = (int*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *Bp = (int) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *Bp = (int) ( INTEGER(value_x)[0] == 0) ? 0 : 1; break;
+	  case REALSXP: *Bp = (int) ( REAL(value_x)[0] == 0.0) ? 0 : 1; break;
+	  case RAWSXP:  *Bp = (int) ( RAW(value_x)[0] == 0) ? 0 : 1; break;
+	  default: error("value mismatch with 'B' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_CHAR:
+	{
+	  char* cp = (char*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *cp = (char) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *cp = (char) INTEGER(value_x)[0]; break;
+	  case REALSXP: *cp = (char) REAL(value_x)[0];    break;
+	  case RAWSXP:  *cp = (char) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'c' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_SHORT:
+	{
+	  short* sp = (short*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *sp = (short) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *sp = (short) INTEGER(value_x)[0]; break;
+	  case REALSXP: *sp = (short) REAL(value_x)[0];    break;
+	  case RAWSXP:  *sp = (short) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 's' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_LONG:
+	case DC_SIGCHAR_INT:
+	{
+	  int* ip = (int*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *ip = (int) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *ip = (int) INTEGER(value_x)[0]; break;
+	  case REALSXP: *ip = (int) REAL(value_x)[0];    break;
+	  case RAWSXP:  *ip = (int) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'i' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_LONGLONG:
+	{
+	  long long* Lp = (long long*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *Lp = (long long) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *Lp = (long long) INTEGER(value_x)[0]; break;
+	  case REALSXP: *Lp = (long long) REAL(value_x)[0];    break;
+	  case RAWSXP:  *Lp = (long long) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'L' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_FLOAT:
+	{
+	  float* fp = (float*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *fp = (float) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *fp = (float) INTEGER(value_x)[0]; break;
+	  case REALSXP: *fp = (float) REAL(value_x)[0];    break;
+	  case RAWSXP:  *fp = (float) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'f' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_DOUBLE:
+	{
+	  double* dp = (double*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *dp = (double) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *dp = (double) INTEGER(value_x)[0]; break;
+	  case REALSXP: *dp = (double) REAL(value_x)[0];    break;
+	  case RAWSXP:  *dp = (double) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'd' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_POINTER:
+	{
+	  void** pp = (void**) ptr;
+	  switch(type_of)
+	  {
+	  case NILSXP:   *pp = (void*) 0; break;
+	  case CHARSXP:  *pp = (void*) CHAR(value_x); break;
+	  case LGLSXP:   *pp = (void*) LOGICAL(value_x); break;
+	  case INTSXP:   *pp = (void*) INTEGER(value_x); break;
+	  case REALSXP:  *pp = (void*) REAL(value_x); break;
+	  case CPLXSXP:  *pp = (void*) COMPLEX(value_x); break;
+	  case STRSXP:   *pp = (void*) CHAR( STRING_ELT(value_x,0) ); break;
+	  case EXTPTRSXP:*pp = (void*) R_ExternalPtrAddr(value_x); break;
+	  case RAWSXP:   *pp = (void*) RAW(value_x); break;
+	  default: error("value type mismatch with 'p' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_STRING:
+	{
+	  char** Sp = (char**) ptr;
+	  switch(type_of)
+	  {
+	  case NILSXP:   *Sp = (char*) NULL; break;
+	  case CHARSXP:  *Sp = (char*) CHAR(value_x); break;
+	  case STRSXP:   *Sp = (char*) CHAR( STRING_ELT(value_x,0) ); break;
+	  case EXTPTRSXP:*Sp = (char*) R_ExternalPtrAddr(value_x); break;
+	  default: error("value type mismatch with 'S' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_SEXP:
+	{
+	  SEXP* px = (SEXP*) ptr;
+	  *px = value_x;
+	}
+	break;
+	default: error("invalid signature");
+  }
+  return R_NilValue;
+}
+
+/** ---------------------------------------------------------------------------
+ ** C-Function: r_unpack1
+ ** Description: unpack elements from C-like structures to R values.
+ ** R-Calling Convention: .Call
+ **
+ **/
+SEXP r_unpack1(SEXP ptr_x, SEXP offset, SEXP sig_x)
+{
+  char* ptr = r_dataptr(ptr_x);
+  if (ptr == NULL) error("invalid address pointer");
+  ptr += INTEGER(offset)[0];
+  const char* sig = CHAR(STRING_ELT(sig_x,0) );
+  switch(sig[0])
+  {
+    case DC_SIGCHAR_CHAR:     return ScalarInteger( ( (unsigned char*)ptr)[0] );
+    case DC_SIGCHAR_SHORT:    return ScalarInteger( ( (short*)ptr)[0] );
+    case DC_SIGCHAR_INT:      return ScalarInteger( ( (int*)ptr )[0] );
+    case DC_SIGCHAR_FLOAT:    return ScalarReal( (double) ( (float*) ptr )[0] );
+    case DC_SIGCHAR_DOUBLE:   return ScalarReal( ((double*)ptr)[0] );
+    case DC_SIGCHAR_LONGLONG: return ScalarReal( (double) ( ((long long*)ptr)[0] ) );
+    case DC_SIGCHAR_POINTER:  return R_MakeExternalPtr( ((void**)ptr)[0] , R_NilValue, R_NilValue );
+    case DC_SIGCHAR_STRING:   {
+    	char* s = ( (char**) ptr )[0];
+		if (s == NULL) return R_MakeExternalPtr( 0, R_NilValue, R_NilValue );
+		return mkString(s);
+    }
+    case DC_SIGCHAR_SEXP:     return (SEXP) ptr;
+    default: error("invalid signature");
+  }
+  return R_NilValue;
+}

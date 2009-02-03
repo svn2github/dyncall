@@ -37,9 +37,9 @@ free.callvm <- function(x)
 # calling convention: stdcall on win32 / otherwise fallback to cdecl
 
 if (.Platform$OS == "windows") {  
-  # callvm.stdcall <- new.callvm("stdcall")
+#  callvm.stdcall <- new.callvm("stdcall")
 } else {
-  # callvm.stdcall <- .callvm.cdecl
+#  callvm.stdcall <- .callvm.cdecl
 }
 
 .dyncall.stdcall <- function( address, signature, ... )
