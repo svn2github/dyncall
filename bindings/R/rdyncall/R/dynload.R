@@ -1,11 +1,15 @@
 # File: rdyncall/R/dyncall.R
 # Description: R bindings for dynload library
 #
+  
+.sysname <- Sys.info()[["sysname"]]
 
 .dynload <- function(libname)
 {
   try.prefixes <- c("","lib")
   try.suffixes <- c("",.Platform$dynlib.ext)  
+  if ( .sysname == "Darwin" )
+    try.suffixes <- c(try.suffixes,".dylib")
   
   for (prefix in try.prefixes)
   {
