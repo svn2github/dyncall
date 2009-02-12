@@ -22,10 +22,12 @@ x$lpfnWndProc   <- as.externalptr(DefWindowProcA)
 #
 windowhandler <- function(hwnd, msg, wparam, lparam)
 {
+  cat("msg ", msg, "\n")
+  if (msg == WM_CREATE) return(0)
   DefWindowProcA(hwnd,msg,wparam,lparam)
 }
-#mycallback <- new.callback("puuu", windowhandler)
-#x$lpfnWndProc   <- mycallback
+# mycallback <- new.callback("_spiii)i", windowhandler)
+# x$lpfnWndProc   <- mycallback
 
 # register class
 
@@ -34,18 +36,18 @@ stopifnot(classatom != 0)
 
 # create window
 
-exstyle <- WS_EX_APPWINDOW
-classname <- as.externalptr(classatom)
+exstyle    <- WS_EX_APPWINDOW
+classname  <- as.externalptr(classatom)
 windowname <- "rdyncall/win32 demo"
-style <- WS_OVERLAPPEDWINDOW + WS_VISIBLE
-x <- 0
-y <- 0
-nwidth <- 640
-nheight <- 480
-hparent <- NULL
-hmenu   <- NULL
-hinstance <- NULL
-pparam  <- NULL
-hwindow <- CreateWindowExA(exstyle, classname, windowname, style, x, y, nwidth, nheight, hparent, hmenu, hinstance, pparam )
+style      <- WS_OVERLAPPEDWINDOW + WS_VISIBLE
+x          <- 0
+y          <- 0
+nwidth     <- 640
+nheight    <- 480
+hparent    <- NULL
+hmenu      <- NULL
+hinstance  <- NULL
+pparam     <- NULL
+hwindow    <- CreateWindowExA(exstyle, classname, windowname, style, x, y, nwidth, nheight, hparent, hmenu, hinstance, pparam )
 
 

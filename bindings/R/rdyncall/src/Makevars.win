@@ -1,7 +1,8 @@
 PREFIX_DYNCALL=dyncall
 PKG_CPPFLAGS=-I$(PREFIX_DYNCALL)/include
-PKG_LIBS=-L$(PREFIX_DYNCALL)/lib -ldyncall_s -ldynload_s
+PKG_LIBS=-L$(PREFIX_DYNCALL)/lib -ldyncall_s -ldynload_s -ldyncall_callback_s
 before: dyncall-install
 dyncall-install:
 	make -C dyncall install
+	make -C dyncall_callbacks install
 

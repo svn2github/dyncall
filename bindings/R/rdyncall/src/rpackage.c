@@ -29,6 +29,7 @@ SEXP r_unpack1(SEXP ptr, SEXP offset, SEXP sig);
 
 /* rcallback.c */
 SEXP r_new_callback(SEXP sig, SEXP fun, SEXP rho, SEXP mode);
+SEXP r_free_callback(SEXP ptr_cb);
 
 /* rutils.c */
 SEXP r_dataptr(SEXP x, SEXP offset);
@@ -53,20 +54,21 @@ R_ExternalMethodDef externalMethods[] =
 R_CallMethodDef callMethods[] =
 {
   /* rdyncall.c */
-  {"new_callvm",  (DL_FUNC) &r_new_callvm,    2},
-  {"free_callvm", (DL_FUNC) &r_free_callvm,   1},
+  {"new_callvm",   (DL_FUNC) &r_new_callvm,    2},
+  {"free_callvm",  (DL_FUNC) &r_free_callvm,   1},
   /* rdynload.c */
-  {"dynload",     (DL_FUNC) &r_dynload,       1},
-  {"dynfind",     (DL_FUNC) &r_dynfind,       2},
-  {"dynunload",   (DL_FUNC) &r_dynunload,     1},
+  {"dynload",      (DL_FUNC) &r_dynload,       1},
+  {"dynfind",      (DL_FUNC) &r_dynfind,       2},
+  {"dynunload",    (DL_FUNC) &r_dynunload,     1},
   /* rpack.c */
-  {"pack1",       (DL_FUNC) &r_pack1,         4},
-  {"unpack1",     (DL_FUNC) &r_unpack1,       3},
+  {"pack1",        (DL_FUNC) &r_pack1,         4},
+  {"unpack1",      (DL_FUNC) &r_unpack1,       3},
   /* rutils */
-  {"dataptr",     (DL_FUNC) &r_dataptr,       2},
-  {"addrval",     (DL_FUNC) &r_addrval,       1},
+  {"dataptr",      (DL_FUNC) &r_dataptr,       2},
+  {"addrval",      (DL_FUNC) &r_addrval,       1},
   /* rcallback.c */
-  {"new_callback",(DL_FUNC) &r_new_callback,  4},
+  {"new_callback", (DL_FUNC) &r_new_callback,  3},
+  {"free_callback",(DL_FUNC) &r_free_callback, 1},
   /* end */
   {NULL,NULL, 0}
 };

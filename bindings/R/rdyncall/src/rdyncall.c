@@ -169,14 +169,13 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         }
       	dcArgInt(pvm, intValue);
       }
-      break;
       case DC_SIGCHAR_FLOAT:
       {
         float floatValue;
         switch(type_id)
         {
-          case LGLSXP: floatValue = (float) LOGICAL(arg)[0]; break;
-          case INTSXP: floatValue = (float) INTEGER(arg)[0]; break;
+          case LGLSXP:  floatValue = (float) LOGICAL(arg)[0]; break;
+          case INTSXP:  floatValue = (float) INTEGER(arg)[0]; break;
           case REALSXP: floatValue = (float) REAL(arg)[0]; break;
           case RAWSXP:  floatValue = (float) RAW(arg)[0]; break;
           default: error("expected float argument type"); return NULL;
@@ -189,8 +188,8 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
       	DCdouble doubleValue;
         switch(type_id)
         {
-          case LGLSXP: doubleValue = (double) LOGICAL(arg)[0]; break;
-          case INTSXP: doubleValue = (double) INTEGER(arg)[0]; break;
+          case LGLSXP:  doubleValue = (double) LOGICAL(arg)[0]; break;
+          case INTSXP:  doubleValue = (double) INTEGER(arg)[0]; break;
           case REALSXP: doubleValue = REAL(arg)[0]; break;
           case RAWSXP:  doubleValue = (double) RAW(arg)[0]; break;
           default: error("expected double argument type"); return NULL;
@@ -271,8 +270,8 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
     case DC_SIGCHAR_VOID:     dcCallVoid(pvm,addr); return R_NilValue;
     case DC_SIGCHAR_UCHAR:    return ScalarInteger( (int) ( (unsigned char) dcCallChar(pvm, addr ) ) );
     case DC_SIGCHAR_USHORT:   return ScalarInteger( (int) ( (unsigned short) dcCallShort(pvm,addr) ) );
-    case DC_SIGCHAR_UINT:     return ScalarReal( (double) ( (unsigned int) dcCallInt(pvm, addr) ) );
-    case DC_SIGCHAR_ULONG:    return ScalarReal( (double) ( (unsigned long long) dcCallLongLong(pvm, addr) ) );
+    case DC_SIGCHAR_UINT:     return ScalarInteger( (int) ( (unsigned int) dcCallInt(pvm, addr) ) );
+    case DC_SIGCHAR_ULONG:    return ScalarInteger( (int) ( (unsigned long long) dcCallLongLong(pvm, addr) ) );
     default: error("invalid return type signature"); return NULL;
   }
 

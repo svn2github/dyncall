@@ -24,6 +24,7 @@ Function overview of rdyncall:
 \item Load shared libraries. See \code{\link{dynload}}.
 \item Resolving symbolic names to function pointers. See \code{\link{dynload}}.
 \item Call foreign functions with support for multiple calling conventions. See \code{\link{dyncall}}.
+\item Make R functions callable from C context transparently. See \code{\link{callback}}. 
 \item Dynamic binding of shared library functions through text-based type signatures.  See \code{\link{dyncall}} and \code{\link{dynbind}} signatures}.
 \item Integration of shared libraries using dynamic binding informations. See \code{\link{dynport}}.
 }

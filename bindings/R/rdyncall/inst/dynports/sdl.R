@@ -86,6 +86,19 @@ SDL_Delay(i)v;
 # -----------------------------------------------------------------------------
 # C structure helpers:
 
+.typemap <- c(
+    UINT='i',
+    WNDPROC='p',
+    int='i',
+    HINSTANCE='p',
+    HICON='p',
+    HCURSOR='p',
+    HBRUSH='p',
+    LPCTSTR='S',
+    LPCTSTR='S',
+    void='v'
+)
+
 SDL_Event.type   <- function(event) .unpack1(event, 0, "c")
 SDL_Event.button <- function(event) .unpack1(event, 1, "c")
 SDL_Event.gain   <- function(event) .unpack1(event, 1, "c")
@@ -96,5 +109,102 @@ SDL_Event.state  <- function(event) .unpack1(event, 2, "c")
 
 new.SDL_event <- function() malloc(sizeof.SDL_Event)
 
+commented <- function() {
+
+structinfo("SDL_ActiveEvent","
+  Uint8 type;
+  Uint8 gain;
+  Uint8 state;
+")
+structinfo("SDL_KeyboardEvent","
+  Uint8 type;
+  Uint8 which;
+  Uint8 state;
+  SDL_keysym keysym;
+")
+structinfo("SDL_MouseMotionEvent","
+  Uint8 type;
+  Uint8 which;
+  Uint8 state;
+  Uint16 x, y;
+  Sint16 xrel;
+  Sint16 yrel;
+")
+structinfo("SDL_MouseButtonEvent","
+  Uint8 type;
+  Uint8 which;
+  Uint8 button;
+  Uint8 state;
+  Uint16 x, y;
+")
+structinfo("SDL_JoyAxisEvent","
+  Uint8 type;
+  Uint8 which;
+  Uint8 axis;
+  Sint16 value;
+")
+structinfo("SDL_JoyBallEvent","
+  Uint8 type;
+  Uint8 which;
+  Uint8 ball;
+  Sint16 xrel;
+  Sint16 yrel;
+")
+structinfo("SDL_JoyHatEvent","
+  Uint8 type;
+  Uint8 which;
+  Uint8 hat;
+  Uint8 value;
+")
+structinfo("SDL_JoyButtonEvent","
+  Uint8 type;
+  Uint8 which;
+  Uint8 button;
+  Uint8 state;
+")
+structinfo("SDL_ResizeEvent","
+  Uint8 type;
+  int w;
+  int h;
+")
+structinfo("SDL_ExposeEvent","
+  Uint8 type;
+")
+structinfo("SDL_QuitEvent","
+  Uint8 type;
+")
+structinfo("SDL_UserEvent","
+  Uint8 type;
+  int code;
+  void *data1;
+  void *data2;
+")
+
+unioninfo("SDL_Event","
+        Uint8 type;
+        SDL_ActiveEvent active;
+        SDL_KeyboardEvent key;
+        SDL_MouseMotionEvent motion;
+        SDL_MouseButtonEvent button;
+        SDL_JoyAxisEvent jaxis;
+        SDL_JoyBallEvent jball;
+        SDL_JoyHatEvent jhat;
+        SDL_JoyButtonEvent jbutton;
+        SDL_ResizeEvent resize;
+        SDL_ExposeEvent expose;
+        SDL_QuitEvent quit;
+        SDL_UserEvent user;
+        SDL_SysWMEvent syswm;
+        ")
 
 
+# struct SDL_SysWMmsg;
+# typedef struct SDL_SysWMmsg SDL_SysWMmsg;
+structinfo("SDL_SysWMEvent","
+  Uint8 type;
+  SDL_SysWMmsg *msg;
+")
+
+
+
+}

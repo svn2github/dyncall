@@ -496,7 +496,7 @@ WNDCLASSEXA <- structinfo("
 .user32 <- dynbind("user32","
   RegisterClassExA(p)n;
   CreateWindowExA(iSSiiiiipppp)p;
-  DefWindowProcA(piii)p;
+  DefWindowProcA(piii)i;
 ",callmode="stdcall")
 
 
