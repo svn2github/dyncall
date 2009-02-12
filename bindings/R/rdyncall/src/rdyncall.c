@@ -105,10 +105,10 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         DCbool boolValue;
         switch(type_id)
         {
-          case LGLSXP:  boolValue = ( LOGICAL(arg)[0] == 0 ) ? DC_FALSE : DC_TRUE; break;
-          case INTSXP:  boolValue = ( INTEGER(arg)[0] == 0 ) ? DC_FALSE : DC_TRUE; break;
+          case LGLSXP:  boolValue = ( LOGICAL(arg)[0] == 0   ) ? DC_FALSE : DC_TRUE; break;
+          case INTSXP:  boolValue = ( INTEGER(arg)[0] == 0   ) ? DC_FALSE : DC_TRUE; break;
           case REALSXP: boolValue = ( REAL(arg)[0]    == 0.0 ) ? DC_FALSE : DC_TRUE; break;
-          case RAWSXP:  boolValue = ( RAW(arg)[0]     == 0 ) ? DC_FALSE : DC_TRUE; break;
+          case RAWSXP:  boolValue = ( RAW(arg)[0]     == 0   ) ? DC_FALSE : DC_TRUE; break;
           default:      error("expected bool castable argument value"); return NULL;
         }
         dcArgBool(pvm, boolValue );
@@ -169,6 +169,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         }
       	dcArgInt(pvm, intValue);
       }
+      break;
       case DC_SIGCHAR_FLOAT:
       {
         float floatValue;
@@ -257,21 +258,28 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
   /* process return type, invoke call and return R value  */
 
   switch(*sig) {
-    case DC_SIGCHAR_BOOL:     return ScalarLogical( ( dcCallBool(pvm, addr) == DC_FALSE ) ? FALSE : TRUE );
-    case DC_SIGCHAR_CHAR:     return ScalarInteger( (int) dcCallChar(pvm, addr)  );
-    case DC_SIGCHAR_SHORT:    return ScalarInteger( (int) dcCallShort(pvm,addr) );
-    case DC_SIGCHAR_INT:      return ScalarInteger( dcCallInt(pvm,addr) );
-    case DC_SIGCHAR_LONG:     return ScalarInteger( (int) dcCallLong(pvm, addr) );
-    case DC_SIGCHAR_LONGLONG: return ScalarReal( (double) dcCallLongLong(pvm, addr) );
-    case DC_SIGCHAR_FLOAT:    return ScalarReal( (double) dcCallFloat(pvm,addr) );
-    case DC_SIGCHAR_DOUBLE:   return ScalarReal( dcCallDouble(pvm,addr) );
-    case DC_SIGCHAR_POINTER:  return R_MakeExternalPtr( dcCallPointer(pvm,addr), R_NilValue, R_NilValue );
-    case DC_SIGCHAR_STRING:   return mkString( dcCallPointer(pvm, addr) );
-    case DC_SIGCHAR_VOID:     dcCallVoid(pvm,addr); return R_NilValue;
-    case DC_SIGCHAR_UCHAR:    return ScalarInteger( (int) ( (unsigned char) dcCallChar(pvm, addr ) ) );
-    case DC_SIGCHAR_USHORT:   return ScalarInteger( (int) ( (unsigned short) dcCallShort(pvm,addr) ) );
-    case DC_SIGCHAR_UINT:     return ScalarInteger( (int) ( (unsigned int) dcCallInt(pvm, addr) ) );
-    case DC_SIGCHAR_ULONG:    return ScalarInteger( (int) ( (unsigned long long) dcCallLongLong(pvm, addr) ) );
+    case DC_SIGCHAR_BOOL:      return ScalarLogical( ( dcCallBool(pvm, addr) == DC_FALSE ) ? FALSE : TRUE );
+
+    case DC_SIGCHAR_CHAR:      return ScalarInteger( (int) dcCallChar(pvm, addr)  );
+    case DC_SIGCHAR_UCHAR:     return ScalarInteger( (int) ( (unsigned char) dcCallChar(pvm, addr ) ) );
+
+    case DC_SIGCHAR_SHORT:     return ScalarInteger( (int) dcCallShort(pvm,addr) );
+    case DC_SIGCHAR_USHORT:    return ScalarInteger( (int) ( (unsigned short) dcCallShort(pvm,addr) ) );
+
+    case DC_SIGCHAR_INT:       return ScalarInteger( dcCallInt(pvm,addr) );
+    case DC_SIGCHAR_UINT:      return ScalarInteger( (int) ( (unsigned int) dcCallInt(pvm, addr) ) );
+
+    case DC_SIGCHAR_LONG:      return ScalarInteger( (int) dcCallLong(pvm, addr) );
+    case DC_SIGCHAR_ULONG:     return ScalarInteger( (int) ( (unsigned long) dcCallLong(pvm, addr) ) );
+
+    case DC_SIGCHAR_LONGLONG:  return ScalarReal( (double) dcCallLongLong(pvm, addr) );
+    case DC_SIGCHAR_ULONGLONG: return ScalarReal( (double) dcCallLongLong(pvm, addr) );
+
+    case DC_SIGCHAR_FLOAT:     return ScalarReal( (double) dcCallFloat(pvm,addr) );
+    case DC_SIGCHAR_DOUBLE:    return ScalarReal( dcCallDouble(pvm,addr) );
+    case DC_SIGCHAR_POINTER:   return R_MakeExternalPtr( dcCallPointer(pvm,addr), R_NilValue, R_NilValue );
+    case DC_SIGCHAR_STRING:    return mkString( dcCallPointer(pvm, addr) );
+    case DC_SIGCHAR_VOID:      dcCallVoid(pvm,addr); return R_NilValue;
     default: error("invalid return type signature"); return NULL;
   }
 

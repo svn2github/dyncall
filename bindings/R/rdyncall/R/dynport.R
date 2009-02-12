@@ -79,3 +79,8 @@ dynport.require <- function(portname)
 {
   
 }
+
+dynport.cpreprocessor <- function(text)
+{
+  readLines()
+}

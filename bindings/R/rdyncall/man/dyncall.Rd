@@ -16,7 +16,6 @@ Functions to make calls to compiled code with support for multiple calling conve
 %.dyncall.thiscall.msvc( address, signature, ... )
 %.dyncall.thiscall.gcc ( address, signature, ... )
 }
-
 \arguments{
   \item{address}{An external pointer to a foreign function.}
   \item{signature}{A character string specifying the argument and return type of a function call.}
@@ -28,20 +27,17 @@ The return value of the foreign function call converted to an \R type according 
 given by \code{signature}.
 }
 \details{
-
-
 A valid \code{address} to a foreign function can be obtained from functions such as \code{\link{.dynfind}} and \code{\link{getNativeSymbolInfo}}. 
+}
+\section{test}{
+The \code{signature} is a character string that encodes the arity (number of arguments) 
+and formal argument- and return-types using a character-based type code.
 
-The \code{signature} is a character string that encodes the 
-arity (number of arguments) and formal argument- and return-types using a character-based
-type code.
+The calling convention is specified explicitly by the \code{callmode} argument 
+using \code{.dyncall} or implicitly by using \code{.dyncall.*} functions. 
 
-The calling convention is specified explicitly by the \code{callmode} argument using \code{.dyncall} or 
-implicitly by using \code{.dyncall.*} functions. 
-
-The arguments given with \code{...} are passed and possibly converted according to the given signature.
-
-
+The arguments given with \code{...} are passed and possibly converted according to 
+the given signature.
 }
 \section{Signature}{
 
@@ -79,19 +75,18 @@ Some examples of C function prototypes and corresponding function type signature
 \code{double sqrt(double);}                    \tab \code{"d)d"}    \cr
 \code{double dnorm(double,double,double,int);} \tab \code{"dddi)d"} \cr
 \code{void   R_isort(int*,int);}               \tab \code{"pi)v"}   \cr
-\code{void   revsort(double*,int*,int);}       \tab \code{"ppi)v"}  \cr
 \code{char   foo(int,double,float,bool);}      \tab \code{"idfB)c"} \cr
+\code{void   revsort(double*,int*,int);}       \tab \code{"ppi)v"}  \cr
 }
-
 }
 \section{How-to connect to a library}{
 \itemize{
-\item Install library.
-\item Review documentation and headers related to calling conventions, constants and function types.
-\item Test library functions on x86. 
-\item Write a dynport file.
+\item  Install library. 
+\item  Review documentation and headers related to calling conventions, constants and function types. 
+\item  Test library functions on x86.  
+\item  Write a dynport file. 
 }
-
+}
 \section{Calling conventions}{
 Calling conventions specify exact low-level information how a function call is invoked.
 The conventions differ heavily from CPU type to CPU type. Some conventions are related to OS and Compiler issues.

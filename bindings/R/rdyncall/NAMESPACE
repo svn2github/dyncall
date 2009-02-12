@@ -11,7 +11,7 @@ export(
   # pack.R
   .pack1, .unpack1, 
   # struct.R
-  .sigsizes, structinfo, new.struct, sizeof, structinfo,
+  .sigsizes, structinfo, new.struct, sizeof, structinfo, as.structptr,
   # callback.R
   new.callback,
   # utils.R 

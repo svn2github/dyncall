@@ -66,6 +66,14 @@ new.struct <- function(structinfo)
   return(x)
 }
 
+as.structptr <- function(structinfo, x)
+{
+  stopifnot(inherits(structinfo, "structinfo") )
+  class(x) <- c("struct", class(x) )
+  attr(x,"structinfo") <- structinfo
+  return(x)
+}
+
 
 "$<-.struct" <- 
 pack.struct <- function( x, index, value )

@@ -22,12 +22,12 @@ x$lpfnWndProc   <- as.externalptr(DefWindowProcA)
 #
 windowhandler <- function(hwnd, msg, wparam, lparam)
 {
-  cat("msg ", msg, "\n")
-  if (msg == WM_CREATE) return(0)
+  cat("msg\n")
+  #if (msg == WM_CREATE) return(0)
   DefWindowProcA(hwnd,msg,wparam,lparam)
 }
-# mycallback <- new.callback("_spiii)i", windowhandler)
-# x$lpfnWndProc   <- mycallback
+mycallback <- new.callback("_spppp)p", windowhandler)
+x$lpfnWndProc   <- mycallback
 
 # register class
 

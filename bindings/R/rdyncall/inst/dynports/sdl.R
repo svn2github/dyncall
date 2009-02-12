@@ -72,6 +72,22 @@ sizeof.SDL_Event    = 64
 # -----------------------------------------------------------------------------
 # bindings:
 
+types <- c(
+Uint32 = 'i',
+int = 'i',
+Uint16 = 'n',
+"pointer" = 'p'
+)
+    
+SDL_Surface <- structinfo("
+  Uint32 flags;
+  pointer format;
+  int w;
+  int h;
+  Uint16 pitch;
+  pointer pixels;
+",types)
+
 dynbind("SDL","
 SDL_Init(i)i;
 SDL_Quit()v;

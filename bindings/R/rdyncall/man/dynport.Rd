@@ -2,7 +2,7 @@
 \alias{dynport}
 \alias{dynports}
 \title{Dynamic ports to shared libraries}
-\description{}
+\description{Dynamic ports to shared libraries.}
 \usage{
 dynport(name)
 detach("dynport:name")
@@ -38,7 +38,7 @@ SDL_GL_SwapBuffers()
 }
 }
 
-\section{The Dynports Project}
+\section{The Dynports Project}{
 \emph{dynport} is a new project to design a repository network of meta-informations for 
 multi-platform binary shared library components. It is currently in incubation phase. 
 Binding a library for scripting languages can be tedious. The dynamic binding concept of 

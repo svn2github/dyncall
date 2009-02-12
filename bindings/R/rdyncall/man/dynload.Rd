@@ -84,12 +84,12 @@ following sequence:
 
 \itemize{
 
-\item{The directory from which the application loaded.} 
-\item{The current directory.} 
-\item{The system directory. Use the GetSystemDirectory function to get the path of this directory.} 
-\item{The 16-bit system directory. There is no function that obtains the path of this directory, but it is searched. Windows Me/98/95:  This directory does not exist.}
-\item{The Windows directory. Use the GetWindowsDirectory function to get the path of this directory.} 
-\item{The directories that are listed in the PATH environment variable.} 
+\item The directory from which the application loaded. 
+\item The current directory. 
+\item The system directory. Use the GetSystemDirectory function to get the path of this directory.
+\item The 16-bit system directory. There is no function that obtains the path of this directory, but it is searched. Windows Me/98/95:  This directory does not exist.
+\item The Windows directory. Use the GetWindowsDirectory function to get the path of this directory. 
+\item The directories that are listed in the PATH environment variable. 
 }
 
 Windows Server 2003, Windows XP SP1:  The default value of HKLM\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode is 1 (current directory is searched after the system and Windows directories).
