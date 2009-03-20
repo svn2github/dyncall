@@ -1583,3 +1583,46 @@ GL_DEPTH_TEXTURE_MODE             = 0x884B
 GL_TEXTURE_COMPARE_MODE           = 0x884C
 GL_TEXTURE_COMPARE_FUNC           = 0x884D
 GL_COMPARE_R_TO_TEXTURE           = 0x884E
+
+
+# extensions:
+
+commented <- function() {
+
+if (.Platform$OS == "windows") {
+  dynbind(libname,"wglGetProcAddress(S)p;")
+  dynbind.gl <- function(libsignature,envir=parent.frame(),callmode="stdcall")
+  {
+    # eat white spaces
+    sigtab <- gsub("[ \n\t]*","",libsignature)
+  
+    # split functions at ';'
+    sigtab <- strsplit(sigtab, ";")[[1]]
+  
+    # split name/call signature at '('
+    sigtab <- strsplit(sigtab, "\\(")
+    
+    dyncallfunc <- as.symbol( paste(".dyncall.",callmode, sep="") )
+    
+    # install functions
+    for (i in seq(along=sigtab)) 
+    {
+      symname   <- sigtab[[i]][[1]]
+      signature <- sigtab[[i]][[2]]
+      address  <- wglGetProcAddress( symname )
+      if (!is.null(address))
+      {
+        f <- function(...) NULL
+        body(f) <- substitute( dyncallfunc(address, signature,...), list(dyncallfunc=dyncallfunc,address=address,signature=signature) )
+        environment(f) <- envir # NEW
+        assign( symname, f, envir=envir)  
+      }
+      else
+      {
+        warning("unable to find symbol ", symname, " in shared library ", libname)
+      }
+    }
+  }
+  # dynbind.gl("glGenBuffers()")
+}
+}

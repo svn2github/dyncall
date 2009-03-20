@@ -1,6 +1,8 @@
 # File: rdyncall/R/dynports.R
 # Description: repository for multi-platform bindings to binary components.
 
+json.code.commented <- function() {
+
 require(rjson)
 
 jsonparser <- newJSONParser()
@@ -29,16 +31,19 @@ from.json <- function(file)
   dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl")
 }
 
+dynport.json <- function(portname, envir=NULL, pos = 2, auto.attach=TRUE)
+{
+  
+}
+
+}
+
 from.R <- function(file, envir)
 {  
   sys.source(file, envir=envir)  
   # source(url, local=TRUE)
 }
 
-dynport.json <- function(portname, envir=NULL, pos = 2, auto.attach=TRUE)
-{
-  
-}
 
 dynport <- function(portname, envir=NULL, pos = 2, auto.attach=TRUE)
 {      

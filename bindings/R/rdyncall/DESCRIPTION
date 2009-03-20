@@ -7,4 +7,4 @@ Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
 URL: http://dyncall.org
 LazyLoad: no
-Depends: rjson
+Suggests: rjson

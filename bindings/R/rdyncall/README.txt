@@ -1,3 +1,5 @@
+TODO:
+- R utility class: float arrays
 TASKS:
 - R package manual pages
 - vignette package
