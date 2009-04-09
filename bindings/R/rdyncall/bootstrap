@@ -9,7 +9,8 @@ download_zip()
 checkout_src()
 {
   svn co http://dyncall.org/svn/dyncall/trunk/dyncall src/dyncall  
+  svn co https://134.76.186.6/svn/repos/dadler/dyncall_callbacks src/dyncall_callbacks
 }
 
-download_zip
-# checkout_src
+# download_zip
+checkout_src
