@@ -1,6 +1,6 @@
 library(rdyncall)
-dynport(SDL)
-dynport(GL)
+dynport(sdl)
+dynport(gl)
 dynport(rmalloc)
 
 # Parameters

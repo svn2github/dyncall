@@ -2,7 +2,13 @@
 # File: rdyncall/R/dynbind.R
 # Description: single-entry front-end to dynamic binding of library functions 
 
-dynbind <- function(libname, libsignature, envir=parent.frame(), callmode="cdecl")
+dynbind <- function(
+  libname, 
+  libsignature, 
+  envir=parent.frame(), 
+  callmode="cdecl", 
+  pat=NULL, replace=NULL, 
+  funcptr=FALSE)
 {
   # load library
   libh <- .dynload(libname)
@@ -20,28 +26,46 @@ dynbind <- function(libname, libsignature, envir=parent.frame(), callmode="cdecl
   # split name/call signature at '('
   sigtab <- strsplit(sigtab, "\\(")
   
-  
-  dyncallfunc <- as.symbol( paste(".dyncall.",callmode, sep="") )
-  
   # install functions
+ 
+  # make function call symbol
+  dyncallfunc <- as.symbol( paste(".dyncall.",callmode, sep="") )  
+
+  # report info
+  syms.failed <- character(0)
+
   for (i in seq(along=sigtab)) 
   {
-    symname   <- sigtab[[i]][[1]]
+    symname   <- sigtab[[i]][[1]]    
+    rname  <- if (!is.null(pat)) sub(pat, replace, symname) else symname
     signature <- sigtab[[i]][[2]]
+    # lookup symbol
     address  <- .dynfind( libh, symname )
     if (!is.null(address))
     {
+      # make call function f
       f <- function(...) NULL
-      body(f) <- substitute( dyncallfunc(address, signature,...), list(dyncallfunc=dyncallfunc,address=address,signature=signature) )
+      if (funcptr)
+      {
+        body(f) <- substitute( dyncallfunc( .unpack1(address,0,"p"), signature,...), list(dyncallfunc=dyncallfunc,address=address,signature=signature) )
+      }
+      else
+      {
+        body(f) <- substitute( dyncallfunc(address, signature,...), list(dyncallfunc=dyncallfunc,address=address,signature=signature) )
+      }
       environment(f) <- envir # NEW
-      assign( symname, f, envir=envir)  
+      # install symbol
+      assign( rname, f, envir=envir)  
     }
     else
     {
-      warning("unable to find symbol ", symname, " in shared library ", libname)
+      syms.failed <- c(syms.failed,symname)
+      #warning("unable to find symbol ", symname, " in shared library ", libname)
     }
   }
   
   reg.finalizer(envir, function(x) { sapply( x$.libs, .dynunload ) } )
-  return(libh)
+  x <- list(libhandle=libh, syms.failed=syms.failed)
+  class(x) <- "dynbind.report"
+  return(x)
 }
