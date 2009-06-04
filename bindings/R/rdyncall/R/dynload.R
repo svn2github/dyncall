@@ -6,22 +6,26 @@
 
 .dynload <- function(libname)
 {
+  try.locations <- c("","/opt/local/lib/","/Library/Frameworks/R.framework/Resources/lib/")
   try.prefixes <- c("","lib")
   try.suffixes <- c("",.Platform$dynlib.ext)  
   if ( .sysname == "Darwin" )
     try.suffixes <- c(try.suffixes,".dylib")
   
-  for (prefix in try.prefixes)
+  for (location in try.locations)
   {
-    for(suffix in try.suffixes)
+    for (prefix in try.prefixes)
     {
-      path <- paste( prefix, libname, suffix, sep="" )
-      x <- .Call("dynload", path, PACKAGE="rdyncall")
-      if (!is.null(x))
-      	return(x)
+      for(suffix in try.suffixes)
+      {
+        path <- paste( location, prefix, libname, suffix, sep="" )
+        x <- .Call("dynload", path, PACKAGE="rdyncall")
+        if (!is.null(x))
+          return(x)
+      }
     }
   }
-
+  warning("failed to load library ",libname)
 }
 
 .dynunload <- function(libh)

@@ -11,7 +11,7 @@ if (.sysname == "Windows") {
 }
 
 dynbind(.libNameC,"
-fopen(SS)p;
+fopen(ZZ)p;
 fread(piip)i;
 fwrite(piip)i;
 fseek(pli)i;
