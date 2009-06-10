@@ -126,7 +126,7 @@ dynbind(libname,"
  glGetPixelMapusv (i  p)v;
  glGetPointerv (i  GLvoid*p)v;
  glGetPolygonStipple (p)v;
- glGetString (i )S;
+ glGetString (i )Z;
  glGetTexEnvfv (i  i  p)v;
  glGetTexEnviv (i  i  p)v;
  glGetTexGendv (i  i  p)v;

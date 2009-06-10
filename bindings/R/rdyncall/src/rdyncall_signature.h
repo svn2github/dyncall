@@ -9,7 +9,7 @@
  ** Copyright (C) 2007-2009 Daniel Adler
  **/
 
-#include "dyncall_callback_signature.h"
+#include "dyncall_signature.h"
 
 #define DC_SIGCHAR_SEXP   'x'
 

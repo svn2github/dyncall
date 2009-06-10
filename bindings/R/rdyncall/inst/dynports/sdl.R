@@ -75,7 +75,7 @@ sizeof.SDL_Event    = 64
 types <- c(
 Uint32 = 'i',
 int = 'i',
-Uint16 = 'n',
+Uint16 = 'S',
 "pointer" = 'p'
 )
     
@@ -92,7 +92,7 @@ dynbind("SDL","
 SDL_Init(i)i;
 SDL_Quit()v;
 SDL_SetVideoMode(iiii)p;
-SDL_WM_SetCaption(SS)v;
+SDL_WM_SetCaption(ZZ)v;
 SDL_GL_SwapBuffers()v;
 SDL_PollEvent(p)i;
 SDL_GetTicks()i;
@@ -103,15 +103,15 @@ SDL_Delay(i)v;
 # C structure helpers:
 
 .typemap <- c(
-    UINT='i',
+    UINT='I',
     WNDPROC='p',
     int='i',
     HINSTANCE='p',
     HICON='p',
     HCURSOR='p',
     HBRUSH='p',
-    LPCTSTR='S',
-    LPCTSTR='S',
+    LPCTSTR='Z',
+    LPCTSTR='Z',
     void='v'
 )
 
