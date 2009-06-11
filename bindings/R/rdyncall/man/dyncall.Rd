@@ -57,12 +57,17 @@ The following table lists valid type character codes, corresponding C types, acc
 \strong{Type code} \tab \strong{C type}        \tab \strong{R argument type}           \tab \strong{R return type}\cr
 \code{B}           \tab bool                   \tab raw,logical,integer,double         \tab logical\cr
 \code{c}           \tab char                   \tab raw,logical,integer,double         \tab integer\cr
+\code{C}           \tab unsigned char          \tab raw,logical,integer,double         \tab integer\cr
 \code{s}           \tab short                  \tab raw,logical,integer,double         \tab integer\cr
+\code{S}           \tab unsigned short         \tab raw,logical,integer,double         \tab integer\cr
 \code{i}           \tab int                    \tab raw,logical,integer,double         \tab integer\cr
-\code{l}           \tab long                   \tab raw,logical,integer,double         \tab integer\cr
+\code{I}           \tab unsigned int           \tab raw,logical,integer,double         \tab integer\cr
+\code{j}           \tab long                   \tab raw,logical,integer,double         \tab integer\cr
+\code{J}           \tab unsigned long          \tab raw,logical,integer,double         \tab integer\cr
+\code{l}           \tab long long              \tab raw,logical,integer,double         \tab double\cr
+\code{L}           \tab unsigned long long     \tab raw,logical,integer,double         \tab double\cr
 \code{f}           \tab float                  \tab raw,logical,integer,double         \tab double\cr
 \code{d}           \tab double                 \tab raw,logical,integer,double         \tab double\cr
-\code{L}           \tab long long              \tab raw,logical,integer,double         \tab double\cr
 \code{p}           \tab \emph{type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr,NULL\cr
 \code{S}           \tab char*                  \tab character,NULL                     \tab character,NULL\cr
 \code{x}           \tab SEXP                   \tab \emph{any}                         \tab \emph{any}\cr
@@ -117,11 +122,7 @@ In general, many prebuilt binaries available online will work fine with \code{"c
 In many cases, \code{"cdecl"} is the best choice. Exceptions to this include, X86 architectures and in particular
 Microsoft Windows platforms. 
 
-\strong{WARNING}: non-X86 platforms have only are immune against wrong calling conventions, as there is only one.
-The situation is much   
-On x86 architectures, we have a variety of calling conventions
-to choose from when compiling and calling C and C++ functions.
-
+\strong{WARNING}: non-X86 platforms are immune against wrong calling conventions, as there is only one.
 
 The calling convention is defined during compilation of shared libraries. 
 One specifies the calling convention using function prototype attributes such as 
@@ -139,8 +140,8 @@ type information for arguments and return values \strong{MUST} match with
 the compiled function. 
 Otherwise the invocation can lead to a \strong{fatal system crash}.
 
-Calling functions via dyncall is 100\% UNSAFE. Dyncall does not perform any
-call, if you missed the arity of the function given with the signature and
+Calling functions via dyncall is very TYPE UNSAFE. Some safety is achieved.
+Dyncall does not perform any call, if you missed the arity of the function given with the signature and
 probably fails on several type-incompatibilities. But in general, there
 is no safe way to test if the pointer given, is a valid function pointer.
 Thus, this package can cause unexpected behaviour if the user is

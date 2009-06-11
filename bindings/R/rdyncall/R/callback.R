@@ -8,6 +8,6 @@ new.callback <- function(signature, fun, envir=new.env())
   attr(cb,"signature") <- signature
   attr(cb,"envir") <- envir
   attr(cb,"fun") <- fun
-  reg.finalizer(cb, function(x) { .Call("free_callback", x) } )
+  reg.finalizer(cb, function(x) { .Call("free_callback", x, PACKAGE="rdyncall") } )
   return(cb)
 }

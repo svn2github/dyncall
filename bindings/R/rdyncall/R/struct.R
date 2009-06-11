@@ -1,15 +1,18 @@
+# File: rdyncall/R/struct.R
+# Description: handling of aggregate low-level structures
+
 .sigsizes <- c(
 B=.Machine$sizeof.long,
 c=1L,
 s=2L, 
 i=.Machine$sizeof.long,
-l=.Machine$sizeof.long,
-L=.Machine$sizeof.longlong,
+j=.Machine$sizeof.long,
+l=.Machine$sizeof.longlong,
 f=4L,
 d=8L,
 p=.Machine$sizeof.pointer,
 x=.Machine$sizeof.pointer,
-S=.Machine$sizeof.pointer,
+Z=.Machine$sizeof.pointer,
 v=0L
 )
 
@@ -21,8 +24,8 @@ HINSTANCE='p',
 HICON='p',
 HCURSOR='p',
 HBRUSH='p',
-LPCTSTR='S',
-LPCTSTR='S',
+LPCTSTR='Z',
+LPCTSTR='Z',
 void='v'
 )
 
