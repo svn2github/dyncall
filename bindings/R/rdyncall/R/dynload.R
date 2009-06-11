@@ -4,13 +4,28 @@
   
 .sysname <- Sys.info()[["sysname"]]
 
+.dynload.darwin.framework <- function(framework)
+{
+  try.framework.locations <- c("/Library/Frameworks","/System/Library/Frameworks")
+  for (location in try.framework.locations) {
+    path <- paste( location, "/", framework, ".framework/", framework, sep="")
+    x <- .Call("dynload", path, PACKAGE="rdyncall")
+    if (!is.null(x))
+      return(x)
+  }
+  return(NULL)
+}
+
 .dynload <- function(libname)
 {
   try.locations <- c("","/opt/local/lib/","/Library/Frameworks/R.framework/Resources/lib/")
   try.prefixes <- c("","lib")
   try.suffixes <- c("",.Platform$dynlib.ext)  
-  if ( .sysname == "Darwin" )
+  if ( .sysname == "Darwin" ) {
+    handle <- .dynload.darwin.framework(libname)
+    if( !is.null(handle) ) return(handle)
     try.suffixes <- c(try.suffixes,".dylib")
+  }
   
   for (location in try.locations)
   {
