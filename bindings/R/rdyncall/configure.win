@@ -1,6 +1,6 @@
 #!/bin/sh
 # R Package: rdyncall
-# File: rdyncall/configure
+# File: configure.win
 # Description: configure script (windows flavour)
 # Copyright (C) 2007-2009 Daniel Adler
 
