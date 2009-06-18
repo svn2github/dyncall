@@ -1,13 +1,19 @@
 # File: rdyncall/R/struct.R
 # Description: handling of aggregate low-level structures
 
+
 .sigsizes <- c(
 B=.Machine$sizeof.long,
 c=1L,
-s=2L, 
+C=1L,
+s=2L,
+S=2L,
 i=.Machine$sizeof.long,
+I=.Machine$sizeof.long,
 j=.Machine$sizeof.long,
+J=.Machine$sizeof.long,
 l=.Machine$sizeof.longlong,
+L=.Machine$sizeof.longlong,
 f=4L,
 d=8L,
 p=.Machine$sizeof.pointer,
