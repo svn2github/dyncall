@@ -62,8 +62,7 @@ dynbind <- function(
       syms.failed <- c(syms.failed,symname)
       #warning("unable to find symbol ", symname, " in shared library ", libname)
     }
-  }
-  
+  }  
   reg.finalizer(envir, function(x) { sapply( x$.libs, .dynunload ) } )
   x <- list(libhandle=libh, syms.failed=syms.failed)
   class(x) <- "dynbind.report"
