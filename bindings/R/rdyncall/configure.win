@@ -6,3 +6,4 @@
 
 cd src/dyncall
 sh ./configure --target-x86 --target-windows --tool-gcc --prefix=\$\(TOP\)
+

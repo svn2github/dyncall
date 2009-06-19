@@ -9,6 +9,10 @@ if (.Platform$OS == "windows") {
 } else {
   libname <- "GL"
 }
+ 
+dynbind( switch( Sys.info()[["sysname"]], Windows="OPENGL32", Darwin="OpenGL", "GL" ), 
+"
+", callmode="stdcall")
 
 dynbind(libname,"
  glAccum(if)v;

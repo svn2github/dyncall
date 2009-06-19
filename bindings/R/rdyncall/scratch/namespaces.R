@@ -1,8 +1,4 @@
 
-x <- new.env()
-attr(x, "name") <- "foo"
-attach(x, name="package:bar")
-
 makeNamespace <- function(name, version = NULL, lib = NULL) {
 	impenv <- new.env(parent = .BaseNamespaceEnv, hash = TRUE)
 	attr(impenv, "name") <- paste("imports", name, sep = ":")
@@ -26,8 +22,13 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
 	env
 }
 
-e <- makeNamespace("hallo")
-e$x <- 23
-hallo:::x
-namespaceExport(e, "x") 
+name <- "stdio"
+ns   <- makeNamespace(name)
+with(ns,{
+dynbind("msvcrt","fopen(ZZ)p;fread(piip)i;")      
+})
+namespaceExport( ns, ls(ns) )
+attach(ns, name="dynport:stdio")
 
+
+unloadNamespace("stdio")

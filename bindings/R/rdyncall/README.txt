@@ -127,6 +127,7 @@ dynport open issues:
   
 
 TODO:
+- ability to put dynport into a namespace ?
 - R utility class: float arrays
 TASKS:
 - R package manual pages
