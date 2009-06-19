@@ -61,6 +61,9 @@ structinfo.character <- function(string, typemap=typemap.C, sizemap=.sigsizes) {
   # signature = paste( x, collapse="" )
 }
 
+# ----------------------------------------------------------------------------
+# sizeof operator in R for structs, unions and multi-precision integers 
+
 sizeof <- function(x) UseMethod("sizeof")
 
 sizeof.structinfo <- function(structinfo) structinfo[[".end","offset"]]

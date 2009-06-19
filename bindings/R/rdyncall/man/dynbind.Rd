@@ -3,13 +3,16 @@
 \title{Dynamic bindings to shared libraries.}
 \description{Function to create dynamic bindings to shared libraries.}
 \usage{
-dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl")
+dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
 }
 \arguments{
   \item{libname}{A character string specifying the short library name or path.}
   \item{libsignature}{A character string specifying function symbol names and type signatures.}
   \item{envir}{An environment where the binding functions are installed.}
   \item{callmode}{A character string specifying the calling convention of the target library.}
+  \item{pat}{NULL or a regular expression character string that will match and which will be replaced by \code{pat}}
+  \item{replace}{NULL or a regular expression character string to replace \code{pat}}
+  \item{funcptr}{A logical specifying if symbols represent function pointer variables instead of functions.}
 }
 \details{
 
@@ -20,9 +23,7 @@ function will be created and installed in the environment \code{envir}.
 The location of the library can be specified by a absolut system file-path or using
 a short name.
 
-
 When using a short name, the library is looked up using the \code{PATH} environment variable.
-
 from a shared library to the R process at run-time.
 
 The \code{libname} character string specifies the location of the library. 

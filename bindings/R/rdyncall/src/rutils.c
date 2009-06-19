@@ -22,7 +22,7 @@ SEXP r_addrval(SEXP x)
 	switch(TYPEOF(x))
 	{
 	case NILSXP: return ScalarInteger(0);
-	case EXTPTRSXP: return ScalarInteger( (int) R_ExternalPtrAddr( x ) );
+	case EXTPTRSXP: return ScalarInteger( (int) (unsigned long long) R_ExternalPtrAddr( x ) );
 	default: error("invalid type");
 	}
 	return R_NilValue;
