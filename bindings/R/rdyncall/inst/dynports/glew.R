@@ -3,15 +3,11 @@
 #__glewActiveStencilFaceEXT(i)v
 #",callmode="stdcall",pat="__glew", replace="gl")
 
-if (.Platform$OS == "windows") {
-  libname <- "GLEW32"
-} else {
-  libname <- "GLEW"
-}
+.libname <- if (.Platform$OS == "windows") "GLEW32" else "GLEW"
 
 # system functions (single-context API)
 
-systemfuncs <- dynbind(libname,"
+.systemfuncs <- dynbind(.libname,"
 glewGetErrorString(i)p;
 glewGetExtension(p)c;
 glewGetString(i)p;
@@ -23,7 +19,7 @@ glewInit()
 
 # function symbols
 
-funcs <- dynbind(libname,"
+.funcs <- dynbind(libname,"
 glAccum(if)v;
 glAlphaFunc(if)v;
 glAreTexturesResident(Ipp)c;
@@ -428,7 +424,7 @@ gluUnProject4(ddddpppddpppp)I;
 
 # function pointers
 
-funcptrs <- dynbind(libname, "
+.funcptrs <- dynbind(libname, "
 __glewActiveStencilFaceEXT(i)v;
 __glewActiveTexture(i)v;
 __glewActiveTextureARB(i)v;

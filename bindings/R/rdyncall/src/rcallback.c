@@ -155,8 +155,8 @@ char dcCallbackHandler_R( DCCallback* pcb, DCArgs* args, DCValue* result, void* 
 			switch( TYPEOF(ans) )
 			{
 			case EXTPTRSXP: result->p = R_ExternalPtrAddr(ans); break;
-			case INTSXP   : result->p = (DCpointer) (unsigned long long int) INTEGER(ans)[0]; break;
-			case REALSXP  : result->p = (DCpointer) (unsigned long long int) REAL(ans)[0]; break;
+			case INTSXP   : result->p = (DCpointer) (ptrdiff_t) (unsigned long long int) INTEGER(ans)[0]; break;
+			case REALSXP  : result->p = (DCpointer) (ptrdiff_t) (unsigned long long int) REAL(ans)[0]; break;
 			default:        result->p = NULL; break;
 			}
 			break;

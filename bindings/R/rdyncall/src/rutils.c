@@ -9,7 +9,6 @@
 // uses: DATAPTR macro
 #define USE_RINTERNALS
 #include <Rinternals.h>
-#include "dyncall_signature.h"
 
 SEXP r_dataptr(SEXP x, SEXP offset)
 {
@@ -22,7 +21,7 @@ SEXP r_addrval(SEXP x)
 	switch(TYPEOF(x))
 	{
 	case NILSXP: return ScalarInteger(0);
-	case EXTPTRSXP: return ScalarInteger( (int) (unsigned long long) R_ExternalPtrAddr( x ) );
+	case EXTPTRSXP: return ScalarInteger( (int) (unsigned long long) (ptrdiff_t) R_ExternalPtrAddr( x ) );
 	default: error("invalid type");
 	}
 	return R_NilValue;

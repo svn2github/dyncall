@@ -1,4 +1,8 @@
 TODO:
+- make dynfind locations configurable from extern
+
+  e.g. - dynAddPath, dynRemovePath
+
 - windows: test findLibPath 
 - darwin: test findFrameworkPath 
 - type-safe signatures

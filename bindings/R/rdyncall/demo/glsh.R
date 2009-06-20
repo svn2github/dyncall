@@ -114,11 +114,9 @@ main <- function()
   {
     updateGL()
     SDL_GL_SwapBuffers()
-	eventsSDL()
 	while( SDL_PollEvent(eventobj) != 0 )
 	{
 		eventType <- SDL_Event.type(eventobj)
 		if (eventType == SDL_MOUSEBUTTONDOWN) quit <- TRUE
-	}
   }
 }

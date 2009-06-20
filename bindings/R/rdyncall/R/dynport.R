@@ -1,6 +1,7 @@
 # File: rdyncall/R/dynports.R
 # Description: repository for multi-platform bindings to binary components.
 
+# the following code is copied from 'loadNamespace':
 makeNamespace <- function(name, version = NULL, lib = NULL) {
   impenv <- new.env(parent = .BaseNamespaceEnv, hash = TRUE)
   attr(impenv, "name") <- paste("imports", name, sep = ":")
@@ -24,7 +25,8 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
   env
 }
 
-loadDynportPackage  <- function(portname, envir=NULL, pos = 2, use.namespace=FALSE, auto.attach=FALSE)
+# deprecated package-based container:
+loadDynportPackage  <- function(portname, filename, envir=NULL, pos = 2, use.namespace=FALSE, auto.attach=FALSE)
 {
   # setup dynport environment search name  
   envname <- paste("dynport",portname,sep=":")            
@@ -37,84 +39,90 @@ loadDynportPackage  <- function(portname, envir=NULL, pos = 2, use.namespace=FAL
   }
 }
 
-loadDynportNamespace <- function(portname, do.attach=TRUE)
+# new namespace-based container:
+loadDynportNamespace <- function(name, portfile, do.attach=TRUE)
 { 
   # check if dynport namespace already loaded  
-  if ( portname %in% loadedNamespaces() ) return()
-  # locate port file for R and json handler  
-  repo <- system.file( "dynports", package="rdyncall")  
-  portfile.R <- file.path( repo, paste(portname,".R",sep="") )
-  portfile.json <- file.path( repo, paste(portname,".json",sep="") )  
-  if ( !file.exists(portfile.R) && !file.exists(portfile.json) )
-    stop("dynport '", portname, "' not found.")
+  if ( name %in% loadedNamespaces() ) return()
   # create namespace  
-  ns <- makeNamespace(portname)
+  env <- makeNamespace(name)
   # process portfile
-  if (file.exists(portfile.R)) sys.source(portfile.R, envir=ns)  
-  else if (file.exists(portfile.json)) .NotYetImplemented()
+  sys.source(portfile, envir=env)  
   # export all objects, expect '.' variables reserved for internal use
-  namespaceExport(ns, ls(ns))
-  # attach
-  if (do.attach) attachNamespace(ns)
+  namespaceExport(env, ls(env))
+  # attach namespace
+  if (do.attach) attachNamespace(env)
 }
 
-dynport <- function(portname)
+# Front-end:
+
+dynport <- function(portname, filename=NULL)
 {
+  # literate portname as string
   portname <- as.character(substitute(portname))
-  loadDynportNamespace(portname)  
+  if (missing(filename))
+  {
+    # search for filename
+    repo <- system.file( "dynports", package="rdyncall")  
+    filename <- file.path( repo, paste(portname,".R",sep="") )
+    if ( !file.exists(filename) ) filename <- file.path( repo, paste(portname,".json",sep="") )        
+    if ( !file.exists(filename) ) stop("dynport '", portname, "' not found.")    
+  }
+  loadDynportNamespace(portname, filename)  
 }
 
 dynport.unload <- function(portname)
 {
-  portname <- as.character(substitute(portname))
-  envname <- paste("dynport",portname,sep=":")
-  detach( name=envname )
+  unloadNamespace(portname)
 }
 
-dynport.require <- function(portname)
+#dynport.unload <- function(portname)
+#{
+#  portname <- as.character(substitute(portname))
+#  envname <- paste("dynport",portname,sep=":")
+#  detach( name=envname )
+#}
+
+#dynport.require <- function(portname)
+#{
+#  
+#}
+
+
+future.json.format <- function() 
 {
   
-}
-
-dynport.cpreprocessor <- function(text)
-{
-  readLines()
-
-
-  json.code.commented <- function() {
-    
-    require(rjson)
-    
-    jsonparser <- newJSONParser()
-    
-    parseJSON <- function(path)
+  require(rjson)
+  
+  jsonparser <- newJSONParser()
+  
+  parseJSON <- function(path)
+  {
+    parser <- newJSONParser()
+    f <- file(path)
+    open(f)
+    while(TRUE) 
     {
-      parser <- newJSONParser()
-      f <- file(path)
-      open(f)
-      while(TRUE) 
-      {
-        aLine <- readLines(f, 1)
-        if (length(aLine) == 0) break    
-        parser$addData( aLine )
-      }
-      close(f)
-      parser$getObject()
+      aLine <- readLines(f, 1)
+      if (length(aLine) == 0) break    
+      parser$addData( aLine )
     }
-    
-    from.json <- function(file)
-    {
-      json <- parseJSON(file)
-      sysname <- Sys.info()[["sysname"]][[1]]
-      paste( "_OS_", toupper(sysname) )   
-      libname <- json$libname
-      dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl")
-    }
-    
-    dynport.json <- function(portname, envir=NULL, pos = 2, auto.attach=TRUE)
-    {
-      
-    }
+    close(f)
+    parser$getObject()
+  }
+  
+  from.json <- function(file)
+  {
+    json <- parseJSON(file)
+    sysname <- Sys.info()[["sysname"]][[1]]
+    paste( "_OS_", toupper(sysname) )   
+    libname <- json$libname
+    dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl")
+  }
+  
+  dynport.json <- function(portname, envir=NULL, pos = 2, auto.attach=TRUE)
+  {
     
   }
+  
 }

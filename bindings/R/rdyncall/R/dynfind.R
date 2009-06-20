@@ -18,9 +18,9 @@ if (Sys.info()[["sysname"]] == "Darwin")
 
 .sysname <- Sys.info()[["sysname"]]
 
+try.framework.locations <- c("/Library/Frameworks","/System/Library/Frameworks")
 dynfind.darwin.framework <- function(framework, auto.unload=TRUE)
 {
-  try.framework.locations <- c("/Library/Frameworks","/System/Library/Frameworks")
   for (location in try.framework.locations) {
     path <- paste( location, "/", framework, ".framework/", framework, sep="")    
     x <- dynload(path, auto.unload)
@@ -29,16 +29,23 @@ dynfind.darwin.framework <- function(framework, auto.unload=TRUE)
   return(NULL)
 }
 
-dynfind <- function(libname, auto.unload=TRUE)
+dynfind <- function(libnames, auto.unload=TRUE)
 {
-  try.locations <- c("/lib","/usr/lib","/usr/local/lib","/opt/local/lib/", pathsFromEnv("LD_LIBRARY_PATH") )
+  if ( .sysname == "Windows" ) {    
+    try.locations <- pathsFromEnv("PATH")
+    filesep <- "\\"
+  } else { # unix
+    try.locations <- c("/lib","/usr/lib","/usr/local/lib","/opt/local/lib", pathsFromEnv("LD_LIBRARY_PATH") )
+    filesep <- "/"
+  }
   try.prefixes <- c("","lib")
   try.suffixes <- c("",.Platform$dynlib.ext)  
+  try.names <- libnames
   if ( .sysname == "Darwin" ) {
     try.locations <- c(try.locations, "/Library/Frameworks/R.framework/Resources/lib/")
-    handle <-dynfind.darwin.framework(libname, auto.unload)
+    handle <-dynfind.darwin.framework(libname, auto.unload=auto.unload)
     if( !is.null(handle) ) return(handle)
-    try.suffixes <- c(try.suffixes,".dylib")
+    try.suffixes <- c(".dylib",try.suffixes)
   }
 
   # remove "" entries and duplicates
@@ -53,12 +60,20 @@ dynfind <- function(libname, auto.unload=TRUE)
     {
       for(suffix in try.suffixes)
       {
-        path <- file.path( location, paste(prefix, libname, suffix, sep="") )
-        x <- .dynload(path, auto.unload)
-        if (!is.null(x)) return(x)
+        for(libname in try.names) 
+        {
+          path <- paste( location, filesep, prefix, libname, suffix, sep="" )
+          x <- .dynload(path, auto.unload=auto.unload)
+          if (!is.null(x)) return(x)
+        }
       }
     }
   }
+  # try directly
+  for(libname in try.names) 
+  {
+    .dynload(libname, auto.unload=auto.unload)
+  }  
 }
 
 #.dynpath <- function(add = NULL, remove = NULL)
