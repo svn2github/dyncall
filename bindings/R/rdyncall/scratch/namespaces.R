@@ -22,13 +22,51 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
 	env
 }
 
-name <- "stdio"
-ns   <- makeNamespace(name)
-with(ns,{
-dynbind("msvcrt","fopen(ZZ)p;fread(piip)i;")      
-})
-namespaceExport( ns, ls(ns) )
-attach(ns, name="dynport:stdio")
+install <- function()
+{
+  name <- "GL"
+  ns   <- makeNamespace(name)
+  info <- ns$.__NAMESPACE__.
+  # info$DLLs <- dyn.load("")
+  with(ns,
+    {
+      dynbind("GL","glBegin()v;")
+      .onUnload <- function()
+      {
+        .dynunload(.lib)
+      }
+    }
+  )
+  # ns$.packageName <- "stdio"
+  namespaceExport( ns, ls(ns) )
+  # attach(ns, name="dynport:GL")
+  attachNamespace(ns)
+}
+install()
 
 
 unloadNamespace("stdio")
+
+
+# retrieve list of shared libraries loaded
+
+library.dynam()
+.dynLibs()
+# load a specified library
+
+.sys.lib.loc <- c("/opt/local/lib", "/opt/lib", "/usr/local/lib", "/usr/lib")
+
+findLibPath <- function(name, lib.loc=.sys.lib.loc)
+{
+  for(i in lib.loc) {
+	trypath <- file.path(i, paste("lib", name,.Platform$dynlib.ext,sep="") )
+	if ( file.exists(trypath) ) return(trypath)
+  }
+  NULL
+}
+
+tests <- c("GL","SDL","expat")
+
+sapply( tests, findLibPath )
+
+

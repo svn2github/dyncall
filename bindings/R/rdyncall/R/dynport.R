@@ -1,11 +1,6 @@
 # File: rdyncall/R/dynports.R
 # Description: repository for multi-platform bindings to binary components.
 
-from.R <- function(file, envir)
-{  
-  sys.source(file, envir=envir)  
-}
-
 makeNamespace <- function(name, version = NULL, lib = NULL) {
   impenv <- new.env(parent = .BaseNamespaceEnv, hash = TRUE)
   attr(impenv, "name") <- paste("imports", name, sep = ":")
@@ -29,58 +24,44 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
   env
 }
 
-dynport.namespace <- function(name, pos)
+loadDynportPackage  <- function(portname, envir=NULL, pos = 2, use.namespace=FALSE, auto.attach=FALSE)
 {
-  dir <- system.file( "dynports", package="rdyncall")
-  if ( file.exists(portfile.R) )
-    from.R(portfile.R,env)
-  ns <- makeNamespace(name)
-  namespaceExport(ns, ls(ns))
-  
-  attach(env, name=paste("dynport:",name,sep=""))
+  # setup dynport environment search name  
+  envname <- paste("dynport",portname,sep=":")            
+  # check if dynport already loaded  
+  if ( envname %in% search() ) return()
+  if (missing(envir))
+  {
+    env <- new.env(parent=baseenv())
+    attr(env, "name") <- envname
+  }
 }
 
-dynport <- function(portname, envir=NULL, pos = 2, auto.attach=TRUE, use.namespace=TRUE)
-{      
-  portname <- as.character(substitute(portname))
-  envname <- paste("dynport",portname,sep=":")
-  
-  if ( ! envname %in% search() )
-  {
-    # load dynport package
-  
-    if ( missing(envir) )
-    {  
-      if (use.namespace) {
-        envir <- makeNamespace(portname)        
-      } else {
-        envir <- new.env()
-      }
-    }    
-  
-    attr(envir, "name") <- envname
-    dir <- system.file( "dynports", package="rdyncall")
+loadDynportNamespace <- function(portname, do.attach=TRUE)
+{ 
+  # check if dynport namespace already loaded  
+  if ( portname %in% loadedNamespaces() ) return()
+  # locate port file for R and json handler  
+  repo <- system.file( "dynports", package="rdyncall")  
+  portfile.R <- file.path( repo, paste(portname,".R",sep="") )
+  portfile.json <- file.path( repo, paste(portname,".json",sep="") )  
+  if ( !file.exists(portfile.R) && !file.exists(portfile.json) )
+    stop("dynport '", portname, "' not found.")
+  # create namespace  
+  ns <- makeNamespace(portname)
+  # process portfile
+  if (file.exists(portfile.R)) sys.source(portfile.R, envir=ns)  
+  else if (file.exists(portfile.json)) .NotYetImplemented()
+  # export all objects, expect '.' variables reserved for internal use
+  namespaceExport(ns, ls(ns))
+  # attach
+  if (do.attach) attachNamespace(ns)
+}
 
-    # R file
-    
-    portfile.R <- file.path( dir, paste(portname,"R",sep=".") )
-    
-    if ( file.exists(portfile.R) )
-      from.R(portfile.R,envir)
-    
-    # json file
-    
-    portfile.json <- file.path( dir, paste(portname,"json",sep=".") )    
-    
-    if ( file.exists(portfile.json) )
-      from.json(portfile.json,envir)
-    
-    if (auto.attach)
-    {
-      attach(envir, pos = pos, name = envname)
-    }
-  }
-  return(invisible(NULL))
+dynport <- function(portname)
+{
+  portname <- as.character(substitute(portname))
+  loadDynportNamespace(portname)  
 }
 
 dynport.unload <- function(portname)

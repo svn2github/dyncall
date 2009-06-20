@@ -36,6 +36,11 @@ is.nullptr <- function(x)
   (.addrval(x) == 0)    
 }
 
+makeExternalPtr <- function(x,y,z)
+{
+  .Call("makeExternalPtr", PACKAGE="rdyncall")
+}
+
 test_c <- function(...)
 {
   .External("test_c", ..., PACKAGE="rdyncall")

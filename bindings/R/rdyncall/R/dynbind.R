@@ -2,35 +2,26 @@
 # File: rdyncall/R/dynbind.R
 # Description: single-entry front-end to dynamic binding of library functions 
 
-dynbind <- function(
-  libname, 
-  libsignature, 
-  envir=parent.frame(), 
-  callmode="cdecl", 
-  pat=NULL, replace=NULL, 
-  funcptr=FALSE)
+dynbind <- function(libname, libsig, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
 {
-  # load library
-  libh <- .dynload(libname)
+  # load shared library
+  libh <- dynfind(libname)
+  if ( is.null(libh) )
+    stop("unable to find '", libname,"'")
   
-  envir$.libs <- c(envir$.libs,libh)
-    
-  # convert library signature to signature table
+  # -- convert library signature to signature table
   
   # eat white spaces
-  sigtab <- gsub("[ \n\t]*","",libsignature)
-  
+  sigtab <- gsub("[ \n\t]*","",libsig)  
   # split functions at ';'
-  sigtab <- strsplit(sigtab, ";")[[1]]
-  
+  sigtab <- strsplit(sigtab, ";")[[1]]  
   # split name/call signature at '('
   sigtab <- strsplit(sigtab, "\\(")
   
-  # install functions
+  # -- install functions
  
   # make function call symbol
   dyncallfunc <- as.symbol( paste(".dyncall.",callmode, sep="") )  
-
   # report info
   syms.failed <- character(0)
 
@@ -40,7 +31,8 @@ dynbind <- function(
     rname  <- if (!is.null(pat)) sub(pat, replace, symname) else symname
     signature <- sigtab[[i]][[2]]
     # lookup symbol
-    address  <- .dynfind( libh, symname )
+    address  <- .dynsym( libh, symname )
+    
     if (!is.null(address))
     {
       # make call function f
@@ -60,10 +52,9 @@ dynbind <- function(
     else
     {
       syms.failed <- c(syms.failed,symname)
-      #warning("unable to find symbol ", symname, " in shared library ", libname)
     }
-  }  
-  reg.finalizer(envir, function(x) { sapply( x$.libs, .dynunload ) } )
+  }
+  # return dynbind.report
   x <- list(libhandle=libh, syms.failed=syms.failed)
   class(x) <- "dynbind.report"
   return(x)

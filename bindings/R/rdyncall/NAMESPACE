@@ -3,11 +3,13 @@ export(
   # dyncall.R
   .dyncall, .callmodes, .dyncall.cdecl, .dyncall.stdcall,
   # dynload.R
-  .dynload, .dynunload, .dynfind,
+  .dynload, .dynunload, .dynsym,
+  # dynfind.R
+  dynfind, pathsFromEnv,
   # dynbind.R 
   dynbind, 
   # dynport.R
-  dynport, dynport.unload,
+  dynport, dynport.unload, loadDynportNamespace,
   # pack.R
   .pack1, .unpack1, 
   # struct.R
@@ -15,7 +17,9 @@ export(
   # callback.R
   new.callback,
   # utils.R 
-  .dataptr, .addrval, is.externalptr, is.nullptr, as.externalptr
+  .dataptr, .addrval, is.externalptr, is.nullptr, as.externalptr,
+  # findLibPath.R
+  findLibPath
 )
 
 S3method(str,struct)

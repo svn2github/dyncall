@@ -2,16 +2,17 @@
 \alias{dynport}
 \alias{dynports}
 \title{Dynamic ports to shared libraries}
-\description{Dynamic ports to shared libraries.}
+\description{Dynports aims to provide cross-platform portable bindings from dynamic environments to statically compiled binary components. The development is in early stage.}
 \usage{
 dynport(name)
-detach("dynport:name")
+loadDynportNamespace(portname)
 }
 \arguments{
-\item{name}{The name of a \emph{dynport} package, given as a name or literal character string, or a character string.}
+\item{name}{A symbolic literal or character string specifying a \emph{dynport}.}
+\item{portname}{A character string specifying a \emph{dynport}.}  
 }
 \details{
-The \code{dynport} function dynamically links and binds code to the R run-time process and
+The front-end function \code{dynport} dynamically links shared libraries and binds pre-compiled functions to the R run-time process and
 binds as an environment with thin R wrapper functions and constants. 
 Here's a list of currently available packages:
 \tabular{lll}{
@@ -48,7 +49,7 @@ When adding dyncall (and dynload) to a scripting language binding, the dynamic c
 functions is made available to the scripting language.
  
 Under the rdyncall package directory installed in R_HOME/library/rdyncall is a sub-directory
-named \code{dynports} which contain meta-information to link a shared library component.
+named \code{dynports} which contain dynport files for several shared libraries.
 }
 \keyword{interface}
 \keyword{programming::interface}

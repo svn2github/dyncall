@@ -5,14 +5,16 @@
 \title{Low-level loading and unload of shared libraries}
 \description{Low-level functions to load and unload shared libraries and to resolve symbols.}
 \usage{
-.dynload  (libname)
-.dynfind  (libhandle,symname)
+.dynload(libname, auto.unload=TRUE)
+.dynsym(libhandle, symname, protect.lib=TRUE)
 .dynunload(libhandle)
 }
 \arguments{
   \item{libname}{A character string specifying the library file in short, relative- or absolute-path form.}
   \item{libhandle}{An external pointer representing a handle to an open library.}
   \item{symname}{A character string specifying the symbolic name to lookup.}
+  \item{auto.unload}{A logical indicating if a finalizer should be registered that will automatically unload the library}
+  \item{protect.lib}{A logical indicating if the external pointer representing the symbol will protect the lib object}
 }
 \value{
 \code{.dynload} returns an external pointer \code{libhandle} on success. Otherwise NULL is returned, if the library is not found or the linkage failed.
@@ -23,7 +25,7 @@
 The function \code{.dynload} searches for a library specified by \code{libname}. 
 It loads the library to the run-time process and returns its \code{libhandle} (library handle) 
 as an external pointer.
-Function pointers can be resolved using \code{.dynfind} to lookup a symbol given by \code{symname} 
+Function pointers can be resolved using \code{.dynsym} to lookup a symbol given by \code{symname} 
 in a library specified by \code{libhandle}. 
 \code{.dynunload} can be used to unload a library from the run-time process.
 }

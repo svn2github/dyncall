@@ -1,4 +1,6 @@
 TODO:
+- windows: test findLibPath 
+- darwin: test findFrameworkPath 
 - type-safe signatures
 
 old style: pppp

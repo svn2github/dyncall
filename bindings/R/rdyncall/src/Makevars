@@ -1,8 +1,7 @@
 PREFIX_DYNCALL=dyncall
 PKG_CPPFLAGS=-I$(PREFIX_DYNCALL)/include
 PKG_LIBS=-L$(PREFIX_DYNCALL)/lib -ldyncall_s -ldynload_s -ldyncallback_s
-default: build-dyncall $(SHLIB)
-build-dyncall:
+all: make-dyncall $(SHLIB)
+.PHONY: make-dyncall
+make-dyncall:
 	make -C dyncall install
-	# make -C dyncall_callbacks install
-

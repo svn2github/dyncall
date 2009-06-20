@@ -2,10 +2,6 @@ library(rdyncall)
 
 # here, a external pointer is created and additionally
 
-.dynfind()
-
-
-
 x$lpfnWndProc <- new.callback("iiii", function(a,b,c,d) { } )
 
 dynport(rmalloc)
