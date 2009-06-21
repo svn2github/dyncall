@@ -4,6 +4,8 @@
 
 if (.Platform$OS == "windows") {
   libname <- "GLU32"
+} else if ( Sys.info()[["sysname"]] == "Darwin" ) {
+  libname <- "OpenGL"
 } else {
   libname <- "GLU"
 }

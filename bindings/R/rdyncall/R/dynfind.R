@@ -19,12 +19,15 @@ if (Sys.info()[["sysname"]] == "Darwin")
 .sysname <- Sys.info()[["sysname"]]
 
 try.framework.locations <- c("/Library/Frameworks","/System/Library/Frameworks")
-dynfind.darwin.framework <- function(framework, auto.unload=TRUE)
+dynfind.darwin.framework <- function(frameworks, auto.unload=TRUE)
 {
+  try.frameworks <- frameworks
   for (location in try.framework.locations) {
-    path <- paste( location, "/", framework, ".framework/", framework, sep="")    
-    x <- dynload(path, auto.unload)
-    if (!is.null(x)) return(x)
+    for (framework in try.frameworks) {
+      path <- paste( location, "/", framework, ".framework/", framework, sep="")    
+      x <- .dynload(path, auto.unload)
+      if (!is.null(x)) return(x)
+    }
   }
   return(NULL)
 }
@@ -43,7 +46,7 @@ dynfind <- function(libnames, auto.unload=TRUE)
   try.names <- libnames
   if ( .sysname == "Darwin" ) {
     try.locations <- c(try.locations, "/Library/Frameworks/R.framework/Resources/lib/")
-    handle <-dynfind.darwin.framework(libname, auto.unload=auto.unload)
+    handle <-dynfind.darwin.framework(libnames, auto.unload=auto.unload)
     if( !is.null(handle) ) return(handle)
     try.suffixes <- c(".dylib",try.suffixes)
   }
