@@ -13,7 +13,8 @@ export(
   # pack.R
   .pack1, .unpack1, 
   # struct.R
-  .sigsizes, structinfo, new.struct, sizeof, structinfo, as.structptr,
+  #.sigsizes, structinfo, new.struct, sizeof, structinfo, as.structptr,
+  registerStructInfos, registerStructInfo, sizeof, alignof, getType, registerType, unregisterType, showTypes, new.struct, as.struct,
   # callback.R
   new.callback,
   # utils.R 
@@ -23,10 +24,10 @@ export(
 )
 
 S3method(str,struct)
-S3method(sizeof,struct)
-S3method(sizeof,structinfo)
+# S3method(sizeof,struct)
+# S3method(sizeof,structinfo)
 S3method("$<-", struct)
 S3method("$", struct)
-S3method(structinfo,character)
-S3method(structinfo,struct)
+# S3method(structinfo,character)
+# S3method(structinfo,struct)
 

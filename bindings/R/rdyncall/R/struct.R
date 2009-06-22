@@ -1,6 +1,8 @@
 # File: rdyncall/R/struct.R
 # Description: handling of aggregate low-level structures
 
+old <- function()
+{
 
 .sigsizes <- c(
 B=.Machine$sizeof.long,
@@ -115,4 +117,6 @@ unpack.struct <- function(x, index)
     cat( name[[i]] , " ", val, "\n" )
   }
   cat("}\n")
+}
+
 }

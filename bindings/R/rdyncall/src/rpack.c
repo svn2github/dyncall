@@ -76,6 +76,19 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	  }
 	}
 	break;
+	case DC_SIGCHAR_UCHAR:
+	{
+	  unsigned char* cp = (unsigned char*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *cp = (unsigned char) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *cp = (unsigned char) INTEGER(value_x)[0]; break;
+	  case REALSXP: *cp = (unsigned char) REAL(value_x)[0];    break;
+	  case RAWSXP:  *cp = (unsigned char) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'C' pack type");
+	  }
+	}
+	break;
 	case DC_SIGCHAR_SHORT:
 	{
 	  short* sp = (short*) ptr;
@@ -89,7 +102,19 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	  }
 	}
 	break;
-	case DC_SIGCHAR_LONG:
+	case DC_SIGCHAR_USHORT:
+	{
+	  unsigned short* sp = (short*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *sp = (unsigned short) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *sp = (unsigned short) INTEGER(value_x)[0]; break;
+	  case REALSXP: *sp = (unsigned short) REAL(value_x)[0];    break;
+	  case RAWSXP:  *sp = (unsigned short) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'S' pack type");
+	  }
+	}
+	break;
 	case DC_SIGCHAR_INT:
 	{
 	  int* ip = (int*) ptr;
@@ -103,6 +128,45 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	  }
 	}
 	break;
+	case DC_SIGCHAR_UINT:
+	{
+	  unsigned int* ip = (unsigned int*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *ip = (unsigned int) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *ip = (unsigned int) INTEGER(value_x)[0]; break;
+	  case REALSXP: *ip = (unsigned int) REAL(value_x)[0];    break;
+	  case RAWSXP:  *ip = (unsigned int) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'I' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_LONG:
+	{
+	  long* ip = (long*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *ip = (long) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *ip = (long) INTEGER(value_x)[0]; break;
+	  case REALSXP: *ip = (long) REAL(value_x)[0];    break;
+	  case RAWSXP:  *ip = (long) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'j' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_ULONG:
+	{
+	  unsigned long* ip = (unsigned long*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *ip = (unsigned long) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *ip = (unsigned long) INTEGER(value_x)[0]; break;
+	  case REALSXP: *ip = (unsigned long) REAL(value_x)[0];    break;
+	  case RAWSXP:  *ip = (unsigned long) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'J' pack type");
+	  }
+	}
+	break;
 	case DC_SIGCHAR_LONGLONG:
 	{
 	  long long* Lp = (long long*) ptr;
@@ -112,6 +176,19 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	  case INTSXP:  *Lp = (long long) INTEGER(value_x)[0]; break;
 	  case REALSXP: *Lp = (long long) REAL(value_x)[0];    break;
 	  case RAWSXP:  *Lp = (long long) RAW(value_x)[0];     break;
+	  default: error("value mismatch with 'l' pack type");
+	  }
+	}
+	break;
+	case DC_SIGCHAR_ULONGLONG:
+	{
+	  unsigned long long* Lp = (unsigned long long*) ptr;
+	  switch(type_of)
+	  {
+	  case LGLSXP:  *Lp = (unsigned long long) LOGICAL(value_x)[0]; break;
+	  case INTSXP:  *Lp = (unsigned long long) INTEGER(value_x)[0]; break;
+	  case REALSXP: *Lp = (unsigned long long) REAL(value_x)[0];    break;
+	  case RAWSXP:  *Lp = (unsigned long long) RAW(value_x)[0];     break;
 	  default: error("value mismatch with 'L' pack type");
 	  }
 	}
@@ -143,6 +220,7 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	}
 	break;
 	case DC_SIGCHAR_POINTER:
+	case '*':
 	{
 	  void** pp = (void**) ptr;
 	  switch(type_of)
@@ -169,7 +247,7 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	  case CHARSXP:  *Sp = (char*) CHAR(value_x); break;
 	  case STRSXP:   *Sp = (char*) CHAR( STRING_ELT(value_x,0) ); break;
 	  case EXTPTRSXP:*Sp = (char*) R_ExternalPtrAddr(value_x); break;
-	  default: error("value type mismatch with 'S' pack type");
+	  default: error("value type mismatch with 'Z' pack type");
 	  }
 	}
 	break;
@@ -198,12 +276,17 @@ SEXP r_unpack1(SEXP ptr_x, SEXP offset, SEXP sig_x)
   const char* sig = CHAR(STRING_ELT(sig_x,0) );
   switch(sig[0])
   {
-    case DC_SIGCHAR_CHAR:     return ScalarInteger( ( (unsigned char*)ptr)[0] );
+    case DC_SIGCHAR_CHAR:     return ScalarInteger( ( (char*)ptr)[0] );
+    case DC_SIGCHAR_UCHAR:     return ScalarInteger( ( (unsigned char*)ptr)[0] );
     case DC_SIGCHAR_SHORT:    return ScalarInteger( ( (short*)ptr)[0] );
+    case DC_SIGCHAR_USHORT:    return ScalarInteger( ( (unsigned short*)ptr)[0] );
     case DC_SIGCHAR_INT:      return ScalarInteger( ( (int*)ptr )[0] );
+    case DC_SIGCHAR_UINT:      return ScalarReal( (double) ( (unsigned int*)ptr )[0] );
     case DC_SIGCHAR_FLOAT:    return ScalarReal( (double) ( (float*) ptr )[0] );
     case DC_SIGCHAR_DOUBLE:   return ScalarReal( ((double*)ptr)[0] );
     case DC_SIGCHAR_LONGLONG: return ScalarReal( (double) ( ((long long*)ptr)[0] ) );
+    case DC_SIGCHAR_ULONGLONG: return ScalarReal( (double) ( ((unsigned long long*)ptr)[0] ) );
+    case '*':
     case DC_SIGCHAR_POINTER:  return R_MakeExternalPtr( ((void**)ptr)[0] , R_NilValue, R_NilValue );
     case DC_SIGCHAR_STRING:   {
     	char* s = ( (char**) ptr )[0];
