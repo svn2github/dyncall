@@ -56,14 +56,13 @@ loadDynportNamespace <- function(name, portfile, do.attach=TRUE)
 
 # Front-end:
 
-dynport <- function(portname, filename=NULL)
+dynport <- function(portname, filename=NULL, repo=system.file("dynports", package="rdyncall"))
 {
   # literate portname as string
   portname <- as.character(substitute(portname))
   if (missing(filename))
   {
     # search for filename
-    repo <- system.file( "dynports", package="rdyncall")  
     filename <- file.path( repo, paste(portname,".R",sep="") )
     if ( !file.exists(filename) ) filename <- file.path( repo, paste(portname,".json",sep="") )        
     if ( !file.exists(filename) ) stop("dynport '", portname, "' not found.")    

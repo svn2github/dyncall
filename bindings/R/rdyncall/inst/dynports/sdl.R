@@ -771,6 +771,8 @@ sizeof.SDL_Event    = 64
 # -----------------------------------------------------------------------------
 # bindings:
 
+.commented <- quote({
+
 types <- c(
 Uint32 = 'i',
 int = 'i',
@@ -786,6 +788,8 @@ SDL_Surface <- structinfo("
   Uint16 pitch;
   pointer pixels;
 ",types)
+
+})
 
 quote( dynbind("SDL","
 SDL_Init(i)i;

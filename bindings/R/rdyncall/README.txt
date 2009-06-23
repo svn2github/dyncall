@@ -1,4 +1,11 @@
+PLANED:
+- dynport repo under revision control
+- automatic installation of pre-built shared libraries
+- (cross-) build server network (virtual building via DynOS / QEMU and friends)
+
+
 TODO:
+- SDL Event demo for rdyncall's C structure support.
 - make dynfind locations configurable from extern
 
   e.g. - dynAddPath, dynRemovePath

@@ -4,7 +4,7 @@
 \title{Dynamic ports to shared libraries}
 \description{Dynports aims to provide cross-platform portable bindings from dynamic environments to statically compiled binary components. The development is in early stage.}
 \usage{
-dynport(name)
+dynport(name, filename=NULL, repo=system.file("dynports", package="rdynall") )
 loadDynportNamespace(portname)
 }
 \arguments{
