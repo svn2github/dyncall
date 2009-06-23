@@ -170,14 +170,13 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
       	dcArgShort(pvm, *( (short*) &shortValue ) );
       }
       break;
-/*
       case DC_SIGCHAR_LONG:
       {
       	long longValue;
         switch(type_id)
         {
           case LGLSXP:  longValue = (long) LOGICAL(arg)[0]; break;
-          case INTSXP:  longValue = (long) INTEGER(arg)[0];        break;
+          case INTSXP:  longValue = (long) INTEGER(arg)[0]; break;
           case REALSXP: longValue = (long) REAL(arg)[0];    break;
           case RAWSXP:  longValue = (long) RAW(arg)[0];     break;
           default:      error("expected long castable argument type"); return NULL;
@@ -185,8 +184,20 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
       	dcArgLong(pvm, longValue);
       }
       break;
-*/
-      // case DC_SIGCHAR_LONG:
+      case DC_SIGCHAR_ULONG:
+      {
+    	unsigned long ulongValue;
+    	switch(type_id)
+    	{
+          case LGLSXP:  ulongValue = (unsigned long) LOGICAL(arg)[0]; break;
+          case INTSXP:  ulongValue = (unsigned long) INTEGER(arg)[0]; break;
+          case REALSXP: ulongValue = (unsigned long) REAL(arg)[0]; break;
+          case RAWSXP:  ulongValue = (unsigned long) RAW(arg)[0]; break;
+          default:      error("expected unsigned long castable argument type"); return NULL;
+    	}
+    	dcArgLong(pvm, (unsigned long) ulongValue);
+      }
+      break;
       case DC_SIGCHAR_INT:
       {
       	int intValue;
@@ -201,7 +212,6 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
       	dcArgInt(pvm, intValue);
       }
       break;
-	  // cas DC_SIGCHAR_ULONG:
       case DC_SIGCHAR_UINT:
       {
       	unsigned int intValue;
@@ -317,7 +327,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
 
   /* process return type, invoke call and return R value  */
 
-  switch(*sig) {
+  switch(*sig++) {
     case DC_SIGCHAR_BOOL:      return ScalarLogical( ( dcCallBool(pvm, addr) == DC_FALSE ) ? FALSE : TRUE );
 
     case DC_SIGCHAR_CHAR:      return ScalarInteger( (int) dcCallChar(pvm, addr)  );
@@ -329,8 +339,8 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
     case DC_SIGCHAR_INT:       return ScalarInteger( dcCallInt(pvm,addr) );
     case DC_SIGCHAR_UINT:      return ScalarInteger( (int) ( (unsigned int) dcCallInt(pvm, addr) ) );
 
-    // case DC_SIGCHAR_LONG:      return ScalarInteger( (int) dcCallLong(pvm, addr) );
-    // case DC_SIGCHAR_ULONG:     return ScalarInteger( (int) ( (unsigned long) dcCallLong(pvm, addr) ) );
+    case DC_SIGCHAR_LONG:      return ScalarInteger( (int) dcCallLong(pvm, addr) );
+    case DC_SIGCHAR_ULONG:     return ScalarInteger( (int) ( (unsigned long) dcCallLong(pvm, addr) ) );
 
     case DC_SIGCHAR_LONGLONG:  return ScalarReal( (double) dcCallLongLong(pvm, addr) );
     case DC_SIGCHAR_ULONGLONG: return ScalarReal( (double) dcCallLongLong(pvm, addr) );
@@ -340,6 +350,10 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
     case DC_SIGCHAR_POINTER:   return R_MakeExternalPtr( dcCallPointer(pvm,addr), R_NilValue, R_NilValue );
     case DC_SIGCHAR_STRING:    return mkString( dcCallPointer(pvm, addr) );
     case DC_SIGCHAR_VOID:      dcCallVoid(pvm,addr); return R_NilValue;
+    case '*':
+    {
+    	// if sig ==
+    }
     default: error("invalid return type signature"); return NULL;
   }
 
