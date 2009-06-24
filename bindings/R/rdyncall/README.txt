@@ -6,6 +6,7 @@ PLANED:
 
 TODO:
 - SDL Event demo for rdyncall's C structure support.
+- use raw vectors for 1-to-1 bit encoding of values e.g. raw(8) for (u)int64 values
 - make dynfind locations configurable from extern
 
   e.g. - dynAddPath, dynRemovePath

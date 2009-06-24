@@ -8,26 +8,29 @@ export(
   dynfind, pathsFromEnv,
   # dynbind.R 
   dynbind, 
-  # dynport.R
-  dynport, dynport.unload, loadDynportNamespace,
-  # pack.R
-  .pack1, .unpack1, 
   # struct.R
   #.sigsizes, structinfo, new.struct, sizeof, structinfo, as.structptr,
-  registerStructInfos, registerStructInfo, sizeof, alignof, getType, registerType, unregisterType, showTypes, new.struct, as.struct,
+  sizeof, alignof, align,
+  parseStructInfos, parseUnionInfos, 
+  getStructInfo, showStructInfos, registerStructInfo, unregisterStructInfo, 
+  new.struct, as.struct,
+  # pack.R
+  .pack1, .unpack1, 
   # callback.R
   new.callback,
   # utils.R 
   .dataptr, .addrval, is.externalptr, is.nullptr, as.externalptr,
   # findLibPath.R
-  findLibPath
+  findLibPath,
+  # dynport.R
+  dynport, dynport.unload, loadDynportNamespace
 )
 
-S3method(str,struct)
-# S3method(sizeof,struct)
-# S3method(sizeof,structinfo)
 S3method("$<-", struct)
 S3method("$", struct)
+S3method(print,struct)
+# S3method(sizeof,struct)
+# S3method(sizeof,structinfo)
 # S3method(structinfo,character)
 # S3method(structinfo,struct)
 

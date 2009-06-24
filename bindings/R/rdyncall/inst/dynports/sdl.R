@@ -698,6 +698,58 @@ SDL_VIDEOEXPOSEMASK=131072
 SDL_VIDEORESIZE=16
 SDL_VIDEORESIZEMASK=65536
 
+# -----------------------------------------------------------------------------
+# structs:
+parseStructInfos("
+_SDL_TimerID{};
+")
+# SDL_CD{iiiii}id status numtracks cur_track cur_frame track ;
+# SDL_AudioCVT{iSSd*Ciiidi}needed src_format dst_format rate_incr buf len len_cvt len_mult len_ratio filters filter_index ;
+# SDL_Overlay{Iiii*S**<private_yuvhwfuncs>*<private_yuvhwdata>II}format w h planes pitches pixels hwfuncs hwdata hw_overlay UnusedBits ;
+# SDL_Cursor{<SDL_Rect>ss*C*C*<WMcursor>}area hot_x hot_y data mask save wm_cursor ;
+
+parseStructInfos("
+SDL_version{CCC}major minor patch ;
+_SDL_TimerID{};
+SDL_SysWMmsg{};
+SDL_SysWMEvent{C*<SDL_SysWMmsg>}type msg ;  
+SDL_UserEvent{Ci*v*v}type code data1 data2 ;
+SDL_QuitEvent{C}type ;
+SDL_ExposeEvent{C}type ;
+SDL_ResizeEvent{Cii}type w h ;
+SDL_JoyButtonEvent{CCCC}type which button state ;
+SDL_JoyHatEvent{CCCC}type which hat value ;
+SDL_JoyBallEvent{CCCss}type which ball xrel yrel ;
+SDL_JoyAxisEvent{CCCs}type which axis value ;
+SDL_MouseButtonEvent{CCCCSS}type which button state x y ;
+SDL_MouseMotionEvent{CCCSSss}type which state x y xrel yrel ;
+SDL_keysym{CiiS}scancode sym mod unicode ;
+SDL_KeyboardEvent{CCC<SDL_keysym>}type which state keysym ;
+SDL_ActiveEvent{CCC}type gain state ;
+_SDL_Joystick{};
+SDL_Rect{ssSS}x y w h ;
+WMcursor{};
+SDL_AudioSpec{iSCCSSI*p*v}freq format channels silence samples padding size callback userdata ;
+private_yuvhwdata{};
+private_yuvhwfuncs{};
+SDL_Color{CCCC}r g b unused ;
+SDL_Palette{i*<SDL_Color>}ncolors colors ;
+SDL_PixelFormat{*<SDL_Palette>CCCCCCCCCCIIIIIC}palette BitsPerPixel BytesPerPixel Rloss Gloss Bloss Aloss Rshift Gshift Bshift Ashift Rmask Gmask Bmask Amask colorkey alpha ;
+SDL_VideoInfo{IIIIIIIIIIIII*<SDL_PixelFormat>ii}hw_available wm_available UnusedBits1 UnusedBits2 blit_hw blit_hw_CC blit_hw_A blit_sw blit_sw_CC blit_sw_A blit_fill UnusedBits3 video_mem vfmt current_w current_h ;
+SDL_Surface{I*<SDL_PixelFormat>iiS*vi*<private_hwdata><SDL_Rect>II*<SDL_BlitMap>Ii}flags format w h pitch pixels offset hwdata clip_rect unused1 locked map format_version refcount ;
+SDL_BlitMap{};
+private_hwdata{};
+SDL_CDtrack{CCSII}id type unused length offset ;
+SDL_Thread{};
+SDL_cond{};
+SDL_semaphore{};
+SDL_mutex{};
+")
+
+parseUnionInfos("
+SDL_Event|C<SDL_ActiveEvent><SDL_KeyboardEvent><SDL_MouseMotionEvent><SDL_MouseButtonEvent><SDL_JoyAxisEvent><SDL_JoyBallEvent><SDL_JoyHatEvent><SDL_JoyButtonEvent><SDL_ResizeEvent><SDL_ExposeEvent><SDL_QuitEvent><SDL_UserEvent><SDL_SysWMEvent>}type active key motion button jaxis jball jhat jbutton resize expose quit user syswm ;
+")
+
 # deprecated:
 
 quote({

@@ -1,15 +1,63 @@
-# TODO: Add comment
-# 
-# Author: dadler
-###############################################################################
+# struct tests:
 
 
-registerStructInfos("
+# test embedded structures and inline assignments
+
+parseStructInfos("
 SDL_Rect{ssSS}x y w h ;
 Test{II<SDL_Rect>II}a b rect c d;
 ")
-
 x <- new.struct("Test")
+print(x)
+
+r <- new.struct("SDL_Rect")
+r$x <- 1
+r$y <- 2
+r$w <- 3
+r$h <- 4
+x$rect <- r
+
+# 
+
+parseStructInfos("
+SDL_ActiveEvent{CCC}type gain state ;
+SDL_keysym{CiiS}scancode sym mod unicode ;
+SDL_KeyboardEvent{CCC<SDL_keysym>}type which state keysym ;
+SDL_MouseMotionEvent{CCCSSss}type which state x y xrel yrel ;
+SDL_MouseButtonEvent{CCCCSS}type which button state x y ;
+")
+
+g
+
+new <- function()
+{
+  x <- list()
+  class(x) <- "test"
+  return(x)
+}
+
+"$<-.test" <- function(x, index, value)
+{
+  cat("$<-\n")
+  cat("nargs:", nargs(), "\n" )
+  x[index] <- value
+  return(x)
+}
+
+"$.test" <- function(x, index)
+{
+  cat("$\n")
+  x[index]
+}
+
+x <- new()
+x$a <- 23
+
+x$a$b <- 23
+
+
+
+
 str(x)
 
 x$rect
