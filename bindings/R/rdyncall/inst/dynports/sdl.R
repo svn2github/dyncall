@@ -700,9 +700,6 @@ SDL_VIDEORESIZEMASK=65536
 
 # -----------------------------------------------------------------------------
 # structs:
-parseStructInfos("
-_SDL_TimerID{};
-")
 # SDL_CD{iiiii}id status numtracks cur_track cur_frame track ;
 # SDL_AudioCVT{iSSd*Ciiidi}needed src_format dst_format rate_incr buf len len_cvt len_mult len_ratio filters filter_index ;
 # SDL_Overlay{Iiii*S**<private_yuvhwfuncs>*<private_yuvhwdata>II}format w h planes pitches pixels hwfuncs hwdata hw_overlay UnusedBits ;
@@ -728,6 +725,7 @@ SDL_KeyboardEvent{CCC<SDL_keysym>}type which state keysym ;
 SDL_ActiveEvent{CCC}type gain state ;
 _SDL_Joystick{};
 SDL_Rect{ssSS}x y w h ;
+SDL_Surface{I*<SDL_PixelFormat>iiS*vi*<private_hwdata><SDL_Rect>II*<SDL_BlitMap>Ii}flags format w h pitch pixels offset hwdata clip_rect unused1 locked map format_version refcount ;
 WMcursor{};
 SDL_AudioSpec{iSCCSSI*p*v}freq format channels silence samples padding size callback userdata ;
 private_yuvhwdata{};
@@ -736,7 +734,6 @@ SDL_Color{CCCC}r g b unused ;
 SDL_Palette{i*<SDL_Color>}ncolors colors ;
 SDL_PixelFormat{*<SDL_Palette>CCCCCCCCCCIIIIIC}palette BitsPerPixel BytesPerPixel Rloss Gloss Bloss Aloss Rshift Gshift Bshift Ashift Rmask Gmask Bmask Amask colorkey alpha ;
 SDL_VideoInfo{IIIIIIIIIIIII*<SDL_PixelFormat>ii}hw_available wm_available UnusedBits1 UnusedBits2 blit_hw blit_hw_CC blit_hw_A blit_sw blit_sw_CC blit_sw_A blit_fill UnusedBits3 video_mem vfmt current_w current_h ;
-SDL_Surface{I*<SDL_PixelFormat>iiS*vi*<private_hwdata><SDL_Rect>II*<SDL_BlitMap>Ii}flags format w h pitch pixels offset hwdata clip_rect unused1 locked map format_version refcount ;
 SDL_BlitMap{};
 private_hwdata{};
 SDL_CDtrack{CCSII}id type unused length offset ;

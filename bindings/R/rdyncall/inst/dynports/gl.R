@@ -8,14 +8,9 @@ if (.Platform$OS == "windows") {
   libname <- "OpenGL"
 } else {
   libname <- "GL"
-}
+}   
 
-   
-dynbind( switch( Sys.info()[["sysname"]], Windows="OPENGL32", Darwin="OpenGL", "GL" ), 
-"
-", callmode="stdcall")
-
-dynbind(libname,"
+dynbind(switch( Sys.info()[["sysname"]], Windows="OPENGL32", Darwin="OpenGL", "GL" ),"
  glAccum(if)v;
  glAlphaFunc(if)v;
  glAreTexturesResident(ipp)B;
@@ -354,29 +349,6 @@ dynbind(libname,"
  glViewport (i  i  i  i )v;
 
 ",callmode="stdcall")
-
-old <- "
-glGetError()i;
-glClearColor(ffff)v;
-glClear(i)v;
-glMatrixMode(i)v;
-glLoadIdentity()v;
-glBegin(i)v;
-glEnd()v;
-glVertex3d(ddd)v;
-glRotated(dddd)v;
-glGenLists(i)i;
-glNewList(ii)v;
-glEnableClientState(i)v;
-glVertexPointer(iiip)v;
-glColorPointer(iiip)v;
-glDrawElements(iiip)v;
-glDisableClientState(i)v;
-glEndList()v;
-glCallList(i)v;
-glFinish()v;
-glFlush()v;
-"
 
 # Version */
 GL_VERSION_1_1                    = 1

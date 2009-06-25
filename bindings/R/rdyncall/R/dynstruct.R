@@ -37,7 +37,7 @@ getTypeInfo <- function(typeName, envir=parent.frame())
   char1 <- substr(typeName, 1, 1)
   switch(char1,
     "*"=TypeInfo(type="pointer", size=.Machine$sizeof.pointer, align=.Machine$sizeof.pointer, basetype=substr(typeName,2,nchar(typeName)), signature=typeName),
-    "<"=getTypeInfo(substr(typeName, 2,nchar(typeName)-1)),
+    "<"=getTypeInfo(substr(typeName, 2,nchar(typeName)-1), envir=envir),
     {
       # try as basetype
       basetypeSize <- unname(.basetypeSizes[typeName])
@@ -67,13 +67,13 @@ align <- function(offset, alignment)
 
 makeFieldInfo <- function(fieldNames, types, offsets)
 {  
-  data.frame(type=I(types), offset=offsets, row.names=fieldNames, stringsAsFactors=FALSE)  
+  data.frame(type=I(types), offset=offsets, row.names=fieldNames)  
 }
 
 # ----------------------------------------------------------------------------
 # parse structure signature
 
-makeStructInfo <- function(structSignature, fieldNames)
+makeStructInfo <- function(structSignature, fieldNames, envir=parent.frame())
 {
   # computations:
   types    <- character()
@@ -98,7 +98,7 @@ makeStructInfo <- function(structSignature, fieldNames)
     } 
     typeName  <- substr(structSignature, start, i)
     types     <- c(types, typeName)
-    typeInfo  <- getTypeInfo(typeName)
+    typeInfo  <- getTypeInfo(typeName, envir=envir)
     alignment <- typeInfo$align
     maxAlign  <- max(maxAlign, alignment)
     offset    <- align( offset, alignment )
@@ -139,7 +139,7 @@ parseStructInfos <- function(sigs, envir=parent.frame())
         fields   <- unlist( strsplit( tail[[2]], "[ \n\t]+" ) ) 
       else 
         fields   <- NULL
-      assign(name, makeStructInfo(sig, fields), envir=envir) 
+      assign(name, makeStructInfo(sig, fields, envir=envir), envir=envir)
     }
   }  
 }
@@ -147,7 +147,7 @@ parseStructInfos <- function(sigs, envir=parent.frame())
 # ----------------------------------------------------------------------------
 # parse union signature
 
-makeUnionInfo <- function(unionSignature, fieldNames)
+makeUnionInfo <- function(unionSignature, fieldNames, envir=parent.frame())
 {
   # computations:
   types    <- character()
@@ -171,7 +171,7 @@ makeUnionInfo <- function(unionSignature, fieldNames)
     } 
     typeName <- substr(unionSignature,start,i)
     types    <- c(types, typeName)
-    typeInfo <- getTypeInfo(typeName)
+    typeInfo <- getTypeInfo(typeName, envir)
     maxSize  <- max( maxSize, typeInfo$size )
     maxAlign <- max( maxAlign, typeInfo$align )
     # next token
@@ -204,14 +204,14 @@ parseUnionInfos <- function(sigs, envir=parent.frame())
         fields   <- unlist( strsplit( tail[[2]], "[ \n\t]+" ) ) 
       else 
         fields   <- NULL
-      assign( name, makeUnionInfo(sig,fields), envir=envir )
+      assign( name, makeUnionInfo(sig,fields,envir), envir=envir )
     }
   }  
 }
 
 
 # ----------------------------------------------------------------------------
-# struct class
+# raw backed struct's (S3 Class)
 
 as.struct <- function(x, structName)
 {
