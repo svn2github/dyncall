@@ -26,17 +26,21 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
 }
 
 # deprecated package-based container:
-loadDynportPackage  <- function(portname, filename, envir=NULL, pos = 2, use.namespace=FALSE, auto.attach=FALSE)
+loadDynportPackage  <- function(portname, filename, envir=NULL, do.attach=TRUE)
 {
   # setup dynport environment search name  
-  envname <- paste("dynport",portname,sep=":")            
+  envname <- paste("package",portname,sep=":")            
   # check if dynport already loaded  
   if ( envname %in% search() ) return()
   if (missing(envir))
   {
-    env <- new.env(parent=baseenv())
-    attr(env, "name") <- envname
+    envir <- new.env(parent=baseenv())
+    attr(envir, "name") <- envname
   }
+  # process portfile
+  sys.source(portfile, envir=envir) 
+  if (do.attach)
+    attach(envir)
 }
 
 # new namespace-based container:
@@ -58,7 +62,7 @@ loadDynportNamespace <- function(name, portfile, do.attach=TRUE)
 
 dynport <- function(portname, filename=NULL, repo=system.file("dynports", package="rdyncall"))
 {
-  # literate portname as string
+  # literate portname string
   portname <- as.character(substitute(portname))
   if (missing(filename))
   {

@@ -10,9 +10,11 @@ export(
   dynbind, 
   # struct.R
   #.sigsizes, structinfo, new.struct, sizeof, structinfo, as.structptr,
-  sizeof, alignof, align,
+  # sizeof, alignof, 
+  align,
   parseStructInfos, parseUnionInfos, 
-  getStructInfo, showStructInfos, registerStructInfo, unregisterStructInfo, 
+  #getStructInfo, showStructInfos, registerStructInfo, unregisterStructInfo, 
+  getTypeInfo,
   new.struct, as.struct,
   # pack.R
   .pack1, .unpack1, 
