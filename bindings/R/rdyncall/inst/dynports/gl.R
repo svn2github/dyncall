@@ -3,14 +3,17 @@
 # Maintainer: dadler@uni-goettingen.de
 
 if (.Platform$OS == "windows") {
-  libname <- "OPENGL32"
+  .libname <- "OPENGL32"
+  .callmode <- "stdcall"
 } else if ( Sys.info()[["sysname"]] == "Darwin" ) {
-  libname <- "OpenGL"
+  .libname <- "OpenGL"
+  .callmode <- "cdecl"
 } else {
-  libname <- "GL"
+  .libname <- "GL"
+  .callmode <- "cdecl"
 }   
 
-dynbind(switch( Sys.info()[["sysname"]], Windows="OPENGL32", Darwin="OpenGL", "GL" ),"
+dynbind(.libname,"
  glAccum(if)v;
  glAlphaFunc(if)v;
  glAreTexturesResident(ipp)B;
@@ -348,7 +351,7 @@ dynbind(switch( Sys.info()[["sysname"]], Windows="OPENGL32", Darwin="OpenGL", "G
  glVertexPointer (i  i  i   p)v;
  glViewport (i  i  i  i )v;
 
-",callmode="stdcall")
+",callmode=.callmode)
 
 # Version */
 GL_VERSION_1_1                    = 1

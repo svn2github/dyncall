@@ -74,7 +74,7 @@ mainloop <- function()
 {
   # displaylistId <- makeCubeDisplaylist()
   # eventobj <- malloc(sizeof(struct("SDL_Event")))
-  event <- new.struct("SDL_Event")
+  evt <- new.struct("SDL_Event")
   blink <- 0
   tbase <- SDL_GetTicks()
   quit <- FALSE
@@ -134,7 +134,7 @@ mainloop <- function()
     }
     SDL_Delay(30)
   }
-  glDeleteLists(displaylistId, 1)
+  # glDeleteLists(displaylistId, 1)
 }
 
 cleanup <- function()

@@ -31,7 +31,7 @@ SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
   else if (strcmp(mode_S,"thiscall") == 0) 	mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
   else if (strcmp(mode_S,"thiscall.gcc") == 0)  mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
   else if (strcmp(mode_S,"thiscall.msvc") == 0) mode_i = DC_CALL_C_X86_WIN32_THIS_MS;
-  else error("invalid 'callmode'");
+  else { error("invalid 'callmode'"); /* dummy */ return R_NilValue; }
 
 
   DCCallVM* pvm = dcNewCallVM(size_i);
@@ -75,9 +75,14 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
   signature = CHAR( STRING_ELT( CAR(args), 0 ) ); args = CDR(args);
   sig = signature;
 
-  if (!pvm) error("Argument 'callvm' is null");
-  if (!addr) error("Argument 'addr' is null");
-
+  if (!pvm) {
+    error("Argument 'callvm' is null");
+    /* dummy */ return R_NilValue;
+  }
+  if (!addr) {
+    error("Argument 'addr' is null");
+    /* dummy */ return R_NilValue;
+  }
   /* reset CallVM to initial state */
 
   dcReset(pvm);
@@ -100,6 +105,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         mode = DC_CALL_C_X86_WIN32_FAST_MS; break;
       default:
         error("Unknown calling convention prefix hint signature character '%c'", ch );
+        /* dummy */ return R_NilValue;
     }
     dcMode(pvm, mode);
   }
@@ -109,15 +115,18 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
 
     char ch = *sig++;
 
-    if (ch == '\0') 
+    if (ch == '\0') { 
       error("Function-call signature '%s' is invalid - missing argument terminator character ')' and return type signature.", signature);
-
+      /* dummy */ return R_NilValue;
+    }
     /* argument terminator */
     if (ch == ')') break;
 
     /* end of arguments? */
-    if (args == R_NilValue) error("Not enough arguments for function-call signature '%s'.", signature);
-
+    if (args == R_NilValue) {
+      error("Not enough arguments for function-call signature '%s'.", signature);
+      /* dummy */ return R_NilValue;
+    }
     /* pointer counter */
     else if (ch == '*') { ptrcnt++; continue; }
 
@@ -135,8 +144,10 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         continue;
       }
       
-      if ( type_id != NILSXP && type_id != EXTPTRSXP && LENGTH(arg) == 0 ) error("Argument type mismatch at position %d: expected length greater zero.", argpos); 
-
+      if ( type_id != NILSXP && type_id != EXTPTRSXP && LENGTH(arg) == 0 ) {
+		error("Argument type mismatch at position %d: expected length greater zero.", argpos); 
+		/* dummy */ return R_NilValue;
+	  }
       switch(ch) {
         case DC_SIGCHAR_BOOL:
         {
@@ -147,7 +158,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  boolValue = ( INTEGER(arg)[0] == 0   ) ? DC_FALSE : DC_TRUE; break;
             case REALSXP: boolValue = ( REAL(arg)[0]    == 0.0 ) ? DC_FALSE : DC_TRUE; break;
             case RAWSXP:  boolValue = ( RAW(arg)[0]     == 0   ) ? DC_FALSE : DC_TRUE; break;
-            default:      error("Argument type mismatch at position %d: expected 'bool' castable atomic value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected 'bool' castable atomic value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgBool(pvm, boolValue );
         }
@@ -161,7 +172,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  charValue = (char) INTEGER(arg)[0];        break;
             case REALSXP: charValue = (char) REAL(arg)[0];    break;
             case RAWSXP:  charValue = (char) RAW(arg)[0];     break;
-            default:      error("Argument type mismatch at position %d: expected char convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected char convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgChar(pvm, charValue);
         }
@@ -175,7 +186,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  charValue = (unsigned char) INTEGER(arg)[0];        break;
             case REALSXP: charValue = (unsigned char) REAL(arg)[0];    break;
             case RAWSXP:  charValue = (unsigned char) RAW(arg)[0];     break;
-            default:      error("Argument type mismatch at position %d: expected unsigned char convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected unsigned char convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgChar(pvm, *( (char*) &charValue ));
         }
@@ -189,7 +200,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  shortValue = (short) INTEGER(arg)[0];        break;
             case REALSXP: shortValue = (short) REAL(arg)[0];    break;
             case RAWSXP:  shortValue = (short) RAW(arg)[0];     break;
-            default:      error("Argument type mismatch at position %d: expected short convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected short convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgShort(pvm, shortValue);
         }
@@ -203,7 +214,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  shortValue = (unsigned short) INTEGER(arg)[0];        break;
             case REALSXP: shortValue = (unsigned short) REAL(arg)[0];    break;
             case RAWSXP:  shortValue = (unsigned short) RAW(arg)[0];     break;
-            default:      error("Argument type mismatch at position %d: expected unsigned short convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected unsigned short convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgShort(pvm, *( (short*) &shortValue ) );
         }
@@ -217,7 +228,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  longValue = (long) INTEGER(arg)[0]; break;
             case REALSXP: longValue = (long) REAL(arg)[0];    break;
             case RAWSXP:  longValue = (long) RAW(arg)[0];     break;
-            default:      error("Argument type mismatch at position %d: expected long convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected long convertable value", argpos);  /* dummy */ return R_NilValue;
           }
           dcArgLong(pvm, longValue);
         }
@@ -231,7 +242,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  ulongValue = (unsigned long) INTEGER(arg)[0]; break;
             case REALSXP: ulongValue = (unsigned long) REAL(arg)[0]; break;
             case RAWSXP:  ulongValue = (unsigned long) RAW(arg)[0]; break;
-            default:      error("Argument type mismatch at position %d: expected unsigned long convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected unsigned long convertable value", argpos);  /* dummy */ return R_NilValue;
           }
           dcArgLong(pvm, (unsigned long) ulongValue);
         }
@@ -245,7 +256,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  intValue = INTEGER(arg)[0]; break;
             case REALSXP: intValue = (int) REAL(arg)[0]; break;
             case RAWSXP:  intValue = (int) RAW(arg)[0]; break;
-            default:      error("Argument type mismatch at position %d: expected int convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected int convertable value", argpos); /*dummy*/ return R_NilValue; 
           }
           dcArgInt(pvm, intValue);
         }
@@ -259,7 +270,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  intValue = (unsigned int) INTEGER(arg)[0]; break;
             case REALSXP: intValue = (unsigned int) REAL(arg)[0]; break;
             case RAWSXP:  intValue = (unsigned int) RAW(arg)[0]; break;
-            default:      error("Argument type mismatch at position %d: expected unsigned int convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected unsigned int convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgInt(pvm, * (int*) &intValue);
         }
@@ -273,7 +284,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  floatValue = (float) INTEGER(arg)[0]; break;
             case REALSXP: floatValue = (float) REAL(arg)[0]; break;
             case RAWSXP:  floatValue = (float) RAW(arg)[0]; break;
-            default:      error("Argument type mismatch at position %d: expected float convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected float convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgFloat( pvm, floatValue );
         }
@@ -287,7 +298,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  doubleValue = (double) INTEGER(arg)[0]; break;
             case REALSXP: doubleValue = REAL(arg)[0]; break;
             case RAWSXP:  doubleValue = (double) RAW(arg)[0]; break;
-            default:      error("Argument type mismatch at position %d: expected double convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected double convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgDouble( pvm, doubleValue );
         }
@@ -301,7 +312,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  longlongValue = (DClonglong) INTEGER(arg)[0]; break;
             case REALSXP: longlongValue = (DClonglong) REAL(arg)[0]; break;
             case RAWSXP:  longlongValue = (DClonglong) RAW(arg)[0]; break;
-            default:      error("Argument type mismatch at position %d: expected long long convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected long long convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgLongLong( pvm, longlongValue );
         }
@@ -315,7 +326,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case INTSXP:  ulonglongValue = (DCulonglong) INTEGER(arg)[0]; break;
             case REALSXP: ulonglongValue = (DCulonglong) REAL(arg)[0]; break;
             case RAWSXP:  ulonglongValue = (DCulonglong) RAW(arg)[0]; break;
-            default:      error("Argument type mismatch at position %d: expected unsigned long long convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected unsigned long long convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgLongLong( pvm, *( (DClonglong*)&ulonglongValue ) );
         }
@@ -335,7 +346,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case CPLXSXP:   ptrValue = (DCpointer) COMPLEX(arg); break;
             case RAWSXP:    ptrValue = (DCpointer) RAW(arg); break;
             case EXTPTRSXP: ptrValue = R_ExternalPtrAddr(arg); break;
-            default:      error("Argument type mismatch at position %d: expected pointer convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected pointer convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgPointer(pvm, ptrValue);
         }
@@ -350,18 +361,19 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case SYMSXP:    cstringValue = (DCpointer) PRINTNAME(arg); break;
             case STRSXP:    cstringValue = (DCpointer) CHAR( STRING_ELT(arg,0) ); break;
             case EXTPTRSXP: cstringValue = R_ExternalPtrAddr(arg); break;
-            default:      error("Argument type mismatch at position %d: expected C string pointer convertable value", argpos); 
+            default:      error("Argument type mismatch at position %d: expected C string pointer convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgPointer(pvm, cstringValue);
         }
         break;
-        default: error("Signature type mismatch at position %d: Unknown token '%c'.", argpos); 
+        default: error("Signature type mismatch at position %d: Unknown token '%c' at argument %d.", ch, argpos); /* dummy */ return R_NilValue;
       }
     } else { /* ptrcnt > 0 */
       if (ch == '<') {
         while( isalnum(*sig) || *sig == '_' ) sig++;
-        if (*sig != '>')
-          error("Invalid signature '%s' - missing '>' marker for structure at argument %d.", signature, argpos);
+        if (*sig != '>') {
+          error("Invalid signature '%s' - missing '>' marker for structure at argument %d.", signature, argpos);/* dummy */ return R_NilValue;
+        }
         sig++;
         /* TODO: check pointer type */
       }
@@ -378,7 +390,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         case CPLXSXP:   ptrValue = (DCpointer) COMPLEX(arg); break;
         case RAWSXP:    ptrValue = (DCpointer) RAW(arg); break;
         case EXTPTRSXP: ptrValue = R_ExternalPtrAddr(arg); break;
-        default:      error("Argument type mismatch at position %d: expected pointer convertable value", argpos); 
+        default:      error("Argument type mismatch at position %d: expected pointer convertable value", argpos); /* dummy */ return R_NilValue;
       }
       dcArgPointer(pvm, ptrValue);
       ptrcnt = 0;
@@ -386,9 +398,10 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
   }
 
 
-  if (args != R_NilValue)
+  if (args != R_NilValue) {
     error ("Too many arguments for signature '%s'.", signature);
-
+    /* dummy */ return R_NilValue;
+  }
   /* process return type, invoke call and return R value  */
 
   switch(*sig++) {
@@ -436,7 +449,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
       UNPROTECT(1);
       return(ans);
     }
-    default: error("Unknown return type specification for signature '%s'.", signature);
+    default: error("Unknown return type specification for signature '%s'.", signature); /* return dummy: */ return R_NilValue;
   }
 
 }
