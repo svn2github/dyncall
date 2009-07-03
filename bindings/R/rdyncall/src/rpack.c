@@ -104,7 +104,7 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_USHORT:
 	{
-	  unsigned short* sp = (short*) ptr;
+	  unsigned short* sp = (unsigned short*) ptr;
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *sp = (unsigned short) LOGICAL(value_x)[0]; break;
@@ -282,6 +282,8 @@ SEXP r_unpack1(SEXP ptr_x, SEXP offset, SEXP sig_x)
     case DC_SIGCHAR_USHORT:    return ScalarInteger( ( (unsigned short*)ptr)[0] );
     case DC_SIGCHAR_INT:      return ScalarInteger( ( (int*)ptr )[0] );
     case DC_SIGCHAR_UINT:      return ScalarReal( (double) ( (unsigned int*)ptr )[0] );
+	case DC_SIGCHAR_LONG:     return ScalarReal( (double) ( (long*)ptr )[0] );
+	case DC_SIGCHAR_ULONG:    return ScalarReal( (double) ( (unsigned long*) ptr )[0] );
     case DC_SIGCHAR_FLOAT:    return ScalarReal( (double) ( (float*) ptr )[0] );
     case DC_SIGCHAR_DOUBLE:   return ScalarReal( ((double*)ptr)[0] );
     case DC_SIGCHAR_LONGLONG: return ScalarReal( (double) ( ((long long*)ptr)[0] ) );
