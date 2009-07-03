@@ -6,6 +6,12 @@
 
 if [ -d src/dyncall ]; then
 cd src/dyncall
+#CONFIG_ARGS="--prefix=\$(TOP\)"
+#UNAME_SYS=`uname -s`
+#if [ $UNAME_SYS == "Darwin" ]; then
+#  CONFIG_ARGS="${CONFIG_ARGS} --target-universal"
+#fi
+#sh ./configure $CONFIG_ARGS
 sh ./configure --prefix=\$\(TOP\)
 else
 echo configure error: dyncall source package missing

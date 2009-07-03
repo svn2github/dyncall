@@ -1,10 +1,10 @@
 library(rdyncall)
-dynport(rmalloc)
 dynport(sdl)
 dynport(gl)
 dynport(glu)
 # ----------------------------------------------------------------------------
 # demo
+surface <- NULL
 init <- function()
 {
   err <- SDL_Init(SDL_INIT_VIDEO)
@@ -51,7 +51,7 @@ makeCubeDisplaylist <- function()
   displaylistId <- glGenLists(1)
   glNewList( displaylistId, GL_COMPILE )    
   # glPushAttrib(GL_ENABLE_BIT)
-  glEnable(GL_DEPTH_TEST)
+  # glEnable(GL_DEPTH_TEST)
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, triangleIndices)
   # glPopAttrib()
   glEndList()
@@ -62,6 +62,8 @@ makeCubeDisplaylist <- function()
 
   return(displaylistId)
 }
+
+
 #buffers <- integer(2)  
 #glGenBuffersARG(length(buffers), rdcDataPtr(buffers))
 #glBindBufferARB(GL_ARRAY_BUFFER_ARB, buffers[[1]] )
@@ -70,9 +72,9 @@ makeCubeDisplaylist <- function()
 
 mainloop <- function()
 {
-  displaylistId <- makeCubeDisplaylist()
-  eventobj <- malloc(sizeof(struct("SDL_Event")))
-  eventobj <- new.struct("SDL_Event")
+  # displaylistId <- makeCubeDisplaylist()
+  # eventobj <- malloc(sizeof(struct("SDL_Event")))
+  event <- new.struct("SDL_Event")
   blink <- 0
   tbase <- SDL_GetTicks()
   quit <- FALSE
@@ -95,41 +97,33 @@ mainloop <- function()
     glRotated(sin(tdemo)*60.0, 0, 1, 0);
     glRotated(cos(tdemo)*90.0, 1, 0, 0);
 
-    glCallList(displaylistId)       
+    # glCallList(displaylistId)       
 
     glScaled(0.9,0.9,0.9)
     glRotated(sin(tdemo)*60.0, 0, 1, 0);
     glRotated(cos(tdemo)*90.0, 1, 0, 0);
-    glCallList(displaylistId)       
+    # glCallList(displaylistId)       
     
-    #glBegin(GL_TRIANGLES)
-    #glVertex3d(-1,-1,-1)
-    #glVertex3d( 1,-1,-1)
-    #glVertex3d( 1, 1,-1)
-    #glVertex3d(-1,-1,-1)
-    #glVertex3d( 1, 1,-1)
-    #glVertex3d(-1, 1,-1)
-    #glEnd()
+    glBegin(GL_TRIANGLES)
+    glVertex3d(-1,-1,-1)
+    glVertex3d( 1,-1,-1)
+    glVertex3d( 1, 1,-1)
+    glVertex3d(-1,-1,-1)
+    glVertex3d( 1, 1,-1)
+    glVertex3d(-1, 1,-1)
+    glEnd()
 
     SDL_GL_SwapBuffers()  
     
     SDL_WM_SetCaption(paste("time:", tdemo),NULL)    
     blink <- blink + 0.01
     while (blink > 1) blink <- blink - 1
-    while( SDL_PollEvent(eventobj) != 0 )
+    while( SDL_PollEvent(evt) != 0 )
     {
-      .switch( eventobj$type,
-          SDL_QUIT={quit <- TRUE},
-          SDL_MOUSEBUTTONDOWN={
-            eventobj$button
-          }
-      eventType <- SDL_Event.type(eventobj)
-      if (eventType == SDL_QUIT)
-        quit <- TRUE
-      else if (eventType == SDL_MOUSEBUTTONDOWN)
+      if ( evt$type == SDL_QUIT ) quit <- TRUE
+      else if (evt$type == SDL_MOUSEBUTTONDOWN )
       {
-        button <- SDL_Event.button(eventobj)
-        cat("button down: ",button,"\n") 
+        cat("button down: ",evt$button$button,"\n") 
       }
     }
     glerr <- glGetError()
@@ -140,7 +134,7 @@ mainloop <- function()
     }
     SDL_Delay(30)
   }
-  #glDeleteLists(displaylistId, 1)
+  glDeleteLists(displaylistId, 1)
 }
 
 cleanup <- function()

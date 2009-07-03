@@ -41,7 +41,8 @@ makeExternalPtr <- function(x,y,z)
   .Call("makeExternalPtr", PACKAGE="rdyncall")
 }
 
-test_c <- function(...)
+offsetPtr <- function(x, offset)
 {
-  .External("test_c", ..., PACKAGE="rdyncall")
+  .Call("offsetPtr", x, offset, PACKAGE="rdyncall")
 }
+

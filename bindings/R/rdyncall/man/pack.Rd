@@ -7,6 +7,7 @@
 \usage{
 .pack1(x, offset, sigchar, value)
 value <- .unpack1(x, offset, sigchar)
+offsetPtr(x, offset)
 }
 \arguments{
 	\item{x}{An atomic vector or external pointer.}

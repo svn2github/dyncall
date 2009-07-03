@@ -26,3 +26,10 @@ SEXP r_addrval(SEXP x)
 	}
 	return R_NilValue;
 }
+
+SEXP r_offsetPtr(SEXP x, SEXP offset)
+{
+  if ( TYPEOF(x) != EXTPTRSXP ) error("expected an external ptr");
+  return R_MakeExternalPtr( R_ExternalPtrAddr(x) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
+}
+

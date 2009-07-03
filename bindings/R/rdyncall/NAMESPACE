@@ -21,7 +21,7 @@ export(
   # callback.R
   new.callback,
   # utils.R 
-  .dataptr, .addrval, is.externalptr, is.nullptr, as.externalptr,
+  .dataptr, .addrval, is.externalptr, is.nullptr, as.externalptr, offsetPtr,
   # findLibPath.R
   findLibPath,
   # dynport.R

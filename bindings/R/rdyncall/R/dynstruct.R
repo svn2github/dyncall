@@ -160,8 +160,7 @@ makeUnionInfo <- function(unionSignature, fieldNames, envir=parent.frame())
   while(i <= n) {
     char  <- substr(unionSignature,i,i)
     if (char == "*") {
-      i <- i + 1L
-      next
+      i <- i + 1L ; next
     } else if (char == "<") {
       i <- i + 1L
       while (i < n) {
@@ -194,17 +193,17 @@ parseUnionInfos <- function(sigs, envir=parent.frame())
   {
     n <- length(sigs[[i]])
     if ( n == 2 ) {
-      # parse structure name
+      # parse union name
       name     <- sigs[[i]][[1]]
       name     <- gsub("[ \n\t]*","",name)
-      # split struct signature and field names
+      # split union signature and field names
       tail     <- unlist( strsplit(sigs[[i]][[2]], "[}]") )
       sig      <- tail[[1]]
       if (length(tail) == 2)
         fields   <- unlist( strsplit( tail[[2]], "[ \n\t]+" ) ) 
       else 
         fields   <- NULL
-      assign( name, makeUnionInfo(sig,fields,envir), envir=envir )
+      assign( name, makeUnionInfo(sig, fields, envir=envir), envir=envir )
     }
   }  
 }
@@ -243,8 +242,12 @@ unpack.struct <- function(x, index)
   if (fieldTypeInfo$type %in% c("base","pointer")) {
     .unpack1(x, offset, fieldTypeInfo$signature)
   } else if ( !is.null(fieldTypeInfo$fields) ) {
-    size <- fieldTypeInfo$size
-    as.struct( x[(offset+1):(offset+1+size-1)], structName=fieldTypeName)
+    if (is.raw(x)) {
+      size <- fieldTypeInfo$size
+      as.struct( x[(offset+1):(offset+1+size-1)], structName=fieldTypeName)
+    } else if (is.externalptr(x)) {
+      as.struct( offsetPtr(x, offset), structName=fieldTypeName) 
+    }
   } else {
     stop("invalid field type '", fieldTypeName,"' at field '", index )
   }
