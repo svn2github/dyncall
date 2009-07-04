@@ -1,6 +1,5 @@
-dynport(rmalloc)
-dynport(sdl)
-dynport(gl)
+dynport(SDL)
+dynport(GL)
 
 init <- function()
 {
@@ -37,7 +36,7 @@ checkGL <- function()
 
 mainloop <- function()
 {
-  sdlevent <- malloc( sizeof.SDL_Event )
+  sdlevent <- new.struct("SDL_Event")
   quit <- FALSE
   while(!quit)
   {
@@ -45,10 +44,10 @@ mainloop <- function()
     while( SDL_PollEvent(sdlevent) )
     {
       type <- SDL_Event.type(sdlevent)
-      if (type == SDL_QUIT ) {
+      if (sdlevent$type == SDL_QUIT ) {
         quit <- TRUE
-      } else if (type == SDL_MOUSEBUTTONDOWN) {
-        cat("button ", SDL_Event.button(sdlevent) ,"\n")
+      } else if (sdlevent$type == SDL_MOUSEBUTTONDOWN) {
+        cat("button ", sdlevent$button$button ,"\n")
       }
     }
     if ( !checkGL() ) quit <- TRUE

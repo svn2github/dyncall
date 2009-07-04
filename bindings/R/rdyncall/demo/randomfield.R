@@ -1,7 +1,5 @@
-library(rdyncall)
-dynport(sdl)
-dynport(gl)
-dynport(rmalloc)
+dynport(SDL)
+dynport(GL)
 
 # Parameters
 
@@ -15,7 +13,7 @@ tex.size <- 512
 
 SDL_Init(SDL_INIT_VIDEO)
 SDL_SetVideoMode(fb.size,fb.size,32,SDL_OPENGL+SDL_DOUBLEBUF)
-eventobj <- malloc(sizeof.SDL_Event)
+eventobj <- new.struct("SDL_Event")
 
 # initialize OpenGL
 
@@ -146,8 +144,7 @@ main <- function()
     }
     while( SDL_PollEvent(eventobj) != 0 )
     {
-      eventType <- SDL_Event.type(eventobj)
-      if (eventType == SDL_MOUSEBUTTONDOWN) quit <- TRUE
+      if (eventobj$type == SDL_MOUSEBUTTONDOWN) quit <- TRUE
     }    
     frames <- frames + 1
   }
