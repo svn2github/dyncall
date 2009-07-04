@@ -5,13 +5,14 @@
 if (.Platform$OS == "windows") {
   .libname <- "OPENGL32"
   .callmode <- "stdcall"
-} else if ( Sys.info()[["sysname"]] == "Darwin" ) {
-  .libname <- "OpenGL"
-  .callmode <- "cdecl"
 } else {
-  .libname <- "GL"
   .callmode <- "cdecl"
-}   
+  if ( Sys.info()[["sysname"]] == "Darwin" ) {
+    .libname <- "OpenGL"
+  } else {
+  .libname <- c("GL","GL.so.1")
+  }   
+}
 
 dynbind(.libname,"
  glAccum(if)v;

@@ -50,10 +50,10 @@ makeCubeDisplaylist <- function()
   
   displaylistId <- glGenLists(1)
   glNewList( displaylistId, GL_COMPILE )    
-  # glPushAttrib(GL_ENABLE_BIT)
-  # glEnable(GL_DEPTH_TEST)
+  glPushAttrib(GL_ENABLE_BIT)
+  glEnable(GL_DEPTH_TEST)
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, triangleIndices)
-  # glPopAttrib()
+  glPopAttrib()
   glEndList()
   
   glDisableClientState(GL_VERTEX_ARRAY)
@@ -72,8 +72,7 @@ makeCubeDisplaylist <- function()
 
 mainloop <- function()
 {
-  # displaylistId <- makeCubeDisplaylist()
-  # eventobj <- malloc(sizeof(struct("SDL_Event")))
+  displaylistId <- makeCubeDisplaylist()
   evt <- new.struct("SDL_Event")
   blink <- 0
   tbase <- SDL_GetTicks()
@@ -97,21 +96,21 @@ mainloop <- function()
     glRotated(sin(tdemo)*60.0, 0, 1, 0);
     glRotated(cos(tdemo)*90.0, 1, 0, 0);
 
-    # glCallList(displaylistId)       
+    glCallList(displaylistId)       
 
-    glScaled(0.9,0.9,0.9)
-    glRotated(sin(tdemo)*60.0, 0, 1, 0);
-    glRotated(cos(tdemo)*90.0, 1, 0, 0);
+    # glScaled(0.9,0.9,0.9)
+    # glRotated(sin(tdemo)*60.0, 0, 1, 0);
+    # glRotated(cos(tdemo)*90.0, 1, 0, 0);
     # glCallList(displaylistId)       
     
-    glBegin(GL_TRIANGLES)
-    glVertex3d(-1,-1,-1)
-    glVertex3d( 1,-1,-1)
-    glVertex3d( 1, 1,-1)
-    glVertex3d(-1,-1,-1)
-    glVertex3d( 1, 1,-1)
-    glVertex3d(-1, 1,-1)
-    glEnd()
+    # glBegin(GL_TRIANGLES)
+    # glVertex3d(-1,-1,-1)
+    # glVertex3d( 1,-1,-1)
+    # glVertex3d( 1, 1,-1)
+    # glVertex3d(-1,-1,-1)
+    # glVertex3d( 1, 1,-1)
+    # glVertex3d(-1, 1,-1)
+    # glEnd()
 
     SDL_GL_SwapBuffers()  
     
@@ -134,7 +133,7 @@ mainloop <- function()
     }
     SDL_Delay(30)
   }
-  # glDeleteLists(displaylistId, 1)
+  glDeleteLists(displaylistId, 1)
 }
 
 cleanup <- function()

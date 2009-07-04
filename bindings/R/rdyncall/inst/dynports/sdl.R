@@ -1,6 +1,6 @@
 
 
-dynbind("SDL", "
+dynbind( c("SDL","SDL-1.2","SDL-1.2.so.0"), "
 SDL_AddTimer(I*p*v)*<_SDL_TimerID>;
 SDL_AllocRW()*<SDL_RWops>;
 SDL_AudioDriverName(*ci)*c;
