@@ -61,9 +61,9 @@ The following table lists valid type character codes, corresponding C types, acc
 \code{s}           \tab short                  \tab raw,logical,integer,double         \tab integer\cr
 \code{S}           \tab unsigned short         \tab raw,logical,integer,double         \tab integer\cr
 \code{i}           \tab int                    \tab raw,logical,integer,double         \tab integer\cr
-\code{I}           \tab unsigned int           \tab raw,logical,integer,double         \tab integer\cr
-\code{j}           \tab long                   \tab raw,logical,integer,double         \tab integer\cr
-\code{J}           \tab unsigned long          \tab raw,logical,integer,double         \tab integer\cr
+\code{I}           \tab unsigned int           \tab raw,logical,integer,double         \tab double\cr
+\code{j}           \tab long                   \tab raw,logical,integer,double         \tab double\cr
+\code{J}           \tab unsigned long          \tab raw,logical,integer,double         \tab double\cr
 \code{l}           \tab long long              \tab raw,logical,integer,double         \tab double\cr
 \code{L}           \tab unsigned long long     \tab raw,logical,integer,double         \tab double\cr
 \code{f}           \tab float                  \tab raw,logical,integer,double         \tab double\cr

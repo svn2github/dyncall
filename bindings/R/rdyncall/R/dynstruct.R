@@ -37,7 +37,13 @@ getTypeInfo <- function(typeName, envir=parent.frame())
   char1 <- substr(typeName, 1, 1)
   switch(char1,
     "*"=TypeInfo(type="pointer", size=.Machine$sizeof.pointer, align=.Machine$sizeof.pointer, basetype=substr(typeName,2,nchar(typeName)), signature=typeName),
-    "<"=getTypeInfo(substr(typeName, 2,nchar(typeName)-1), envir=envir),
+    "<"={ 
+      x <- getTypeInfo(substr(typeName, 2,nchar(typeName)-1), envir=envir) 
+      if (!is.null(x)) 
+        return(x) 
+      else 
+        return(TypeInfo(type="struct"))
+    },
     {
       # try as basetype
       basetypeSize <- unname(.basetypeSizes[typeName])
@@ -49,7 +55,8 @@ getTypeInfo <- function(typeName, envir=parent.frame())
         return(info)
       }
       # otherwise fail
-      else stop("unknown type info: ",typeName)
+      else NULL
+      # else stop("unknown type info: ",typeName)
     }
   )
 }

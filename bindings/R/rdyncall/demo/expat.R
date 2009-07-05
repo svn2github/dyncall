@@ -1,27 +1,19 @@
-# TODO: Add comment
-# 
-# Author: dadler
-###############################################################################
-
-
 dynport(expat)
 
 parser <- XML_ParserCreate(NULL)
-#XML_StartElementHandler <- callback("pSp)v")
-#XML_EndElementHandler   <- callback("pS)v")
 
-onstart <- function(user,tag,attr)
+onXMLStartTag <- function(user,tag,attr)
 {
-  cat("begin", tag, "\n")  
+  cat("Start tag:", tag, "\n")  
 }
 
-onstop <- function(user,tag)
+onXMLEndTag <- function(user,tag)
 {
-  cat("end",tag)  
+  cat("End tag:",tag, "\n")  
 }
 
-cb.onstart <- new.callback("pSp)v", onstart )
-cb.onstop  <- new.callback("pS)v",  onstop )
+cb.onstart <- new.callback("pZp)v", onXMLStartTag )
+cb.onstop  <- new.callback("pZ)v",  onXMLEndTag )
 
 XML_SetElementHandler( parser, cb.onstart, cb.onstop ) 
 
@@ -33,3 +25,4 @@ text <- "
 "
 
 XML_Parse( parser, text, nchar(text), 1)
+

@@ -53,9 +53,9 @@ char dcCallbackHandler_R( DCCallback* pcb, DCArgs* args, DCValue* result, void* 
 		case DC_SIGCHAR_SHORT:     item = ScalarInteger( (int) dcArgs_short(args) ); break;
 		case DC_SIGCHAR_USHORT:    item = ScalarInteger( (int) dcArgs_ushort(args) ); break;
 		case DC_SIGCHAR_INT:       item = ScalarInteger( (int) dcArgs_int(args) ); break;
-		case DC_SIGCHAR_UINT:      item = ScalarInteger( (int) dcArgs_uint(args) ); break;
-		case DC_SIGCHAR_LONG:      item = ScalarInteger( (int) dcArgs_long(args) ); break;
-		case DC_SIGCHAR_ULONG:     item = ScalarInteger( (int) dcArgs_ulong(args) ); break;
+		case DC_SIGCHAR_UINT:      item = ScalarReal( (double) dcArgs_uint(args) ); break;
+		case DC_SIGCHAR_LONG:      item = ScalarReal( (double) dcArgs_long(args) ); break;
+		case DC_SIGCHAR_ULONG:     item = ScalarReal( (double) dcArgs_ulong(args) ); break;
 		case DC_SIGCHAR_LONGLONG:  item = ScalarReal( (double) dcArgs_longlong(args) ); break;
 		case DC_SIGCHAR_ULONGLONG: item = ScalarReal( (double) dcArgs_ulonglong(args) ); break;
 		case DC_SIGCHAR_FLOAT:     item = ScalarReal( (double) dcArgs_float(args) ); break;

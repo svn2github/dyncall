@@ -3,9 +3,12 @@ PLANED:
 - automatic installation of pre-built shared libraries
 - (cross-) build server network (virtual building via DynOS / QEMU and friends)
 
+Done:
+- SDL Event demo for rdyncall's C structure support.
 
 TODO:
-- SDL Event demo for rdyncall's C structure support.
+- polish callback example (expat library)
+- callbacks should fail with "not yet implemented" on platforms
 - use raw vectors for 1-to-1 bit encoding of values e.g. raw(8) for (u)int64 values
 - make dynfind locations configurable from extern
 
