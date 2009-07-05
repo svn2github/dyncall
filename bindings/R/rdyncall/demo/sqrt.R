@@ -1,4 +1,4 @@
-dynbind( c("msvcrt","c"), "sqrt(d)d;" )
+dynbind( c("msvcrt","libm.so"), "sqrt(d)d;" )
 print(sqrt)
 sqrt(144)
 

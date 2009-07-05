@@ -1,5 +1,5 @@
-dynport(sdl)
-dynport(gl)
+dynport(SDL)
+dynport(GL)
 
 blink <- 0
 init <- function()
