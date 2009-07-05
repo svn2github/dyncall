@@ -79,14 +79,14 @@ updateGL <- function()
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glUseProgram(0)
 }
-
+surface <- NULL
 initGL <- function()
 {
   require(rdyncall)
-  dynport(sdl)
-  dynport(gl)
+  dynport(SDL)
+  dynport(GL)
   SDL_Init(SDL_INIT_VIDEO)
-  SDL_SetVideoMode(640,480,32,SDL_OPENGL)
+  surface <<- SDL_SetVideoMode(640,480,32,SDL_OPENGL)
   dynport(glew)
   glewInit()
   checkGL()

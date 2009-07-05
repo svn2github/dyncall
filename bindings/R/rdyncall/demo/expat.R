@@ -1,3 +1,8 @@
+# Demo: expat.R
+# Description: Demonstration of callbacks
+# Uses Dynports: expat
+# Author: Daniel Adler
+
 dynport(expat)
 
 parser <- XML_ParserCreate(NULL)

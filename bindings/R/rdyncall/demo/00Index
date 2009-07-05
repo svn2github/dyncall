@@ -1,14 +1,9 @@
-blink			SDL demo
-callbacks		dyncall callback demo
-debug			debugging
-dynbind			test dynbind
-expat			expat dynport
-glsh			OpenGL shader language example
-R_ShowMessage	Use R internal function
-randomfield		OpenGL/SDL demo for creating huge random fields using blending of point sprites
-SDL_image		SDL_image loading
-sdl				SDL/OpenGL demo
-sdl2			SDL/OpenGL demo (polished)
-stdio			Lib C stdio 
-structs			Handling of C structures
-win32			Win32 Demo
+R_ShowMessage   Dynamic binding of 'R_ShowMessage' from 'R' Library 
+blink		Multimedia Demo Blinking Screen using SDL and OpenGL dynports
+SDL             Multimedia Demo Rotating 3D Color Cube using SDL,OpenGL and GLU dynports
+randomfield	Scientific Computations using OpenGL: Rendering random fields by blending point sprites
+expat		Parsing XML using expat and callbacks 
+callbacks	Foreign function calls to R callbacks (new.callback pointers get called by .dyncall)
+stdio	        C stdio library demo
+Win32PlaySound  Play 'tada' (Win32 only)
+

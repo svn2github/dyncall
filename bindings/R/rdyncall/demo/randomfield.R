@@ -4,7 +4,7 @@ dynport(GL)
 # Parameters
 
 # framebuffer size
-fb.size <- 1024
+fb.size <- 512
 
 # texture size
 tex.size <- 512
@@ -12,7 +12,7 @@ tex.size <- 512
 # initialize SDL
 
 SDL_Init(SDL_INIT_VIDEO)
-SDL_SetVideoMode(fb.size,fb.size,32,SDL_OPENGL+SDL_DOUBLEBUF)
+surface  <- SDL_SetVideoMode(fb.size,fb.size,32,SDL_OPENGL+SDL_DOUBLEBUF)
 eventobj <- new.struct("SDL_Event")
 
 # initialize OpenGL

@@ -1,9 +1,7 @@
 # File: rdyncall/demo/R_ShowMessage.R
 # Description: 
 
-lib <- .dynload("R")
-sym <- .dynfind(lib,"R_ShowMessage")
-R_ShowMessage <- function(...)
-  .dyncall.cdecl(sym, "S)v", ...)
+dynbind("R","R_ShowMessage(Z)v;")
 R_ShowMessage("hello")
-R_ShowMessage(23)
+R_ShowMessage(as.character(23))
+
