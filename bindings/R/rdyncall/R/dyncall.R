@@ -50,7 +50,7 @@ if (.Platform$OS == "windows") {
 # ----------------------------------------------------------------------------
 # generic call
 
-.dyncall <- function( address, signature, ... , callmode = .callmodes )
+.dyncall <- function( address, signature, ... , callmode = "cdecl" )
 {
   callvm <- switch(callmode, cdecl=callvm.cdecl, stdcall=callvm.stdcall)
   .External("dyncall", callvm, address, signature, ..., PACKAGE="rdyncall")
