@@ -1,6 +1,6 @@
 
 
-dynbind( "expat", "
+dynbind( c("expat","expat.so.1"), "
 XML_DefaultCurrent(*<XML_ParserStruct>)v;
 XML_ErrorString(i)*c;
 XML_ExpatVersion()*c;

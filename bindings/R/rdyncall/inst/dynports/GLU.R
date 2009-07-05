@@ -6,7 +6,7 @@ if (.sysName == "Windows") {
   .libName <- "GLU32"
 } else {
   .callMode <- "cdecl"
-  .libName <- if (.sysName == "Darwin") "OpenGL" else "GLU"
+  .libName <- if (.sysName == "Darwin") "OpenGL" else c("GLU","libGLU.so.1")
 }
 dynbind(.libName, "
 gluBeginCurve(*<GLUnurbs>)v;
