@@ -4,6 +4,7 @@ SDL             Multimedia Demo Rotating 3D Color Cube using SDL,OpenGL and GLU 
 randomfield	Scientific Computations using OpenGL: Rendering random fields by blending point sprites
 expat		Parsing XML using expat and callbacks 
 callbacks	Foreign function calls to R callbacks (new.callback pointers get called by .dyncall)
-stdio	        C stdio library demo
+stdio	        C stdio library demo using dynport stdio
 Win32PlaySound  Play 'tada' (Win32 only)
+sqrt            C math library demo
 
