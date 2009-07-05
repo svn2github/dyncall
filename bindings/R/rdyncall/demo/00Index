@@ -1,10 +1,11 @@
 R_ShowMessage   Dynamic binding of 'R_ShowMessage' from 'R' Library 
+R_malloc        Get access to low-level malloc/free from 'R' Library
 blink		Multimedia Demo Blinking Screen using SDL and OpenGL dynports
 SDL             Multimedia Demo Rotating 3D Color Cube using SDL,OpenGL and GLU dynports
 randomfield	Scientific Computations using OpenGL: Rendering random fields by blending point sprites
 expat		Parsing XML using expat and callbacks 
 callbacks	Foreign function calls to R callbacks (new.callback pointers get called by .dyncall)
 stdio	        C stdio library demo using dynport stdio
-Win32PlaySound  Play 'tada' (Win32 only)
 sqrt            C math library demo
+Win32PlaySound  Play 'tada' (Win32 only)
 
