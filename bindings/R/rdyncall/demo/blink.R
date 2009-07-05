@@ -1,6 +1,7 @@
-dynport(SDL)
-dynport(GL)
+dynport(sdl)
+dynport(gl)
 
+blink <- 0
 init <- function()
 {
   SDL_Init(SDL_INIT_VIDEO)
@@ -37,13 +38,13 @@ checkGL <- function()
 mainloop <- function()
 {
   sdlevent <- new.struct("SDL_Event")
+  # malloc( sizeof.SDL_Event )
   quit <- FALSE
   while(!quit)
   {
     update()
     while( SDL_PollEvent(sdlevent) )
     {
-      type <- SDL_Event.type(sdlevent)
       if (sdlevent$type == SDL_QUIT ) {
         quit <- TRUE
       } else if (sdlevent$type == SDL_MOUSEBUTTONDOWN) {
