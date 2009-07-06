@@ -1,8 +1,18 @@
 PREFIX_DYNCALL=dyncall
 PKG_CPPFLAGS=-I$(PREFIX_DYNCALL)/include
 PKG_LIBS=-L$(PREFIX_DYNCALL)/lib -ldyncall_s -ldynload_s -ldyncallback_s
-#all: $(SHLIB)
-#$(SHLIB): make-dyncall
-before: make-dyncall
-make-dyncall:
+
+# required by R >= 2.9
+
+all: install-dyncall $(SHLIB)
+
+# required by R <  2.9
+before: install-dyncall
+
+install-dyncall:
 	make -C dyncall install
+
+.PHONY: install-dyncall
+#$(SHLIB): make-dyncall
+# all: make-dyncall $(SHLIB)
+
