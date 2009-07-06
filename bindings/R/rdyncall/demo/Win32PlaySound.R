@@ -1,3 +1,4 @@
 dynbind("winmm", "PlaySoundA(Zii)v;")
-PlaySoundA("c:\\windows\\Media\\tada.wav")
+tada <- paste( Sys.getenv("SystemRoot"), "\\Media\\tada.wav", sep="" )
+PlaySoundA(tada,0,0)
 
