@@ -79,21 +79,3 @@ dynfind <- function(libnames, auto.unload=TRUE)
   }  
 }
 
-#.dynpath <- function(add = NULL, remove = NULL)
-#{
-#  if (nargs() == 0)
-#  {
-#    strsplit( Sys.getenv("path"), .Platform$path.sep)[[1]]
-#  }
-#  else
-#  {
-#    if (! missing(add))
-#    {
-#      paste(Sys.getenv("path"), paste(add,collapse=.Platform$path.sep), sep=.Platform$path.sep)
-#    }
-#    if (! missing(remove))
-#    {
-#      .NotYetImplemented()
-#    }
-#  }
-#}
