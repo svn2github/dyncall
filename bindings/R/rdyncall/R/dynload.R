@@ -2,26 +2,26 @@
 # Description: R bindings for dynload library
 #
 
-.dynload <- function(libpath, auto.unload=TRUE)
+.dynload <- function(libname, auto.unload=TRUE)
 {  
-  libh <- .Call("dynload", as.character(libpath), PACKAGE="rdyncall")
+  libh <- .Call("dynload", as.character(libname), PACKAGE="rdyncall")
   if (!is.null(libh)) {
-    attr(libh, "path") <- libpath
+    attr(libh, "path") <- libname
     attr(libh, "auto.unload") <- auto.unload
     if (auto.unload) reg.finalizer(libh, .dynunload)
   }
   libh
 }
 
-.dynunload <- function(libh)
+.dynunload <- function(libhandle)
 {
-  if (!is.externalptr(libh)) stop("libh argument must be of type 'externalptr'")
-  .Call("dynunload", libh, PACKAGE="rdyncall")
+  if (!is.externalptr(libhandle)) stop("libhandle argument must be of type 'externalptr'")
+  .Call("dynunload", libhandle, PACKAGE="rdyncall")
 }
 
-.dynsym <- function(libh, name, protect.lib=TRUE)
+.dynsym <- function(libhandle, name, protect.lib=TRUE)
 {
-  if (!is.externalptr(libh)) stop("libh argument must be of type 'externalptr'") 
-  .Call("dynsym", libh, as.character(name), as.logical(protect.lib), PACKAGE="rdyncall")
+  if (!is.externalptr(libhandle)) stop("libh argument must be of type 'externalptr'") 
+  .Call("dynsym", libhandle, as.character(name), as.logical(protect.lib), PACKAGE="rdyncall")
 }
 
