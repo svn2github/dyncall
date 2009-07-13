@@ -25,7 +25,7 @@ export(
   # findLibPath.R
   findLibPath,
   # dynport.R
-  dynport, dynport.unload, loadDynportNamespace
+  dynport, loadDynportNamespace
 )
 
 S3method("$<-", struct)

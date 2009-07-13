@@ -26,6 +26,8 @@ SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
   int mode_i;
   if      (strcmp(mode_S,"default") == 0 || strcmp(mode_S,"cdecl") == 0) mode_i = DC_CALL_C_DEFAULT;
   else if (strcmp(mode_S,"stdcall") == 0)	mode_i = DC_CALL_C_X86_WIN32_STD;
+  else if (strcmp(mode_S,"fastcall") == 0)      mode_i = DC_CALL_C_X86_WIN32_FAST_GNU;
+  else if (strcmp(mode_S,"fastcall.msvc") == 0) mode_i = DC_CALL_C_X86_WIN32_FAST_MS;
   else if (strcmp(mode_S,"fastcall.gcc") == 0)  mode_i = DC_CALL_C_X86_WIN32_FAST_GNU;
   else if (strcmp(mode_S,"fastcall.msvc") == 0) mode_i = DC_CALL_C_X86_WIN32_FAST_MS;
   else if (strcmp(mode_S,"thiscall") == 0) 	mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;

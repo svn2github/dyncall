@@ -1,32 +1,55 @@
 \name{rdyncall}
 \alias{rdyncall}
+\alias{dyncall}
 \alias{rdyncall-package}
 \title{R bindings for DynCall.}
 \description{  
-This package provides an R interface to call C/C++ and Fortran functions from shared libraries.
+This package provides an improved foreign function interface for R to invoke
+precompiled binary code without writing additional C code for binding.
+Designed as a toolkit, the package provides helpful tools for binding 
+binary functionality in a cross-platform portable way.
 
-The foreign function interface in \R (functions such as .C and .Call) is limited in several ways.
-You can not establish function calls to \emph{typical} C functions available on the net today.
-This package claims to allow a much broader integration with  
-   
-In \R, one can call foreign functions through .C, .Call, .Call.Graphics and .ExternalCalling a foreign function in is available using .C, .Call, .External 
-The abilities of R to call precompiled code are limited to R designed languages.
+The native foreign function interface (FFI) in \code{\link{.C}} is limited in 
+several ways such as no support for scalar C types and return types. 
+This package provides a much more flexible FFI. The function 
+\code{\link{.dyncall}} and its family of specializations (\code{.dyncall.*})
+allows to make calls to broad list of C function types and supports for
+binary calling convention standards. It allows to call
+functions with all C scalar (return-) types except Aggregates (C struct 
+arguments). 
+A more generic and portable to the process of loading and resolving library
+symbols is provided, see \code{\link{dynbind}} for details. 
 
-In further provides several utilities to easy the integration with compiled code to shrink the amount
-of glue code required to connect R with code from C/C++, Fortran etc.
+The implementation is based on dyncall, a shared C library which is ported
+to x86, x64 and ppc 32-bit R platforms. There is still no sparc port, so
+if you are using such a System, please do not use this package.
+All others should work fine. We have successfully tested this package on
+Windows XP, Mac OS 10.4 (ppc) and 10.5 (x86), Linux (x86, ppc and x64) 
+and FreeBSD. The C Library has been tested on a much broader range of 
+Operating-Systems and Hardware Platforms (e.g. PSP and Nintendo DS). See
+\link{http://dyncall.org} for more information.
 
-The package is based on dyncall, a C library, that provides a foreign function call interface and has
-been ported to a large number of platforms. See \url{http://dyncall.org} for a list of platforms included.
+In addition to a flexible FFI, the Package consists of a whole Framework
+of tools to make binding binary functionality with R more convienient and
+to manage prebuilt binaries and its portable interface to R. 
+See \code{\link{dynport}} for details. 
 
-Function overview of rdyncall:
+Powerful manipulation options are available to work with C struct and union
+types. See \code{\link{as.struct}} for details.
+
+The applications are manifold. One can use this package to access low-level 
+system services or even portable technologies such as OpenGL
+and SDL (see \link{dynport} for details).  
+
+Functional overview of the rdyncall R Package:
 
 \itemize{
-\item Load shared libraries. See \code{\link{dynload}}.
-\item Resolving symbolic names to function pointers. See \code{\link{dynload}}.
-\item Call foreign functions with support for multiple calling conventions. See \code{\link{dyncall}}.
-\item Make R functions callable from C context transparently. See \code{\link{callback}}. 
-\item Dynamic binding of shared library functions through text-based type signatures.  See \code{\link{dyncall}} and \code{\link{dynbind}} signatures.
-\item Integration of shared libraries using dynamic binding informations. See \code{\link{dynport}}.
+\item Foreign function interface. See \code{\link{dyncall}}.
+\item Locating/loading of shared libraries and resolving of symbols. See \code{\link{dynload}}.
+\item Automatic R wrapper and binding to shared library functions. See \code{\link{dynbind}}.
+\item Handling of C structures and unions. See \code{\link{as.struct}} and \code{\link{.pack}}.
+\item Wrapping R functions into C callbacks. See \code{\link{callback}}. 
+\item Dynamic R packages as managed interfaces to precompiled shared libraries. See \code{\link{dynport}}.
 }
 
 }

@@ -4,11 +4,12 @@
 \title{Find system libraries in common places.}
 \description{Searches in common places in the file-system to locate a library by a common name.}
 \usage{
-dynfind(name)
+dynfind(libnames, auto.unload=TRUE)
 pathsFromEnv(envname)
 }
 \arguments{
-  \item{name}{A vector of character strings specifying fragments of the shared library name. See below for details.}
+  \item{libname}{A vector of character strings specifying fragments of the shared library name. See below for details.}
+  \item{auto.unload}{A logical specify to register a finalizer that unloads the library when no reference is dangling. See \code{\link{.dynload}} for details.}
   \item{envname}{A character string specifying the name of a system environment variable such as 'LD_LIBRARY_PATH' or 'PATH'.} 
 }
 \details{

@@ -1,6 +1,23 @@
 # File: rdyncall/R/dynports.R
 # Description: repository for multi-platform bindings to binary components.
 
+# Front-end:
+
+dynport <- function(portname, portfile=NULL, repo=system.file("dynports", package="rdyncall"))
+{
+  # literate portname string
+  portname <- as.character(substitute(portname))
+  if (missing(portfile))
+  {
+    # search for portfile
+    portfile <- file.path( repo, paste(portname,".R",sep="") )
+    if ( !file.exists(portfile) ) portfile <- file.path( repo, paste(portname,".json",sep="") )        
+    if ( !file.exists(portfile) ) stop("dynport '", portname, "' not found.")    
+  }
+  loadDynportNamespace(portname, portfile)  
+}
+
+
 # the following code is copied from 'loadNamespace':
 makeNamespace <- function(name, version = NULL, lib = NULL) {
   impenv <- new.env(parent = .BaseNamespaceEnv, hash = TRUE)
@@ -25,24 +42,6 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
   env
 }
 
-# deprecated package-based container:
-loadDynportPackage  <- function(portname, filename, envir=NULL, do.attach=TRUE)
-{
-  # setup dynport environment search name  
-  envname <- paste("package",portname,sep=":")            
-  # check if dynport already loaded  
-  if ( envname %in% search() ) return()
-  if (missing(envir))
-  {
-    envir <- new.env(parent=baseenv())
-    attr(envir, "name") <- envname
-  }
-  # process portfile
-  sys.source(portfile, envir=envir) 
-  if (do.attach)
-    attach(envir)
-}
-
 # new namespace-based container:
 loadDynportNamespace <- function(name, portfile, do.attach=TRUE)
 { 
@@ -58,74 +57,3 @@ loadDynportNamespace <- function(name, portfile, do.attach=TRUE)
   if (do.attach) attachNamespace(env)
 }
 
-# Front-end:
-
-dynport <- function(portname, filename=NULL, repo=system.file("dynports", package="rdyncall"))
-{
-  # literate portname string
-  portname <- as.character(substitute(portname))
-  if (missing(filename))
-  {
-    # search for filename
-    filename <- file.path( repo, paste(portname,".R",sep="") )
-    if ( !file.exists(filename) ) filename <- file.path( repo, paste(portname,".json",sep="") )        
-    if ( !file.exists(filename) ) stop("dynport '", portname, "' not found.")    
-  }
-  loadDynportNamespace(portname, filename)  
-}
-
-dynport.unload <- function(portname)
-{
-  unloadNamespace(portname)
-}
-
-#dynport.unload <- function(portname)
-#{
-#  portname <- as.character(substitute(portname))
-#  envname <- paste("dynport",portname,sep=":")
-#  detach( name=envname )
-#}
-
-#dynport.require <- function(portname)
-#{
-#  
-#}
-
-
-future.json.format <- function() 
-{
-  
-  require(rjson)
-  
-  jsonparser <- newJSONParser()
-  
-  parseJSON <- function(path)
-  {
-    parser <- newJSONParser()
-    f <- file(path)
-    open(f)
-    while(TRUE) 
-    {
-      aLine <- readLines(f, 1)
-      if (length(aLine) == 0) break    
-      parser$addData( aLine )
-    }
-    close(f)
-    parser$getObject()
-  }
-  
-  from.json <- function(file)
-  {
-    json <- parseJSON(file)
-    sysname <- Sys.info()[["sysname"]][[1]]
-    paste( "_OS_", toupper(sysname) )   
-    libname <- json$libname
-    dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl")
-  }
-  
-  dynport.json <- function(portname, envir=NULL, pos = 2, auto.attach=TRUE)
-  {
-    
-  }
-  
-}

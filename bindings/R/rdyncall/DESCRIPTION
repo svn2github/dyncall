@@ -9,4 +9,3 @@ Description: Foreign function call interface to precompiled libraries using the 
 License: BSD
 URL: http://dyncall.org
 LazyLoad: no
-Suggests: rjson
