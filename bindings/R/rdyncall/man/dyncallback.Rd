@@ -63,36 +63,6 @@ The following table lists valid type character codes, corresponding C types, acc
 }
 }
 
-\examples{
-# load 'R' dynport
-libR <- .dynload("R")
-reg.finalizer(libR, .dynunload)
-.dynfind(.libR, "") 
-# load platform-specific standard C DLL
- 
-clibname <- "libc"
-if (.Platform$OS.type == "windows") clibname <- "msvcrt"
-if (.Platform$OS.type == "darwin") clibname <- "libc.dylib"
-if (.Platform$OS.type == "linux") clibname <- "libc.so.6"
-
-dyn.load(clibname)
-sqrt.ptr <- getNativeSymbolInfo("sqrt")
-mysqrt <- function(x) .dyncall.cdecl(sqrt.ptr, "d)d", x)
-
-aDouble <- 144
-anInteger <- 144L
-
-mysqrt(aDouble)
-mysqrt(anInteger)
-
-clib <- rdcLoad(clibname)
-
-# call sqrt function
-
-sqrt.fp <- rdcFind(clib,"sqrt")
-print( rdcCall(sqrt.fp, "d)d", 144) )
-
-}
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
   \url{http://dyncall.org}

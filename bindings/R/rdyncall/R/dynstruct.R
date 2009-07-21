@@ -1,3 +1,5 @@
+# File: rdyncall/R/dynstruct.R
+# Description: handling of aggregate low-level C structure and union types.
 # ----------------------------------------------------------------------------
 # dynport basetype sizes
 

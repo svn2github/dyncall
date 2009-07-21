@@ -18,7 +18,7 @@
 }
 \value{
 \code{.dynload} returns an external pointer \code{libhandle} on success. Otherwise NULL is returned, if the library is not found or the linkage failed.
-\code{.dynfind} returns an external pointer \code{address} on success. Otherwise NULL is returned, if the address was invalid or the symbol has not been found.
+\code{.dynsym} returns an external pointer \code{address} on success. Otherwise NULL is returned, if the address was invalid or the symbol has not been found.
 \code{.dynunload} always returns \code{NULL}.    
 }
 \details{

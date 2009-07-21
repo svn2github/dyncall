@@ -159,9 +159,11 @@ not aware of what she is doing. USE ON YOUR OWN RISK.
 }
 
 \examples{
+\donttest{
 rlib <- dynfind("R")
 x <- .dynsym(rlib,"sqrt")
 .dyncall(x, "d)d", 144L)
+}
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
@@ -173,7 +175,7 @@ x <- .dynsym(rlib,"sqrt")
 \seealso{
 \code{\link{dynbind}} for automatic binding of multiple functions from shared
 libraries.
-\code{\link{getNativeSymbolInfo}} and \code{\link{dyn.lad}}. 
+\code{\link{getNativeSymbolInfo}} and \code{\link{dyn.load}}. 
 \code{\link{.C}},\code{\link{.Call}},,\code{\link{.External}}
 }
 \keyword{interface}

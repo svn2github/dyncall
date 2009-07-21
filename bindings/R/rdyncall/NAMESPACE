@@ -7,15 +7,10 @@ export(
   # dynfind.R
   dynfind, pathsFromEnv,
   # dynbind.R 
-  dynbind, 
-  # struct.R
-  #.sigsizes, structinfo, new.struct, sizeof, structinfo, as.structptr,
-  # sizeof, alignof, 
-  align,
-  parseStructInfos, parseUnionInfos, 
-  #getStructInfo, showStructInfos, registerStructInfo, unregisterStructInfo, 
-  getTypeInfo,
-  new.struct, as.struct,
+  dynbind,
+  # dynstruct.R 
+  new.struct, as.struct, parseStructInfos, parseUnionInfos, 
+  align, getTypeInfo,
   # pack.R
   .pack1, .unpack1, 
   # callback.R
@@ -31,8 +26,4 @@ export(
 S3method("$<-", struct)
 S3method("$", struct)
 S3method(print,struct)
-# S3method(sizeof,struct)
-# S3method(sizeof,structinfo)
-# S3method(structinfo,character)
-# S3method(structinfo,struct)
 

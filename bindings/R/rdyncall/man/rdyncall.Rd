@@ -47,7 +47,7 @@ Functional overview of the rdyncall R Package:
 \item Foreign function interface. See \code{\link{dyncall}}.
 \item Locating/loading of shared libraries and resolving of symbols. See \code{\link{dynload}}.
 \item Automatic R wrapper and binding to shared library functions. See \code{\link{dynbind}}.
-\item Handling of C structures and unions. See \code{\link{as.struct}} and \code{\link{.pack}}.
+\item Handling of C structures and unions. See \code{\link{as.struct}} and \code{\link{.pack1}}.
 \item Wrapping R functions into C callbacks. See \code{\link{callback}}. 
 \item Dynamic R packages as managed interfaces to precompiled shared libraries. See \code{\link{dynport}}.
 }
