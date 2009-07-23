@@ -1,60 +1,53 @@
 \name{dynbind}
 \alias{dynbind}
 \title{Dynamic bindings to shared libraries.}
-\description{Function to create dynamic bindings to shared libraries.}
+\description{Dynamic bindings to shared library functions in a batch.}
 \usage{
-dynbind(libname, libsig, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
+dynbind(libname, lib.signature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
 }
 \arguments{
-  \item{libname}{A character string specifying the short library name or path.}
-  \item{libsig}{A character string specifying function symbol names and type signatures.}
-  \item{envir}{An environment where the binding functions are installed.}
-  \item{callmode}{A character string specifying the calling convention of the target library.}
-  \item{pat}{NULL or a regular expression character string that will match and which will be replaced by \code{pat}}
-  \item{replace}{NULL or a regular expression character string to replace \code{pat}}
-  \item{funcptr}{A logical specifying if symbols represent function pointer variables instead of functions.}
+  \item{libname}{Character string scalar specifying a (short) library name.}
+  \item{lib.signature}{Character string scalar specifying a batch of function symbol names and type signatures.}
+  \item{envir}{Environment where wrapper R functions should be installed.}
+  \item{callmode}{Character string scalar specifying the calling convention of the target library.}
+  \item{pat}{Character string scalar containing a regular expression that will match and which will be replaced by \code{pat}}
+  \item{replace}{Character string scalar specifying the replacement of the pattern given by \code{pat}.}
+  \item{funcptr}{Logical scalar specifying if symbols represent function pointer variables instead of functions.}
 }
 \details{
-
-The function loads the library specified by \code{libname} and resolves compiled code  
-specified by \code{libsig}. For each successfully resolved function, a R wrapper
-function will be created and installed in the environment \code{envir}.
-
-The location of the library can be specified by a absolut system file-path or using
-a short name.
-
-When using a short name, the library is looked up using the \code{PATH} environment variable.
-from a shared library to the R process at run-time.
-
-The \code{libname} character string specifies the location of the library. 
-
-The library is specified by \code{libname} given as a character string either in short or 
-long form (absolute file path).
-
-If \code{libname} specifies only a short form - where only the library name itself is given.
-
-The \code{libname} specified by \code{libsig} to 
-the R process. For each C function
-and binds C functions specified by the \code{lib.signature}.
-
-In the short form, the function tries to locate the library at well known places.
-  does not contain a full path or platform-specific prefix and suffixes.
-\code{dynbind} will look for the library in certain places using the \code{PATH} system environment variable 
-on Windows and Posix.
-
-The \code{lib.signature} character string contains a list of full-qualified function symbol and signature separated by \code{';'} (semicolon) character.
-White spaces, tabs and new-line characters are ignored.
-Each function binding consists of
+The function loads a shared library specified by \code{libname} using \code{\link{dynfind}} and 
+creates wrapper R functions for functions and function variables specified by the library
+signature \code{lib.signature}. On successful resolving of symbolic names, the corresponding 
+R wrapper functions will installed in \code{envir}.
+}
+\section{Library Signature}{
+The library signature is a text-based representation for a group of function bindings.
+It consists of function names and corresponding call signatures. Function bindings are separated 
+by ';' and whitespaces around.
 
 \tabular{c}{
-\emph{function-name} \code{'('} \emph{argument-types} \code{')'} \emph{return-type} \code{';'} \cr
+\emph{function-name} \samp{(} \emph{argument-types} \samp{)} \emph{return-type} \samp{;} \ldots \cr
 }
+}
+\value{
+The result of the batch operations are reported as list object consisting of the follow fields:
+\item{libhandle}{External pointer returned by \code{\link{.dynload}}}
+\item{unresolved.symbols}{Character string vector containing the names of unresolved symbols}
 }
 \author{
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
+\examples{
+\donttest{
+info <- dynbind("R","
+R_ShowMessage(Z)v;
+R_rsort(pi)v;
+")
+R_ShowMessage("hello")
+}
+}
 \seealso{
-\code{\link{.dyncall}}.
+\code{\link{dynfind}} for details on short library names and \code{\link{.dyncall}} for details on call signatures and calling conventions.
 }
 \keyword{programming}
 \keyword{interface}

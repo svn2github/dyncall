@@ -1,4 +1,5 @@
 \name{rdyncall}
+\docType{package}
 \alias{rdyncall}
 \alias{dyncall}
 \alias{rdyncall-package}

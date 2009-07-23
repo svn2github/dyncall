@@ -2,7 +2,7 @@
 # File: rdyncall/R/dynbind.R
 # Description: single-entry front-end to dynamic binding of library functions 
 
-dynbind <- function(libname, libsig, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
+dynbind <- function(libname, lib.signature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
 {
   # load shared library
   libh <- dynfind(libname)
@@ -12,7 +12,7 @@ dynbind <- function(libname, libsig, envir=parent.frame(), callmode="cdecl", pat
   # -- convert library signature to signature table
   
   # eat white spaces
-  sigtab <- gsub("[ \n\t]*","",libsig)  
+  sigtab <- gsub("[ \n\t]*","",lib.signature)  
   # split functions at ';'
   sigtab <- strsplit(sigtab, ";")[[1]]  
   # split name/call signature at '('
@@ -55,7 +55,7 @@ dynbind <- function(libname, libsig, envir=parent.frame(), callmode="cdecl", pat
     }
   }
   # return dynbind.report
-  x <- list(libhandle=libh, syms.failed=syms.failed)
+  x <- list(libhandle=libh, unresolved.symbols=syms.failed)
   class(x) <- "dynbind.report"
   return(x)
 }

@@ -1,4 +1,4 @@
-\name{dyncallback}
+\name{callback}
 \alias{new.callback}
 \title{Wrap R functions as C callback function pointers.}
 \description{  

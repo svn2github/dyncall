@@ -16,22 +16,20 @@ Functions to make calls to precompiled code with support for multiple calling co
 #.dyncall.thiscall.gcc ( address, signature, ... )
 }
 \arguments{
-  \item{address}{An external pointer to a foreign function such as returned by .dynsym or getNativeSymbolInfo.}
-  \item{signature}{A character string specifying the argument and return type of a function call.}
-  \item{callmode}{A character string specifying the calling convention.}
-  \item{...}{Any arguments to be passed via dyncall according to the argument types specified in \code{signature}.}
+  \item{address}{External pointer to a foreign function such as returned by .dynsym or getNativeSymbolInfo.}
+  \item{signature}{Character string scalar specifying the function call signature (argument and return type information).}
+  \item{callmode}{Character string scalar specifying the calling convention.}
+  \item{...}{Foreign function call arguments to be passed according to the argument types specified in \code{\link{signature}}.}
 }
 \value{
 The return value of the foreign function call converted to an \R type according to the return type character
 given by \code{signature}.
 }
 \details{
-
 A valid \code{address} to a foreign function can be obtained from functions such as \code{\link{.dynsym}} and \code{\link{getNativeSymbolInfo}}. 
-}
-\section{test}{
-The \code{signature} is a character string that encodes the arity (number of arguments) 
-and formal argument- and return-types using a character-based type code.
+
+The \code{\link{signature}} is a scalar character string that encodes the arity (number of arguments) 
+and formal argument- and return-types using a character-based type code using a \link{signature}.
 
 The calling convention is specified explicitly by the \code{callmode} argument 
 using \code{.dyncall} or implicitly by using \code{.dyncall.*} functions. 
@@ -39,7 +37,7 @@ using \code{.dyncall} or implicitly by using \code{.dyncall.*} functions.
 The arguments given with \code{...} are passed and possibly converted according to 
 the given signature.
 }
-\section{Signature}{
+\section{Call Signature}{
 
 The general form of a dyncall signature string is
 
@@ -173,6 +171,7 @@ x <- .dynsym(rlib,"sqrt")
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
 \seealso{
+\code{\link{signature}} for call signatures.
 \code{\link{dynbind}} for automatic binding of multiple functions from shared libraries.
 \code{\link{getNativeSymbolInfo}} and \code{\link{dyn.load}}. 
 \code{\link{.C}},\code{\link{.Call}},,\code{\link{.External}}

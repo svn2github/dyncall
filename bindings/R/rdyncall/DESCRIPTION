@@ -1,11 +1,11 @@
 Package: rdyncall
 Version: 0.1
 Date: 2009-06-23 
-Title: Improved foreign function interface to precompiled libraries
+Title: Improved foreign function interface with support for low-level C structure/union data type access and manipulations.
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
 Depends: R (>= 1.7)
-Description: Foreign function call interface to precompiled libraries using the dyncall library suite. 
+Description: Cross-platform dynamic bindings to precompiled binary shared library components as a whole. Support for binding functions and function pointer variables with support for constants, enums, C structures and unions. Multiple calling conventions are supported as well.   
 License: BSD
 URL: http://dyncall.org
 LazyLoad: no

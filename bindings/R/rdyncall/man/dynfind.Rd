@@ -27,16 +27,16 @@ The search strategies are quite different among the platforms.
 In general, several file-system match attempts are made using different 
 prefixes, suffixes and locations to search for. 
 
-All fragment will be tried as-is and with a '\preformatted{lib}' prefix.
+All fragment will be tried as-is and with a '\code{lib}' prefix.
 
-The file extension is either taken to be '\preformatted{.dll}' (Windows), '\preformatted{.dylib}' (Mac OS X), '\preformatted{.so}' (ELF-based - Linux, FreeBSD, NetBSD, OpenBSD, Solaris).
+The file extension is either taken to be '\code{.dll}' (Windows), '\code{.dylib}' (Mac OS X), '\code{.so}' (ELF-based - Linux, FreeBSD, NetBSD, OpenBSD, Solaris).
 On Mac OS X, in addition no file extension is tried for frameworks (see below).
 
 Several locations are tried which come from environment variables such as 
-'\preformatted{PATH}' on Windows. On the other platforms locations from the
-'\preformatted{LD_LIBRARY_PATH}' environment variable are tried together with
+'\code{PATH}' on Windows. On the other platforms locations from the
+'\code{LD_LIBRARY_PATH}' environment variable are tried together with
 some hardcoded locations (this might change in a future release):
-\preformatted{/opt/local/lib}, \preformatted{/usr/local/lib}, \preformatted{/usr/lib} and \preformatted{/lib}.
+\file{/opt/local/lib}, \file{/usr/local/lib}, \file{/usr/lib} and \file{/lib}.
 
 On Mac OS X, frameworks are also searched for by a fragment name and this 
 happens before the normal shared library search procedure is started. 
