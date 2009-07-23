@@ -67,7 +67,7 @@ The following table lists valid type character codes, corresponding C types, acc
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
   \url{http://dyncall.org}
 }
-\author {
+\author{
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
 \seealso{

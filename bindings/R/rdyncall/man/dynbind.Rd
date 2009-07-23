@@ -49,25 +49,12 @@ Each function binding consists of
 \tabular{c}{
 \emph{function-name} \code{'('} \emph{argument-types} \code{')'} \emph{return-type} \code{';'} \cr
 }
-
-The following example binds four C functions from the R run-time to R. Note that 
-this binding is not possible with .C binding.  
-
-# Dynamic bindings in R using dynbind:
-
-dynbind("R", "R_isort(pi)v; R_rsort(pi)v; R_csort(pi)v; rsort_with_index(ppi)v;")
-
-# Now, R_isort, R_rsort, R_csort, rsort_with_index are ready to use:
-
-x <- as.integer( rnorm(100)*100 )
-R_isort(x,length(x))
-
 }
-\author {
+\author{
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
 \seealso{
 \code{\link{.dyncall}}.
 }
 \keyword{interface}
-\keyword{programming::interface}
+

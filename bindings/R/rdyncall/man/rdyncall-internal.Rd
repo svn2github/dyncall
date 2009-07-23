@@ -1,2 +1,4 @@
 \name{rdyncall-internal}
-\title{rdyncall internals}
+\alias{rdyncall-internal}
+\title{rdyncall internal}
+

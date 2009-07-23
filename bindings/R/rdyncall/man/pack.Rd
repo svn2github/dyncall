@@ -19,7 +19,7 @@ offsetPtr(x, offset)
 These functions can be used for manipulating C-level structure data.
 Atomic vectors are first adjusted to start at the first element (offset 0). 
 }
-\author {
+\author{
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
 \keyword{interface}
