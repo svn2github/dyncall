@@ -3,11 +3,11 @@
 \title{Dynamic bindings to shared libraries.}
 \description{Function to create dynamic bindings to shared libraries.}
 \usage{
-dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
+dynbind(libname, libsig, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
 }
 \arguments{
   \item{libname}{A character string specifying the short library name or path.}
-  \item{libsignature}{A character string specifying function symbol names and type signatures.}
+  \item{libsig}{A character string specifying function symbol names and type signatures.}
   \item{envir}{An environment where the binding functions are installed.}
   \item{callmode}{A character string specifying the calling convention of the target library.}
   \item{pat}{NULL or a regular expression character string that will match and which will be replaced by \code{pat}}
@@ -17,7 +17,7 @@ dynbind(libname, libsignature, envir=parent.frame(), callmode="cdecl", pat=NULL,
 \details{
 
 The function loads the library specified by \code{libname} and resolves compiled code  
-specified by \code{libsignature}. For each successfully resolved function, a R wrapper
+specified by \code{libsig}. For each successfully resolved function, a R wrapper
 function will be created and installed in the environment \code{envir}.
 
 The location of the library can be specified by a absolut system file-path or using
@@ -33,7 +33,7 @@ long form (absolute file path).
 
 If \code{libname} specifies only a short form - where only the library name itself is given.
 
-The \code{libname} specified by \code{libsignature} to 
+The \code{libname} specified by \code{libsig} to 
 the R process. For each C function
 and binds C functions specified by the \code{lib.signature}.
 
@@ -56,5 +56,6 @@ Each function binding consists of
 \seealso{
 \code{\link{.dyncall}}.
 }
+\keyword{programming}
 \keyword{interface}
 

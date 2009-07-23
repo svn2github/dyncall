@@ -80,16 +80,16 @@ dlopen() searches for a compatible Mach-O file in the directories specified by a
  a colon-separated list of directory paths, which can be absolute or relative to the current working
  directory. The environment variables are LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, and DYLD_FALLBACK_LIBRARY_PATH. 
  The first two variables have no default value. The default value of DYLD_FALLBACK_LIBRARY_PATH
-  is $HOME/lib;/usr/local/lib;/usr/lib.  dlopen() searches the directories specified in
+  is \$HOME/lib;/usr/local/lib;/usr/lib.  dlopen() searches the directories specified in
  the environment variables in the order they are listed.
 
      When path doesn't contain a slash character (i.e. it is just a leaf name), dlopen() searches the fol-lowing following
-     lowing the following until it finds a compatible Mach-O file: $LD_LIBRARY_PATH, $DYLD_LIBRARY_PATH,
-     current working directory, $DYLD_FALLBACK_LIBRARY_PATH.
+     lowing the following until it finds a compatible Mach-O file: \$LD_LIBRARY_PATH, \$DYLD_LIBRARY_PATH,
+     current working directory, \$DYLD_FALLBACK_LIBRARY_PATH.
 
      When path contains a slash (i.e. a full path or a partial path) dlopen() searches the following the
-     following until it finds a compatible Mach-O file: $DYLD_LIBRARY_PATH (with leaf name from path ), cur-rent current
-     rent working directory (for partial paths), $DYLD_FALLBACK_LIBRARY_PATH (with leaf name from path ).
+     following until it finds a compatible Mach-O file: \$DYLD_LIBRARY_PATH (with leaf name from path ), cur-rent current
+     rent working directory (for partial paths), \$DYLD_FALLBACK_LIBRARY_PATH (with leaf name from path ).
 }
 \section{Library search on Microsoft Windows platforms}{
 
@@ -128,5 +128,5 @@ If a path is specified and there is a redirection file for the application, the 
   Basically, the same functionality can be achieved by using the R base functions \code{\link{dyn.load}} 
   and \code{\link{getNativeSymbolInfo}}, although this framework provides some advantages.
 }
+\keyword{programming}
 \keyword{interface}
-\keyword{programming::interface}

@@ -285,7 +285,7 @@ pack.struct <- function( x, index, value )
   return(x)
 }
 
-print.struct <- function(x, indent=0)
+print.struct <- function(x, indent=0, ...)
 {
   structName <- attr(x, "struct")
   structInfo <- getTypeInfo(structName)

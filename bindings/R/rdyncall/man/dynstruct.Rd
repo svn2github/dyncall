@@ -16,6 +16,7 @@ parseUnionInfos(sigs, envir=parent.frame())
   \item{structName}{A character string that specifies a symbolic name of type 'TypeInfo'.}
   \item{x}{An atomic vector or an external pointer.}
   \item{sigs}{A character string that specifies structure or union signatures. See details below.}
+  \item{envir}{Specifies an environment to install the type information into.} 
 }
 \details{
 
@@ -42,5 +43,5 @@ union-typename '\|' field-types '\}' field-names (white space separated) ';'
 \seealso{
 \code{\link{.unpack1}} and \code{\link{.pack1}}.
 }
+\keyword{programming}
 \keyword{interface}
-\keyword{programming::interface}

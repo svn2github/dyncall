@@ -7,13 +7,13 @@
 Functions to make calls to precompiled code with support for multiple calling conventions.
 }
 \usage{
-.dyncall( address, signature, ... , callmode = c("cdecl","stdcall") )
+.dyncall( address, signature, ... , callmode = "cdecl" )
 .dyncall.cdecl        ( address, signature, ... )
 .dyncall.stdcall      ( address, signature, ... )
-.dyncall.fastcall.msvc( address, signature, ... )
-.dyncall.fastcall.gcc ( address, signature, ... )
-.dyncall.thiscall.msvc( address, signature, ... )
-.dyncall.thiscall.gcc ( address, signature, ... )
+#.dyncall.fastcall.msvc( address, signature, ... )
+#.dyncall.fastcall.gcc ( address, signature, ... )
+#.dyncall.thiscall.msvc( address, signature, ... )
+#.dyncall.thiscall.gcc ( address, signature, ... )
 }
 \arguments{
   \item{address}{An external pointer to a foreign function such as returned by .dynsym or getNativeSymbolInfo.}
@@ -173,10 +173,9 @@ x <- .dynsym(rlib,"sqrt")
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
 \seealso{
-\code{\link{dynbind}} for automatic binding of multiple functions from shared
-libraries.
+\code{\link{dynbind}} for automatic binding of multiple functions from shared libraries.
 \code{\link{getNativeSymbolInfo}} and \code{\link{dyn.load}}. 
 \code{\link{.C}},\code{\link{.Call}},,\code{\link{.External}}
 }
+\keyword{programming}
 \keyword{interface}
-\keyword{programming::interface}

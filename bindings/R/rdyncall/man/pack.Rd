@@ -7,7 +7,6 @@
 \usage{
 .pack1(x, offset, sigchar, value)
 value <- .unpack1(x, offset, sigchar)
-offsetPtr(x, offset)
 }
 \arguments{
 	\item{x}{An atomic vector or external pointer.}
@@ -22,5 +21,5 @@ Atomic vectors are first adjusted to start at the first element (offset 0).
 \author{
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
+\keyword{programming}
 \keyword{interface}
-\keyword{programming::interface}

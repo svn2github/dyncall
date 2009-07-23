@@ -1,6 +1,6 @@
 \name{dyncallback}
 \alias{new.callback}
-\title{R functions as C function callbacks.}
+\title{Wrap R functions as C callback function pointers.}
 \description{  
 Function to wrap an R function into a C function pointer to be used as a C callback function pointer.
 }
@@ -16,11 +16,12 @@ new.callback( signature, fun, envir )
 An external pointer to be used as a opaque C function pointer in the context of a C callback.
 }
 \details{
-C callbacks are function pointers that are registered and executed from a C context. This function
-allows to wrap an R closure function into a C callback and reveals an opaque external pointer to 
-be registered as a C callback.
-One needs to know the C callback function type to specify the arguments and return types. A callback
-function signature specifies the expected arguments.
+C callbacks are function pointers that are registered and executed from within a C context. 
+This function allows to wrap an R closure function into a C callback and reveals an 
+opaque external pointer to be registered as a C callback.
+It is crucial to know the C callback function type to specify the arguments and return types
+using a signature, analogue to the foreign function interface. A callback function signature 
+specifies the expected arguments.
 }
 \note{
 Note: This feature is currently unstable. It is ported to x86 (tested on Windows, Mac OS X, Linux) and AMD64 (tested on Linux) platforms.
@@ -71,8 +72,8 @@ The following table lists valid type character codes, corresponding C types, acc
   Daniel Adler \email{dadler@uni-goettingen.de}
 }
 \seealso{
-\code{\link{getNativeSymbolInfo}} and \code{\link{.dynfind}}. 
+\code{\link{getNativeSymbolInfo}} and \code{\link{dynfind}}. 
 \code{\link{.C}},\code{\link{.Call}},,\code{\link{.External}}
 }
+\keyword{programming}
 \keyword{interface}
-\keyword{programming::interface}

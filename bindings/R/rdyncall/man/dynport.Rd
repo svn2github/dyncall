@@ -1,17 +1,19 @@
 \name{dynport}
 \alias{dynport}
 \alias{dynports}
-\title{Dynamic ports to shared libraries}
+\alias{loadDynportNamespace}
+\title{Dynamic binding of binary components on multiple platforms}
 \description{Dynports aims to provide cross-platform portable bindings from dynamic environments to statically compiled binary components. The development is in early stage.}
 \usage{
-dynport(name, portfile=NULL, repo=system.file("dynports",package="rdyncall") )
+dynport(portname, portfile=NULL, repo=system.file("dynports",package="rdyncall") )
 loadDynportNamespace(name, portfile, do.attach=TRUE)
 }
 \arguments{
-\item{name}{Symbolic literal or character string specifying a \emph{dynport}.}
+\item{portname}{Symbolic literal or character string specifying a \emph{dynport}.}
 \item{portfile}{Character string specifying a script file.}
 \item{repo}{Character string specifying a repository of dynport script files.}  
 \item{do.attach}{Logical specifying if the loaded dynport namespace should be attached as a package in the search path.}
+\item{name}{Character string specifying the name of a namespace.}
 }
 \details{
 \emph{dynport} is a new project to design a repository network of meta-
@@ -57,9 +59,6 @@ glClear(GL_COLOR_BUFFER_BIT)
 SDL_GL_SwapBuffers()
 }
 }
-
-\section{The Dynports Project}{
-}
+\keyword{programming}
 \keyword{interface}
-\keyword{programming::interface}
 

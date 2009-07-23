@@ -19,9 +19,9 @@
   .Call("dynunload", libhandle, PACKAGE="rdyncall")
 }
 
-.dynsym <- function(libhandle, name, protect.lib=TRUE)
+.dynsym <- function(libhandle, symname, protect.lib=TRUE)
 {
   if (!is.externalptr(libhandle)) stop("libh argument must be of type 'externalptr'") 
-  .Call("dynsym", libhandle, as.character(name), as.logical(protect.lib), PACKAGE="rdyncall")
+  .Call("dynsym", libhandle, as.character(symname), as.logical(protect.lib), PACKAGE="rdyncall")
 }
 
