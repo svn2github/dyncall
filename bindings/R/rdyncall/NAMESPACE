@@ -1,7 +1,11 @@
 useDynLib(rdyncall)
 export(
   # dyncall.R
-  .dyncall, .callmodes, .dyncall.cdecl, .dyncall.stdcall,
+  .dyncall, 
+  .dyncall.cdecl, 
+  .dyncall.stdcall, 
+  .dyncall.thiscall, .dyncall.thiscall.gcc, .dyncall.thiscall.msvc, 
+  .dyncall.fastcall, .dyncall.fastcall.gcc, .dyncall.fastcall.msvc,
   # dynload.R
   .dynload, .dynunload, .dynsym,
   # dynfind.R

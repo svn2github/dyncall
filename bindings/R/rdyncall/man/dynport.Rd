@@ -24,9 +24,10 @@ to \emph{whole shared libraries} on all R platforms without additional glue code
 The following dynports are available and have been tested on multiple platforms:
 
 \tabular{ll}{
-\strong{DynPort} \tab \strong{Description}        \cr
-\code{SDL}       \tab Simple Direct Layer library \cr
+\strong{dynport} \tab \strong{Description}        \cr
+\code{SDL}       \tab Simple DirectMedia Layer library \cr
 \code{SDL_image} \tab SDL Image Library           \cr
+\code{SDL_ttf}   \tab SDL True Type Font Rendering \cr
 \code{GL}        \tab OpenGL 1.1 API              \cr
 \code{GLU}       \tab OpenGL Utility Library      \cr
 \code{glew}      \tab OpenGL Extension Wrangler (OpenGL 3.0)  \cr

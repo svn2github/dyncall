@@ -115,7 +115,8 @@ mainloop <- function()
       if ( evt$type == SDL_QUIT ) quit <- TRUE
       else if (evt$type == SDL_MOUSEBUTTONDOWN )
       {
-        cat("button down: ",evt$button$button,"\n") 
+        button <- evt$button
+        cat("button ",button$button," at ",button$x,",",button$y,"\n") 
       }
     }
     glerr <- glGetError()

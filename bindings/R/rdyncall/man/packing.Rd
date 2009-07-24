@@ -1,4 +1,5 @@
 \name{packing}
+\alias{packing}
 \alias{.pack}
 \alias{.unpack}
 \title{(Un)-packing of C data types.}
