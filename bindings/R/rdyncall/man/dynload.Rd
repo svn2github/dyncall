@@ -57,7 +57,7 @@ Microsoft Windows                      \tab PE format                \tab \code{
 
 \section{Library search on Posix platforms (Linux,BSD,Sun Solaris)}{  
 
-The following text is taken from the Linux \preformatted{dlopen} manual page:
+The following text is taken from the Linux \code{dlopen} manual page:
 
 These search rules will only be applied to path names that do not contain an embedded '/'. 
 \itemize{    
@@ -96,7 +96,7 @@ dlopen() searches for a compatible Mach-O file in the directories specified by a
 The following text is taken from the Window SDK Documentation:
 
 If no file name extension is specified, the default library extension 
-\preformatted{.dll} is appended. However, the file name string can include a trailing point character (.) to 
+\code{.dll} is appended. However, the file name string can include a trailing point character (.) to 
 indicate that the module name has no extension. When no path is specified, the function searches 
 for loaded modules whose base name matches the base name of the module to be loaded. 
 If the name matches, the load succeeds. Otherwise, the function searches for the file in the 
@@ -112,9 +112,9 @@ following sequence:
 \item The directories that are listed in the PATH environment variable. 
 }
 
-Windows Server 2003, Windows XP SP1:  The default value of \preformatted{HKLM\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode} is 1 (current directory is searched after the system and Windows directories).
+Windows Server 2003, Windows XP SP1:  The default value of \code{HKLM\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode} is 1 (current directory is searched after the system and Windows directories).
 
-Windows XP:  If \preformatted{HKLM\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode} is 1, the current directory is searched after the system and Windows directories, but before the directories in the PATH environment variable. The default value is 0 (current directory is searched before the system and Windows directories).
+Windows XP:  If \code{HKLM\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode} is 1, the current directory is searched after the system and Windows directories, but before the directories in the PATH environment variable. The default value is 0 (current directory is searched before the system and Windows directories).
 
 
 The first directory searched is the one directory containing the image file used to create the calling process. Doing this allows private dynamic-link library (DLL) files associated with a process to be found without adding the process's installed directory to the PATH environment variable.

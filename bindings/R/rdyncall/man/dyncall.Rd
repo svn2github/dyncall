@@ -7,35 +7,46 @@
 Functions to make calls to precompiled code with support for multiple calling conventions.
 }
 \usage{
-.dyncall( address, signature, ... , callmode = "cdecl" )
-.dyncall.cdecl        ( address, signature, ... )
-.dyncall.stdcall      ( address, signature, ... )
-#.dyncall.fastcall.msvc( address, signature, ... )
-#.dyncall.fastcall.gcc ( address, signature, ... )
-#.dyncall.thiscall.msvc( address, signature, ... )
-#.dyncall.thiscall.gcc ( address, signature, ... )
+.dyncall( address, callsignature, ... , callmode = "cdecl" )
+.dyncall.cdecl        ( address, callsignature, ... )
+.dyncall.stdcall      ( address, callsignature, ... )
+.dyncall.thiscall     ( address, callsignature, ... )
+.dyncall.thiscall.msvc( address, callsignature, ... )
+.dyncall.thiscall.gcc ( address, callsignature, ... )
+.dyncall.fastcall.msvc( address, callsignature, ... )
+.dyncall.fastcall.gcc ( address, callsignature, ... )
 }
 \arguments{
   \item{address}{External pointer to a foreign function such as returned by .dynsym or getNativeSymbolInfo.}
-  \item{signature}{Character string scalar specifying the function call signature (argument and return type information).}
-  \item{callmode}{Character string scalar specifying the calling convention.}
+  \item{callsignature}{Sclar character string specifying the argument and return types also known as the \link[=signature]{function call signature}.}
+  \item{callmode}{Scalar character string specifying the calling convention.}
   \item{...}{Foreign function call arguments to be passed according to the argument types specified in \code{\link{signature}}.}
 }
-\value{
-The return value of the foreign function call converted to an \R type according to the return type character
-given by \code{signature}.
-}
 \details{
-A valid \code{address} to a foreign function can be obtained from functions such as \code{\link{.dynsym}} and \code{\link{getNativeSymbolInfo}}. 
 
-The \code{\link{signature}} is a scalar character string that encodes the arity (number of arguments) 
-and formal argument- and return-types using a character-based type code using a \link{signature}.
+The foreign function to be called is given by \code{address} which is typically obtained from 
+functions such as \code{\link{.dynsym}} and \code{\link{getNativeSymbolInfo}}. 
+
+The \code{\link{signature}} is a scalar character string that specifies the formal argument-
+return types of the target function in the context of C. See manual page \link[=signature]{call signature}
+for details on the encoding. 
 
 The calling convention is specified explicitly by the \code{callmode} argument 
 using \code{.dyncall} or implicitly by using \code{.dyncall.*} functions. 
 
-The arguments given with \code{...} are passed and possibly converted according to 
-the given signature.
+Arguments given with \code{...} are passed and converted according to the given call signature 
+and calling convention selected.
+
+The foreign function interface consists of two basic forms of flavours regarding the choosen
+calling convention. The explicit form used by \code{.dyncall} function uses an additional 
+\code{callmode} argument to specify the desired calling convention of the precompiled function 
+pointed by \code{address}. For efficiency reason (doing a long sequence of function calls), the 
+implicit form has the calling convention in the function name following the \code{.dyncall.} prefix.  
+
+}
+\value{  
+The return value of the foreign function call converted to an \R type according to the return type signature
+given by \code{\link{signature}}.
 }
 \section{Call Signature}{
 
@@ -52,23 +63,25 @@ to specify the return value.
 The following table lists valid type character codes, corresponding C types, acceptable R argument types and returned R types.
 
 \tabular{clll}{
-\strong{Type code} \tab \strong{C type}        \tab \strong{R argument type}           \tab \strong{R return type}\cr
-\code{B}           \tab bool                   \tab raw,logical,integer,double         \tab logical\cr
-\code{c}           \tab char                   \tab raw,logical,integer,double         \tab integer\cr
-\code{C}           \tab unsigned char          \tab raw,logical,integer,double         \tab integer\cr
-\code{s}           \tab short                  \tab raw,logical,integer,double         \tab integer\cr
-\code{S}           \tab unsigned short         \tab raw,logical,integer,double         \tab integer\cr
-\code{i}           \tab int                    \tab raw,logical,integer,double         \tab integer\cr
-\code{I}           \tab unsigned int           \tab raw,logical,integer,double         \tab double\cr
-\code{j}           \tab long                   \tab raw,logical,integer,double         \tab double\cr
-\code{J}           \tab unsigned long          \tab raw,logical,integer,double         \tab double\cr
-\code{l}           \tab long long              \tab raw,logical,integer,double         \tab double\cr
-\code{L}           \tab unsigned long long     \tab raw,logical,integer,double         \tab double\cr
-\code{f}           \tab float                  \tab raw,logical,integer,double         \tab double\cr
-\code{d}           \tab double                 \tab raw,logical,integer,double         \tab double\cr
-\code{p}           \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr,NULL\cr
-\code{S}           \tab char*                  \tab character,NULL                     \tab character,NULL\cr
-\code{x}           \tab SEXP                   \tab \emph{any}                         \tab \emph{any}\cr
+\strong{Type code} \tab \strong{C type}          \tab \strong{R argument type}           \tab \strong{R return type}\cr
+'\code{B}'           \tab int, bool, Bool_t      \tab raw,logical,integer,double         \tab logical\cr
+'\code{c}'           \tab char                   \tab raw,logical,integer,double         \tab integer\cr
+'\code{C}'           \tab unsigned char          \tab raw,logical,integer,double         \tab integer\cr
+'\code{s}'           \tab short                  \tab raw,logical,integer,double         \tab integer\cr
+'\code{S}'           \tab unsigned short         \tab raw,logical,integer,double         \tab integer\cr
+'\code{i}'           \tab int                    \tab raw,logical,integer,double         \tab integer\cr
+'\code{I}'           \tab unsigned int           \tab raw,logical,integer,double         \tab double\cr
+'\code{j}'           \tab long                   \tab raw,logical,integer,double         \tab double\cr
+'\code{J}'           \tab unsigned long          \tab raw,logical,integer,double         \tab double\cr
+'\code{l}'           \tab long long              \tab raw,logical,integer,double         \tab double\cr
+'\code{L}'           \tab unsigned long long     \tab raw,logical,integer,double         \tab double\cr
+'\code{f}'           \tab float                  \tab raw,logical,integer,double         \tab double\cr
+'\code{d}'           \tab double                 \tab raw,logical,integer,double         \tab double\cr
+'\code{p}'           \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr,NULL\cr
+'\code{S}'           \tab char*                  \tab character,NULL                     \tab character,NULL\cr
+'\code{x}'           \tab SEXP                   \tab \emph{any}                         \tab \emph{any}\cr
+'\code{*}' \ldots    \tab \emph{C type}* (pointer) \tab emph{any vector},externalptr,NULL \tab externalptr\cr
+'\code{*<}' \emph{typename} '\code{>}' \tab \emph{typename}* (pointer) \tab raw,externalptr \tab externalptr\cr
 \code{v}           \tab void                   \tab \emph{invalid}                     \tab NULL\cr
 }
 
@@ -86,15 +99,6 @@ C structures and unions can be used such as using '\code{<}' \emph{type-name} '\
 If used as a return type, the returned external pointer has the \code{struct} attribute set to that name,
 so that the structure/union type information works.
 
-Some examples of C function prototypes and corresponding function type signatures:
-
-\tabular{ll}{
-\code{double sqrt(double);}                    \tab \code{"d)d"}    \cr
-\code{double dnorm(double,double,double,int);} \tab \code{"dddi)d"} \cr
-\code{void   R_isort(int*,int);}               \tab \code{"pi)v"}   \cr
-\code{char   foo(int,double,float,bool);}      \tab \code{"idfB)c"} \cr
-\code{void   revsort(double*,int*,int);}       \tab \code{"ppi)v"}  \cr
-}
 }
 \section{Calling conventions}{
 Calling conventions specify on the machine-level how a function call is invoked.

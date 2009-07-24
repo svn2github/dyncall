@@ -9,10 +9,10 @@ export(
   # dynbind.R 
   dynbind,
   # dynstruct.R 
-  new.struct, as.struct, parseStructInfos, parseUnionInfos, 
+  makeStructInfo, makeUnionInfo, new.struct, as.struct, parseStructInfos, parseUnionInfos, 
   align, getTypeInfo,
   # pack.R
-  .pack1, .unpack1, 
+  .pack, .unpack, 
   # callback.R
   new.callback,
   # utils.R 

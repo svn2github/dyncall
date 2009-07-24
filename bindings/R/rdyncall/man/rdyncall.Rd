@@ -6,15 +6,13 @@
 \title{R bindings for DynCall.}
 \description{  
 This package provides an improved foreign function interface for R to invoke
-precompiled binary code without writing additional C code for binding.
-Designed as a toolkit, the package provides helpful tools for binding 
-binary functionality in a cross-platform portable way.
+function calls on precompiled binary code without writing additional C code for binding.
 
-The native foreign function interface (FFI) in \code{\link{.C}} is limited in 
-several ways such as no support for scalar C types and return types. 
+The base R foreign function interface (FFI) in \code{\link{.C}} is limited in 
+several ways such as that it has no support for scalar C types and does not support C return types. 
 This package provides a much more flexible FFI. The function 
 \code{\link{.dyncall}} and its family of specializations (\code{.dyncall.*})
-allows to make calls to broad list of C function types and supports for
+allows to make calls to a broad list of C function types and supports for
 binary calling convention standards. It allows to call
 functions with all C scalar (return-) types except Aggregates (C struct 
 arguments). 

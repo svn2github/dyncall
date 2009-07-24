@@ -6,33 +6,37 @@
 \alias{as.struct}
 \alias{parseStructInfos}
 \alias{parseUnionInfos}
-\title{Low-level access to C data structures.}
-\description{Functions for parsing C structure/union type information and a structure class to operate on C structure/union types in R.}
+\title{Handling of C structure and union types.}
+\description{Functions for parsing C type information and a struct S3 class to operate on C structure/union types in R.}
 \usage{
-.pack1(x, offset, sigchar, value)
-.unpack1(x, offset, sigchar)
-new.struct(structName)
-as.struct(x, structName)
-parseStructInfos(sigs, envir=parent.frame())
-parseUnionInfos(sigs, envir=parent.frame())
+new.struct(type)
+as.struct(x, type)
+\S3method{\$}{struct}{x, name}
+\S3method{\$}{struct}{x, name} <- value
+\S3method{print}{struct}
+parseStructInfos(structsSignature, envir=parent.frame())
+parseUnionInfos(unionsSignature, envir=parent.frame())
+makeStructInfo(structSignature, fieldNames, envir=parent.frame())
+makeUnionInfo(unionSignature, fieldNames, envir=parent.frame())
 }
 \arguments{
-  \item{x}{An atomic vector or an external pointer.}
-  \item{offset}{Positive integer specifying the offset from within the beginning (item 0) given in bytes.}
-  \item{sigchar}{Data type specifying the low-level representation of \code{value}}
-  \item{value}{Value} 
-  \item{structName}{A character string that specifies a symbolic name of type 'TypeInfo'.}
-  \item{sigs}{A character string that specifies structure or union signatures. See details below.}
-  \item{envir}{Specifies an environment to install the type information into.} 
-
+  \item{x}{External pointer or atomic raw vector of S3 class 'struct'.}
+  \item{type}{S3 TypeInfo Object or character string naming the structure type.}
+  \item{signatures}{Scalar character string that specifies multiple structure or union signatures. See details below.}
+  \item{envir}{Environment to install type information.} 
 }
 \details{
+Many C library interfaces require the correct handling of C structure types.
+A framework for R to work with such structures is provided by these functions.
 
-With the functions \code{.pack1} and \code{.unpack1} one can make low-level manipulations 
-of C-level structure data.
-Atomic vectors are first adjusted to start at the first element (offset 0). 
+The new.struct function allocates an atomic raw vector S3 Object of class 'struct' with a length 
+to hold the C data structure.
+Objects of S3 class struct are either R raw vector (allocated in R context) or 
+external pointer retrieved by some C interface.
+On can easily manipulate external pointers and raw vectors using the as.struct. 
+Objects of class struct hold an attribute struct which contains the name of a registered type.
 
-The new.struct function allocates a raw atomic vector and marks it with a new class attribute
+raw atomic vector and marks it with a new class attribute
 of type 'struct'. In addition, the attribute 'struct' will be set to the 'structName'.
 
 Working with C structures and unions in R requires type-information.

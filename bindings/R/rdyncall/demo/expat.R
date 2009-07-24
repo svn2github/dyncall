@@ -1,6 +1,6 @@
-# Demo: expat.R
-# Description: Demonstration of callbacks
-# Uses Dynports: expat
+# Package: rdyncall 
+# File: demo/expat.R
+# Description: Parsing XML using expat and callbacks 
 # Author: Daniel Adler
 
 dynport(expat)

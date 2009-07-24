@@ -20,17 +20,8 @@ creates wrapper R functions for functions and function variables specified by th
 signature \code{lib.signature}. On successful resolving of symbolic names, the corresponding 
 R wrapper functions will installed in \code{envir}.
 }
-\section{Library Signature}{
-The library signature is a text-based representation for a group of function bindings.
-It consists of function names and corresponding call signatures. Function bindings are separated 
-by ';' and whitespaces around.
-
-\tabular{c}{
-\emph{function-name} \samp{(} \emph{argument-types} \samp{)} \emph{return-type} \samp{;} \ldots \cr
-}
-}
 \value{
-The result of the batch operations are reported as list object consisting of the follow fields:
+The result of this batch operation is reported as list object consisting of the follow fields:
 \item{libhandle}{External pointer returned by \code{\link{.dynload}}}
 \item{unresolved.symbols}{Character string vector containing the names of unresolved symbols}
 }

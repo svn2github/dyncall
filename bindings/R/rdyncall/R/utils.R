@@ -29,7 +29,7 @@ offsetPtr <- function(x, offset)
 #  if (is.atomic(x))
 #  {
 #    value <- as.integer(x)
-#    return(.unpack1(value, 0, 'p'))
+#    return(.unpack(value, 0, 'p'))
 #  }
 #  else if (is.function(x))
 #  {

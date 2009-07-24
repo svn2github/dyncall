@@ -34,6 +34,11 @@ TypeInfo <- function(...)
   return(x)
 }
 
+is.TypeInfo <- function(x)
+{
+  inherits(x, "typeinfo")
+}
+
 getTypeInfo <- function(typeName, envir=parent.frame())
 {
   char1 <- substr(typeName, 1, 1)
@@ -221,20 +226,23 @@ parseUnionInfos <- function(sigs, envir=parent.frame())
 # ----------------------------------------------------------------------------
 # raw backed struct's (S3 Class)
 
-as.struct <- function(x, structName)
+as.struct <- function(x, type)
 {
+  if (is.TypeInfo(type)) type <- getTypeInfo(type)
+  if (is.TypeInfo(x)) structName <- type 
   attr(x, "struct") <- structName
   class(x) <- "struct"
   return(x)
 }
 
-new.struct <- function(structName)
+new.struct <- function(type)
 {
-  info <- getTypeInfo(structName)
-  if (! info$type %in% c("struct","union") ) stop("no structure type")
-  x <- raw( info$size )
-  attr(x, "struct") <- structName
+  if (is.character(type)) type <- getTypeInfo(type)
+  else if (!is.TypeInfo(type)) stop("type is not of class TypeInfo and no character string")
+  if (! type$type %in% c("struct","union") ) stop("type must be C struct or union.")
+  x <- raw( type$size )
   class(x) <- "struct"
+  attr(x, "struct") <- type$name
   return(x)
 }
 
@@ -249,7 +257,7 @@ unpack.struct <- function(x, index)
   fieldTypeName   <- as.character(fieldInfos[[index,"type"]])
   fieldTypeInfo   <- getTypeInfo(fieldTypeName)
   if (fieldTypeInfo$type %in% c("base","pointer")) {
-    .unpack1(x, offset, fieldTypeInfo$signature)
+    .unpack(x, offset, fieldTypeInfo$signature)
   } else if ( !is.null(fieldTypeInfo$fields) ) {
     if (is.raw(x)) {
       size <- fieldTypeInfo$size
@@ -273,7 +281,7 @@ pack.struct <- function( x, index, value )
   fieldTypeName <- as.character(fieldInfos[index,"type"])
   fieldTypeInfo <- getTypeInfo(fieldTypeName)
   if (fieldTypeInfo$type == "base") {
-    .pack1( x, offset, fieldTypeInfo$signature, value )
+    .pack( x, offset, fieldTypeInfo$signature, value )
   }
   else if ( !is.null(fieldTypeInfo$fields) ) {
     size <- fieldTypeInfo$size

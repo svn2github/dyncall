@@ -16,16 +16,12 @@ loadDynportNamespace(name, portfile, do.attach=TRUE)
 \item{name}{Character string specifying the name of a namespace.}
 }
 \details{
-\emph{dynport} is a new project to design a repository network of meta-
-informations for multi-platform binary shared library components. It is 
-currently in incubation phase. 
+The \emph{dynport} project was establish to develop an infrastructure to dynamically bind 
+precompiled code with interpreted dynamic programming environments in a portable fashion.
+Also it is currently in early stage, it already provides a convenient portable interface 
+to \emph{whole shared libraries} on all R platforms without additional glue code in C.   
 
-The front-end function \code{dynport} runs a script file in a newly created
-namespace. Typically the script instructs rdyncall to dynamically link 
-against shared libraries and binds pre-compiled functions to the R run-time 
-process.
-
-Here's a list of currently available packages:
+The following dynports are available and have been tested on multiple platforms:
 
 \tabular{ll}{
 \strong{DynPort} \tab \strong{Description}        \cr
@@ -33,29 +29,52 @@ Here's a list of currently available packages:
 \code{SDL_image} \tab SDL Image Library           \cr
 \code{GL}        \tab OpenGL 1.1 API              \cr
 \code{GLU}       \tab OpenGL Utility Library      \cr
-\code{glew}      \tab OpenGL Extension Wrangler   \cr
+\code{glew}      \tab OpenGL Extension Wrangler (OpenGL 3.0)  \cr
 \code{expat}     \tab Expat XML Parser Library    \cr
 \code{ode}       \tab Open Dynamics (physics-) Engine \cr
 \code{R}         \tab R shared library            \cr
 }
 
-Under the rdyncall package directory installed in R_HOME/library/rdyncall is a sub-directory
-named \code{dynports} which contain dynport files for several shared libraries.
-If something does not work, keep in mind, this feature is still
-alpha - we are happy for feedback and bug reports.
+Keep in mind, that you need to pre-install the binaries on your system. The installation 
+procedure depends on your Operating System. In general, dynport need to locate the binaries.
+See \code{\link{dynfind}} for details on how to find libraries.
+  
+A dynport is an R script located in \file{R_HOME/library/rdyncall/dynports}.
+It is executed in a fresh R namespace context. The script loads shared libraries. 
+It binds functions and function pointers, assigns constants and enum, and registers 
+C union and structure data types.
+A tool suite is in development to extract these informations from C headers automatically.
+It was successfully used to generate the available dynports. In case, you are in need to
+have a specific binding for R, feel free to contact me. 
+
+}
+\references{
+  Adler, D., Philipp, T. (2008) \emph{DynCall Library}. \cr 
+  \url{http://dyncall.org} \cr
+  Clark, J. (1998). expat - XML Parser Toolkit. \cr
+  \url{http://expat.sourceforge.net} \cr
+  Ikits, M. and Magallon, M. (2002).  The OpenGL Extension Wrangler Library. \cr
+  \url{http://glew.sourceforge.net} \cr
+  Latinga, S. (1998). The Simple DirectMedia Layer Library. \cr 
+  \url{http://www.libsdl.org} \cr
+  Segal, M. and Akeley, K. (1992). The OpenGL Graphics System. A Specification, Version 1.0. \cr
+  \url{http://www.opengl.org} \cr
+  Smith, R. (2001). Open Dynamics Engine. \cr
+  \url{http://www.ode.org} \cr
 }
 \examples{
-
 \donttest{
-# Appetizer: SDL and OpenGL
-
+# Using SDL and OpenGL in R 
 dynport(SDL)
 dynport(GL)
-
+# Initialize Video Sub-system
 SDL_Init(SDL_INIT_VIDEO)
+# Initialize Screen with OpenGL Context and Double Buffering
 SDL_SetVideoMode(320,256,32,SDL_OPENGL+SDL_DOUBLEBUF)
+# Clear Color and Clear Screen
 glClearColor(0,0,1,0) # blue
 glClear(GL_COLOR_BUFFER_BIT)
+# Flip Double-Buffers
 SDL_GL_SwapBuffers()
 }
 }

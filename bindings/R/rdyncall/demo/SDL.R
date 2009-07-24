@@ -1,15 +1,26 @@
+# Package: rdyncall 
+# File: demo/SDL.R
+# Description: 3D Rotating Cube Demo using SDL,OpenGL and GLU. (dynport demo)
+# Author: Daniel Adler
+
 dynport(SDL)
 dynport(GL)
 dynport(GLU)
-# ----------------------------------------------------------------------------
-# demo
+
+# Globals.
+
 surface <- NULL
+
+# Init.
+
 init <- function()
 {
   err <- SDL_Init(SDL_INIT_VIDEO)
   if (err != 0) error("SDL_Init failed")  
   surface <<- SDL_SetVideoMode(512,512,32,SDL_DOUBLEBUF+SDL_OPENGL)
 }
+
+# GL Display Lists
 
 makeCubeDisplaylist <- function()
 {
@@ -62,18 +73,12 @@ makeCubeDisplaylist <- function()
   return(displaylistId)
 }
 
-
-#buffers <- integer(2)  
-#glGenBuffersARG(length(buffers), rdcDataPtr(buffers))
-#glBindBufferARB(GL_ARRAY_BUFFER_ARB, buffers[[1]] )
-#glBufferDataARB(GL_ARRAY_BUFFER_ARB, rdcSizeOf(typeof(vertices)) * length(vertices)  , rdcDataPtr(vertices) )
-
+# Mainloop.
 
 mainloop <- function()
 {
   displaylistId <- makeCubeDisplaylist()
-  # eventobj <- malloc(sizeof(struct("SDL_Event")))
-  evt <- new.struct("SDL_Event")
+  evt <- new.struct(SDL_Event)
   blink <- 0
   tbase <- SDL_GetTicks()
   quit <- FALSE
@@ -98,20 +103,8 @@ mainloop <- function()
 
     glCallList(displaylistId)       
 
-    # glScaled(0.9,0.9,0.9)
-    # glRotated(sin(tdemo)*60.0, 0, 1, 0);
-    # glRotated(cos(tdemo)*90.0, 1, 0, 0);
     glCallList(displaylistId)       
     
-    #glBegin(GL_TRIANGLES)
-    #glVertex3d(-1,-1,-1)
-    #glVertex3d( 1,-1,-1)
-    #glVertex3d( 1, 1,-1)
-    #glVertex3d(-1,-1,-1)
-    #glVertex3d( 1, 1,-1)
-    #glVertex3d(-1, 1,-1)
-    #glEnd()
-
     SDL_GL_SwapBuffers()  
     
     SDL_WM_SetCaption(paste("time:", tdemo),NULL)    
@@ -145,6 +138,9 @@ run <- function()
 {
   init()
   mainloop()
+  cleanup()
 }
-# run()
+
+run()
+
 

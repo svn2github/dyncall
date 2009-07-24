@@ -1,3 +1,8 @@
+# Package: rdyncall 
+# File: demo/randomfield.R
+# Description: Scientific Computations using OpenGL: Rendering 512x512 random field by blending 5000 point sprites (dynport demo)
+# Author: Daniel Adler
+
 dynport(SDL)
 dynport(GL)
 
@@ -118,10 +123,6 @@ main <- function()
   tbase <- SDL_GetTicks()  
   frames <- 0
   
-  # displayList <- glGenLists(1)
-  # glNewList(displayList, GL_COMPILE)
-  # drawTexCirclesVertexArray(x,y,r)  
-  # glEndList()
   x <- runif(N,-1.1,1.1)
   y <- runif(N,-1.1,1.1)
   r <- runif(N,0.1,0.2)
@@ -130,7 +131,6 @@ main <- function()
   {
     glClear(GL_COLOR_BUFFER_BIT)
     drawTexCirclesVertexArray(x,y,r)
-    # glCallList(displayList)
     x <- runif(N,-1.1,1.1)
     y <- runif(N,-1.1,1.1)
     r <- runif(N,0.1,0.2)

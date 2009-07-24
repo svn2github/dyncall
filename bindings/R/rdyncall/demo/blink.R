@@ -1,11 +1,18 @@
+# Package: rdyncall 
+# File: demo/blink.R
+# Description: Simple SDL,OpenGL demonstration - a blinking screen
+# Author: Daniel Adler
+
 dynport(SDL)
 dynport(GL)
 
 blink <- 0
+surface <- NULL
+
 init <- function()
 {
   SDL_Init(SDL_INIT_VIDEO)
-  SDL_SetVideoMode(640,480,32,SDL_OPENGL+SDL_DOUBLEBUF)
+  surface <<- SDL_SetVideoMode(640,480,32,SDL_OPENGL+SDL_DOUBLEBUF)
   blink <<- 0
 }
 
@@ -38,7 +45,6 @@ checkGL <- function()
 mainloop <- function()
 {
   sdlevent <- new.struct("SDL_Event")
-  # malloc( sizeof.SDL_Event )
   quit <- FALSE
   while(!quit)
   {
@@ -55,5 +61,16 @@ mainloop <- function()
   }
 }
 
-init()
-mainloop()
+quit <- function()
+{
+  SDL_Quit()
+}
+
+run <- function()
+{  
+  init()
+  mainloop()
+  quit()
+}
+
+run()

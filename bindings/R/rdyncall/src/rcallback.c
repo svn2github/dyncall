@@ -195,7 +195,6 @@ SEXP r_new_callback(SEXP sig_x, SEXP fun_x, SEXP rho_x)
 		ch = *ptr++;
 	}
 	rdata->nargs = nargs;
-	Rprintf("%d\n", nargs);
 	DCCallback* cb = dcNewCallback( signature, dcCallbackHandler_R, rdata);
 	return R_MakeExternalPtr( cb, R_NilValue, R_NilValue );
 }

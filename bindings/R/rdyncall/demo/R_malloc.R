@@ -1,6 +1,7 @@
-# Dynport: Rmalloc
-# Description: R low-level memory management
-# Maintainer: dadler@uni-goettingen.de
+# Package: rdyncall 
+# File: demo/R_malloc.R
+# Description: using R's memory allocator directly in R
+# Author: Daniel Adler
 
 dynbind("R","R_chk_calloc(ii)p;R_chk_free(p)v;")
 malloc <- function(size) 

@@ -39,7 +39,7 @@ dynbind <- function(libname, lib.signature, envir=parent.frame(), callmode="cdec
       f <- function(...) NULL
       if (funcptr)
       {
-        body(f) <- substitute( dyncallfunc( .unpack1(address,0,"p"), signature,...), list(dyncallfunc=dyncallfunc,address=address,signature=signature) )
+        body(f) <- substitute( dyncallfunc( .unpack(address,0,"p"), signature,...), list(dyncallfunc=dyncallfunc,address=address,signature=signature) )
       }
       else
       {

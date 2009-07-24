@@ -1,14 +1,19 @@
-# TODO: Add comment
-# 
-# Author: dadler
-###############################################################################
+# Package: rdyncall 
+# File: demo/callbacks.R
+# Description: Creating a callback and call it via .dyncall
+# Author: Daniel Adler
 
-
+# The function to wrap:
 f <- function(x,y) x+y
 
+# Create the callback:
 cb <- new.callback("ii)i", f)
+
+# Call the callback
 r <- .dyncall(cb, "ii)i", 20, 3)
 r == 23
+
+# Recursive callback example:
 
 f <- function(x,y,f,i) 
 {

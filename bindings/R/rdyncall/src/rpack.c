@@ -14,8 +14,8 @@
 #include "rdyncall_signature.h"
 
 /** ---------------------------------------------------------------------------
- ** C-Function: r_pack1
- ** Description: poke R values into C-like structures.
+ ** C-Function: r_dataptr
+ ** Description: retrieve the 'data' pointer on an R expression.
  ** R-Calling Convention: .Call
  **
  **/
@@ -37,7 +37,13 @@ static char* r_dataptr(SEXP data_x)
   }
 }
 
-SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
+/** ---------------------------------------------------------------------------
+ ** C-Function: r_pack
+ ** Description: pack R data type into a C data type
+ ** R-Calling Convention: .Call
+ **
+ **/
+SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 {
   char* ptr = r_dataptr(ptr_x);
 
@@ -263,12 +269,12 @@ SEXP r_pack1(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 }
 
 /** ---------------------------------------------------------------------------
- ** C-Function: r_unpack1
+ ** C-Function: r_unpack
  ** Description: unpack elements from C-like structures to R values.
  ** R-Calling Convention: .Call
  **
  **/
-SEXP r_unpack1(SEXP ptr_x, SEXP offset, SEXP sig_x)
+SEXP r_unpack(SEXP ptr_x, SEXP offset, SEXP sig_x)
 {
   char* ptr = r_dataptr(ptr_x);
   if (ptr == NULL) error("invalid address pointer");
@@ -276,6 +282,7 @@ SEXP r_unpack1(SEXP ptr_x, SEXP offset, SEXP sig_x)
   const char* sig = CHAR(STRING_ELT(sig_x,0) );
   switch(sig[0])
   {
+    case DC_SIGCHAR_BOOL:     return ScalarLogical( ((int*)ptr)[0] );
     case DC_SIGCHAR_CHAR:     return ScalarInteger( ( (char*)ptr)[0] );
     case DC_SIGCHAR_UCHAR:     return ScalarInteger( ( (unsigned char*)ptr)[0] );
     case DC_SIGCHAR_SHORT:    return ScalarInteger( ( (short*)ptr)[0] );
