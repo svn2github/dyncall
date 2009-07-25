@@ -125,13 +125,13 @@ init <- function()
 
 cleanup <- function()
 {
-  glDeleteTextures( length(tex.ids), ,tex.ids)
+  glDeleteTextures( length(tex.ids), tex.ids)
   SDL_Quit()
 }
 
 main <- function()
 {
-  cat("Click on window to suspend back to interpreter or close window.\n")
+  cat("Click on window to import current random field and plot in R.\nClose window to quit mainloop.\n")
   N         <- 5000
   colorunit <- 0.02
   glColor3d( colorunit,colorunit,colorunit )
@@ -144,6 +144,8 @@ main <- function()
   y <- runif(N,-1.1,1.1)
   r <- runif(N,0.1,0.2)
   event <- new.struct("SDL_Event")
+        
+  oldpars <- par(ask=FALSE)
   
   while(!suspend) 
   {
@@ -164,8 +166,11 @@ main <- function()
     {
       type <- event$type
       if (type == SDL_MOUSEBUTTONDOWN) {
-        suspend <- TRUE
-        cat("suspended .. re-run by calling 'main()'")
+        cat("Read pixels via OpenGL into an R integer matrix..")
+        pixels <- readpixels()
+        cat("done.\nPlot image results with R plotting device. This may take a while - please be patient..")
+        image(pixels)
+        cat("done.\nContinue..\n") 
       } else if (type == SDL_QUIT) { 
         suspend <- TRUE
         quit <- TRUE 
@@ -174,17 +179,18 @@ main <- function()
     }    
     frames <- frames + 1
   }
-if (quit) {
-  clean()
-} else {
-}
+  if (quit) {
+    cleanup()
+  } else {
+  }
+  par(oldpars)
 }
 
 readpixels <- function()
 {
   array <- matrix(NA_integer_,fb.size,fb.size)
   glPixelStorei(GL_PACK_ALIGNMENT,1)
-  glReadPixels(0,0,fb.size,fb.size, GL_LUMINANCE, GL_UNSIGNED_INT, array)
+  glReadPixels(0,0,fb.size,fb.size, GL_LUMINANCE, GL_INT, array)
   return(array)
 }
 
