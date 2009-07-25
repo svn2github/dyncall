@@ -415,7 +415,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
     case DC_SIGCHAR_USHORT:    return ScalarInteger( (int) ( (unsigned short) dcCallShort(pvm,addr) ) );
 
     case DC_SIGCHAR_INT:       return ScalarInteger( dcCallInt(pvm,addr) );
-    case DC_SIGCHAR_UINT:      return ScalarInteger( (int) ( (unsigned int) dcCallInt(pvm, addr) ) );
+    case DC_SIGCHAR_UINT:      return ScalarReal( (double) (unsigned int) dcCallInt(pvm, addr) );
 
     case DC_SIGCHAR_LONG:      return ScalarReal( (double) dcCallLong(pvm, addr) );
     case DC_SIGCHAR_ULONG:     return ScalarReal( (double) ( (unsigned long) dcCallLong(pvm, addr) ) );
