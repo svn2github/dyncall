@@ -7,7 +7,12 @@ dynbind <- function(libname, lib.signature, envir=parent.frame(), callmode="cdec
   # load shared library
   libh <- dynfind(libname)
   if ( is.null(libh) )
-    stop("unable to find '", libname,"'")
+  {
+    cat("dynbind error: Unable to find shared library '", libname[[1]], "'.\n",sep="")
+    cat("Consult the projects page how to build and install the shared library for your operating-system.\n")
+    cat("Make sure the shared library can be found at the default system places or adjust environment variables (e.g. %PATH% or $LD_LIBRARY_PATH).\n")
+    stop("unable to find shared library '", libname[[1]], "'.\n", call.=FALSE)
+  }
   
   # -- convert library signature to signature table
   
