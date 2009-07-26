@@ -1,7 +1,7 @@
 \name{cstructs}
+\alias{struct}
+\alias{structs}
 \alias{cstructs}
-\alias{.pack1}
-\alias{.unpack1}
 \alias{new.struct}
 \alias{as.struct}
 \alias{parseStructInfos}
@@ -11,9 +11,11 @@
 \usage{
 new.struct(type)
 as.struct(x, type)
-\S3method{\$}{struct}{x, name}
-\S3method{\$}{struct}{x, name} <- value
-\S3method{print}{struct}
+\S3method{$}{struct}(x, index)
+\S3method{$}{struct}(x, index) <- value
+\S3method{[}{struct}(x, index)
+\S3method{[}{struct}(x, index) <- value
+\S3method{print}{struct}(x, indent=0, \ldots)
 parseStructInfos(structsSignature, envir=parent.frame())
 parseUnionInfos(unionsSignature, envir=parent.frame())
 makeStructInfo(structSignature, fieldNames, envir=parent.frame())
@@ -24,6 +26,8 @@ makeUnionInfo(unionSignature, fieldNames, envir=parent.frame())
   \item{type}{S3 TypeInfo Object or character string naming the structure type.}
   \item{signatures}{Scalar character string that specifies multiple structure or union signatures. See details below.}
   \item{envir}{Environment to install type information.} 
+  \item{index}{Scalar character string specifying the field name.}
+  \item{indent}{Indentation level for pretty printing structures.}
 }
 \details{
 Many C library interfaces require the correct handling of C structure types.

@@ -2,8 +2,12 @@
 \alias{dynport}
 \alias{dynports}
 \alias{loadDynportNamespace}
-\title{Dynamic binding of binary components on multiple platforms}
-\description{Dynports aims to provide cross-platform portable bindings from dynamic environments to statically compiled binary components. The development is in early stage.}
+\title{Dynamic portable interface bindings to shared libraries.}
+\description{Dynports aims to provide platform-portable bindings of statically compiled libraries to 
+dynamic programming language environments such as R.
+The development is in early stage. This is the first prototyp, written in R 
+and design for the R environment. Future revisions are planed to incorporate 
+other dynamic languages and extend the type system interface.}
 \usage{
 dynport(portname, portfile=NULL, repo=system.file("dynports",package="rdyncall") )
 loadDynportNamespace(name, portfile, do.attach=TRUE)

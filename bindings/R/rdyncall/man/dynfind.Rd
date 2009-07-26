@@ -41,11 +41,11 @@ some hardcoded locations (this might change in a future release):
 On Mac OS X, frameworks are also searched for by a fragment name and this 
 happens before the normal shared library search procedure is started. 
 A framework has a different naming convention, such that a '\code{FooBar}' fragment 
-would try for a match at '\code{/Library/Frameworks/FooBar.framework/FooBar}'.
+would try for a match at '\code{/System/Library/Frameworks/FooBar.framework/FooBar}' and '\code{/Library/Frameworks/FooBar.framework/FooBar}'.
 
-Loading of the library is done by \code{.dynload}.
+Loading of the library is done by \code{\link{.dynload}}.
 }
-\seealso{.dynload}
+\seealso{\code{\link{.dynload}}}
 \keyword{programming}
 \keyword{interface}
 

@@ -3,57 +3,129 @@
 \alias{rdyncall}
 \alias{dyncall}
 \alias{rdyncall-package}
-\title{R bindings for DynCall.}
+\title{Dynamic foreign library interface framework}
 \description{  
-This package provides an improved foreign function interface for R to invoke
-function calls on precompiled binary code without writing additional C code for binding.
-
-The base R foreign function interface (FFI) in \code{\link{.C}} is limited in 
-several ways such as that it has no support for scalar C types and does not support C return types. 
-This package provides a much more flexible FFI. The function 
-\code{\link{.dyncall}} and its family of specializations (\code{.dyncall.*})
-allows to make calls to a broad list of C function types and supports for
-binary calling convention standards. It allows to call
-functions with all C scalar (return-) types except Aggregates (C struct 
-arguments). 
-A more generic and portable to the process of loading and resolving library
-symbols is provided, see \code{\link{dynbind}} for details. 
-
-The implementation is based on dyncall, a shared C library which is ported
-to x86, x64 and ppc 32-bit R platforms. There is still no sparc port, so
-if you are using such a System, please do not use this package.
-All others should work fine. We have successfully tested this package on
-Windows XP, Mac OS 10.4 (ppc) and 10.5 (x86), Linux (x86, ppc and x64) 
-and FreeBSD. The C Library has been tested on a much broader range of 
-Operating-Systems and Hardware Platforms (e.g. PSP and Nintendo DS). 
-
-In addition to a flexible FFI, the Package consists of a whole Framework
-of tools to make binding binary functionality with R more convienient and
-to manage prebuilt binaries and its portable interface to R. 
-See \code{\link{dynport}} for details. 
-
-Powerful manipulation to work with C struct and union
-types are available. See \code{\link{as.struct}} for details.
-
-The applications are manifold. One can use this package to access whole
-low-level system services such as OpenGL for 3D Graphics and SDL for
-controlling multimedia devices (Video, Audio, User-Input). See \link{dynport} for details.  
-
-Functional overview of the rdyncall R Package:
-
-\itemize{
-\item Foreign function interface. See \code{\link{dyncall}}.
-\item Locating/loading of shared libraries and resolving of symbols. See \code{\link{.dynload}}.
-\item Automatic R wrapper and binding to shared library functions. See \code{\link{dynbind}}.
-\item Handling of C structures and unions. See \code{\link{as.struct}} and \code{\link{.pack1}}.
-\item Wrapping R functions into C callbacks. See \code{\link{new.callback}}. 
-\item Dynamic binding to precompiled shared libraries. See \code{\link{dynport}}.
+Improved foreign function interface and framework for portable
+dynamic binding of shared libraries including type information.
 }
+\details{
+\pkg{rdyncall} provides a framework to make lightweight interfaces
+between R and shared libraries work in a portable way.
+
+R interfaces to C libraries such as OpenGL, libSDL and expat are 
+available out-of-the-box. See \command{\link{dynport}} for details.
+
+allow to interface with the functions, constants, structures and 
+unions in R.
+
+In addition, utility functions are available to work with C low-level types.
+
+At the core, it provides a flexible foreign function interface based on
+the \emph{dyncall C library}. 
+}
+\section{Getting Started}{
+Several demos are available. And two vignettes acompany this release.
+Please make sure, you have installed the shared libraries.
+}
+\section{Applications}{
+The applications are manifold. One can use this package to get access 
+to OpenGL for 3D Graphics and SDL for controlling multimedia devices 
+(Video, Audio, User-Input). See \command{\link{dynport}} for details.  
+}
+\section{Overview}{
+\itemize{
+\item Dynamic ports to open-standard libraries such as libSDL and OpenGL. union types. See details at \code{\link{dynport}}.
+\item Flexible Foreign function interface for R with support for 
+     a wide range of C types and multiple calling conventions. See \code{\link{.dyncall}}.
+\item Managed unloading of shared library. See \code{\link{.dynload}}.
+\item Locating shared libraries. See \code{\link{dynfind}}.
+\item Dynamic binding of shared library functions and function pointers in R. See \code{\link{dynbind}}.
+\item Working with C low-level and aggregate types (structs and unions). See \code{\link{packing}} and \code{\link{cstructs}}.
+\item Wrapping R functions as C function pointers to be used in C callbacks. See \code{\link{new.callback}}. 
+}
+}
+\section{Platform portability notes}{
+
+Windows:\cr
+Tested on 32-bit R on Windows XP. In principle would run on X64. Supports Microsoft Visual C++ dynamic bindings as well.
+
+\cr
+Mac OS X:\cr
+Tested on 32-bit R on OS X 10.4 and 10.5. Runs on PPC32 and X86 architectures. 
+Has not been tested on 64-bit Mac OS X R Version. Should work in principle.
+Has not been tested on PPC 64-bit and probably won't work there.
+
+When using libSDL, make sure you are in the Cocoa Environment of R for Mac OS X.
+
+\cr
+Linux:\cr
+
+Tested on Ubuntu and Gentoo. Runs on PPC32, X86 and X64 architectures. 
+
+\cr
+FreeBSD:\cr
+
+Tested on FreeBSD 5.0 and 7.0 on X86. Should run on X64 and PPC32 as well.
+
+\cr
+Solaris:\cr
+
+Not tested yet. In theory should work on X86, X64 and PPC32.
+
+\cr
+Game consoles:\cr
+
+R has not been ported yet. The dyncall C library has been ported to
+Playstation Portable (MIPS) and Nintendo DS (ARM).
 
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
   \url{http://dyncall.org}
+}
+\examples{
+\donttest{
+# multimedia example
+# load dynports for OpenGL, Simple DirectMedia library
+# globals:
+surface <- NULL
+# init (up to) OpenGL 3.0 API:
+init <- function()
+{
+  dynport(SDL)
+  dynport(GL)
+  if ( SDL_Init(SDL_INIT_VIDEO) != 0 ) stop("SDL_Init failed")
+  surface <<- SDL_SetVideoMode(640,480,32,SDL_DOUBLEBUF+SDL_OPENGL)
+  cat("surface dimension:", surface$w, "x",surface$h,sep="")
+  # Access OpenGL 3.0 API
+  dynport(glew)
+}
+# draw blue screen
+updateSurface <- function(t)
+{
+  glClearColor(0,0,t \%\% 1,0)
+  glClear(GL_COLOR_BUFFER_BIT+GL_DEPTH_BUFFER_BIT)
+  SDL_GL_SwapBuffers()
+}
+# wait till close
+mainloop <- function()
+{
+  quit <- FALSE
+  evt <- new.struct(SDL_Event)
+  base <- SDL_GetTicks() / 1000
+  t <- 0
+  while(!quit) {
+    updateSurface(t)
+    while(SDL_PollEvent(evt)) {
+      if ( evt$type == SDL_QUIT ) quit <- TRUE
+    }
+    now <- SDL_GetTicks() / 1000
+    t <- now - base
+  }
+}
+init()
+mainloop()
+}
 }
 \keyword{programming}
 \keyword{interface}

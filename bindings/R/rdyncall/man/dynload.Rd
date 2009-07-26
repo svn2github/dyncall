@@ -24,18 +24,22 @@
 \details{
 The function \code{.dynload} attempts to load a library given by \code{libname}
 which specifies the location in an OS-specific way. 
+
 On success, it loads the library to the run-time process and returns an external pointer representing a 
 handle on the library \code{libhandle} for later use with \code{.dynsym} and \code{.dynunload}. 
 Otherwise \code{NULL} is returned. Function pointers can be resolved using 
 \code{.dynsym} to lookup a symbol given by the symbolic name \code{symname}. 
-Although, the same functionality is available with \code{dyn.load} and \code{getNativeSymbolInfo}, 
+
+Although the same core functionality is available using the R base package functions \code{dyn.load} and \code{getNativeSymbolInfo}, 
 this framework features an improved life-time management and uses the lookup semantics
-of the underlying operating-system.
+of the underlying operating-system:
+
 If both, \code{auto.unload} and \code{protect.lib},  are set to \code{TRUE} (default behaviour),
 the resolved addresses from \code{dyn.sym} protect the library handle returned from \code{dyn.load}.
 A finalizer for the library is then actually called, when no resolved addresses are active.
-Interally, multiple calls to \code{dyn.load} and \code{dyn.unload} are valid. All operating systems
-do an internal reference counting on loaded libraries. 
+Multiple calls to \code{dyn.load} and \code{dyn.unload} are valid. Operating systems
+tend to do an internal reference counting on loaded libraries. 
+
 Below are OS-specific informations of the implemented services - based on dynload C library accompanied with
 the dyncall C library suite.
 }
