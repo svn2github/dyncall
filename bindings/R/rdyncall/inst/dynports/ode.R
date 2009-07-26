@@ -557,8 +557,6 @@ parseStructInfos("
 dGeomClass{i*p*p*p*p}bytes collider aabb aabb_test dtor ;
 dxHeightfieldData{};
 dxTriMeshData{};
-dStopwatch{d}time cc ;
-dContact{<dSurfaceParameters><dContactGeom>}surface geom fdir1 ;
 dSurfaceParameters{ifffffffffff}mode mu mu2 bounce bounce_vel soft_erp soft_cfm motion1 motion2 motionN slip1 slip2 ;
 dxJointGroup{};
 dxJointNode{};
