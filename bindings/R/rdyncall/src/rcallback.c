@@ -1,3 +1,10 @@
+/** ===========================================================================
+ ** R-Package: rdyncall
+ ** File: rdyncall/src/rcallback.c
+ ** Description: dyncall callback R backend
+ **
+ ** Copyright (C) 2009 Daniel Adler
+ **/
 #include "Rinternals.h"
 #include "Rdefines.h"
 #include "dyncall_callback.h"

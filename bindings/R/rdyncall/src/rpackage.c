@@ -3,7 +3,7 @@
  ** File: rdyncall/src/rpackage.c
  ** Description: R package registry
  **
- ** Copyright (C) 2007-2009 Daniel Adler
+ ** Copyright (C) 2009 Daniel Adler
  **/
 
 #include <Rinternals.h>

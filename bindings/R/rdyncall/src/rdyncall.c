@@ -3,7 +3,7 @@
  ** File: rdyncall/src/rdyncall.c
  ** Description: R bindings to dyncall
  **
- ** Copyright (C) 2007-2009 Daniel Adler
+ ** Copyright (C) 2009 Daniel Adler
  **/
 
 #include <Rinternals.h>

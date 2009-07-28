@@ -3,7 +3,7 @@
  ** File: rdyncall/src/rutils.c
  ** Description: misc utility functions to work with low-level data structures in R
  **
- ** Copyright (C) 2007-2009 Daniel Adler
+ ** Copyright (C) 2009 Daniel Adler
  **/
 
 // uses: DATAPTR macro
