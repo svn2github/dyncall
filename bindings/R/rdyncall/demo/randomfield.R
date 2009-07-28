@@ -79,7 +79,6 @@ drawTexCirclesVertexArray <- function(x,y,r)
 max.tex.size <- integer(1)
 max.tex.units <- integer(1)
 tex.ids <- integer(1)
-
 init <- function()
 {
   # initialize SDL
@@ -129,14 +128,14 @@ cleanup <- function()
   SDL_Quit()
 }
 
+pixels  <- NULL
+
 main <- function()
 {
   cat("Click on window to import current random field and plot in R.\nClose window to quit mainloop.\n")
   N         <- 5000
   colorunit <- 0.02
   glColor3d( colorunit,colorunit,colorunit )
-  quit <- FALSE
-  suspend <- FALSE
   tbase <- SDL_GetTicks()  
   frames <- 0
   
@@ -144,16 +143,19 @@ main <- function()
   y <- runif(N,-1.1,1.1)
   r <- runif(N,0.1,0.2)
   event <- new.struct("SDL_Event")
-        
-  oldpars <- par(ask=FALSE)
   
-  while(!suspend) 
+  # disable interactive plot device.      
+  oldpars <- par(ask=FALSE,mfrow=c(1,1))
+  
+  quit <- FALSE
+  while(!quit) 
   {
     glClear(GL_COLOR_BUFFER_BIT)
     drawTexCirclesVertexArray(x,y,r)
     x <- runif(N,-1.1,1.1)
     y <- runif(N,-1.1,1.1)
     r <- runif(N,0.1,0.2)
+    glFinish()
     SDL_GL_SwapBuffers()
     tnow <- SDL_GetTicks()  
     if ((tnow - tbase) > 1000)
@@ -167,21 +169,18 @@ main <- function()
       type <- event$type
       if (type == SDL_MOUSEBUTTONDOWN) {
         cat("Read pixels via OpenGL into an R integer matrix..")
-        pixels <- readpixels()
+        pixels <<- readpixels()
         cat("done.\nPlot image results with R plotting device. This may take a while - please be patient..")
         image(pixels)
         cat("done.\nContinue..\n") 
       } else if (type == SDL_QUIT) { 
-        suspend <- TRUE
+        cat("Read pixels via OpenGL into an R integer matrix 'pixels'..")
+        pixels <<- readpixels()
+        cat("done.\nRe-run by 'run()'\n")
         quit <- TRUE 
-        cat("quit .. re-run by calling 'run()'")
       }
     }    
     frames <- frames + 1
-  }
-  if (quit) {
-    cleanup()
-  } else {
   }
   par(oldpars)
 }
