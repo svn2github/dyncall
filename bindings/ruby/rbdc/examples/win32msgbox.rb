@@ -12,9 +12,10 @@ require 'rbdc'
 
 l = Dyncall::ExtLib.new
 if l.load('user32') != nil
-	l.each { |s| puts s }
+#	l.each { |s| puts s }
 	puts l.symbol_count
 	puts l.exists?(:NonExistant)
 	puts l.exists?(:MessageBoxA)
-	puts l.call(:MessageBoxA, 'ippi)v', 0, 'Hello world from dyncall!', 'dyncall demo', 0)
+	puts l.call(:MessageBoxA, 'IZZI)i', 0, 'Hello world from dyncall!', 'dyncall demo', 0)
+	# @@@ check puts on dyncall called function returning a void... crashes e.g. change above signature to IZZI)v
 end
