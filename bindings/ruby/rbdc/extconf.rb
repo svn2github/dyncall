@@ -13,13 +13,11 @@
 require 'mkmf'
 
 dir_config 'rbdc'
-
-lib_dirs = []# "../../../dyncall/dyncall", "../../../dyncall/dynload" ]
 base_dir = '../../../dyncall/'
+
 Dir[base_dir+'**/*'].each { |d|
   $LOCAL_LIBS << '"'+d+'" ' if d =~ /(lib)?dyn(call|load)_s\./
 }
-
 
 if($LOCAL_LIBS.size > 0) then
 	# Write out a makefile for our dyncall extension.
