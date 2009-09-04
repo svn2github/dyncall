@@ -88,7 +88,7 @@ static VALUE ExtLib_Count(VALUE self)
 
 	ExtLib_SecCheck(extLib);
 
-	return LONG2NUM(dlGetSymbolCount(extLib->lib));
+	return LONG2NUM(dlSymsCount(extLib->lib));
 }
 
 
@@ -104,9 +104,9 @@ static VALUE ExtLib_Each(int argc, VALUE* argv, VALUE self)
 
 	ExtLib_SecCheck(extLib);
 
-	c = dlGetSymbolCount(extLib->lib);
+	c = dlSymsCount(extLib->lib);
 	for(i=0; i<c; ++i)
-		rb_yield(ID2SYM(rb_intern(dlGetSymbolNameAt(extLib->lib, i))));
+		rb_yield(ID2SYM(rb_intern(dlSymsName(extLib->lib, i))));
 
 	return self;
 }

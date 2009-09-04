@@ -12,18 +12,18 @@
 
 require 'mkmf'
 
-#un = `uname -a`
-#if un.include?("i386") or un.include?("i686") then
-#  $CFLAGS = "#($CFLAGS) -Dbla"
-#else
-#  $CFLAGS = "#($CFLAGS)"
-#end
-#have_header "stdint.h" 
-$LOCAL_LIBS = '../../../dyncall/dyncall/libdyncall_s.lib ../../../dyncall/dynload/libdynload_s.lib'
+dir_config 'rbdc'
+
+lib_dirs = []# "../../../dyncall/dyncall", "../../../dyncall/dynload" ]
+base_dir = '../../../dyncall/'
+Dir[base_dir+'**/*'].each { |d|
+  $LOCAL_LIBS << '"'+d+'" ' if d =~ /(lib)?dyn(call|load)_s\./
+}
 
 
-dir_config "rbdc"
-
-# Write out a makefile for our dyncall extension.
-create_makefile "rbdc"
-#create_header "config.h" 
+if($LOCAL_LIBS.size > 0) then
+	# Write out a makefile for our dyncall extension.
+	create_makefile 'rbdc'
+else
+	puts "Couldn't find dyncall and dynload libraries - make sure to build them first!"
+end
