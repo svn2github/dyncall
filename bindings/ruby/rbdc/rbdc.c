@@ -1,11 +1,25 @@
-/*/////////////////////////////////////////////////////////////////////
+/*
 
-	rbdc.c
-	Copyright 2007 Tassilo Philipp
+ rbdc.c
+ Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
+                         Tassilo Philipp <tphilipp@potion-studios.com>
 
-	Ruby/dyncall extension implementation.
+ Permission to use, copy, modify, and distribute this software for any
+ purpose with or without fee is hereby granted, provided that the above
+ copyright notice and this permission notice appear in all copies.
 
-//////////////////////////////////////////////////////////////////////*/
+ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+ Ruby/dyncall extension implementation.
+
+*/
+
 
 #include <ruby.h>
 #include "../../../dyncall/dyncall/dyncall.h"
@@ -164,7 +178,7 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 
 	/* Get a pointer to the function and start pushing. */
 	fptr = (DCpointer)dlFindSymbol(extLib->lib, rb_id2name(SYM2ID(argv[0])));
-	sig = RSTRING_PTR(argv[1]);/*@@@ should use StringValuePtr for real strings... 'S' in signature*/
+	sig = RSTRING_PTR(argv[1]);
 
 	for(i=2; i<argc; ++i) {
 		t = TYPE(argv[i]);
@@ -180,7 +194,7 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 					default:       b = 0;                                  break;
 				}
 				break;
-/* @@@ Allow conversion of Bignum, too. */
+
 			case DC_SIGCHAR_CHAR:
 			case DC_SIGCHAR_UCHAR:     if(b = (t == T_FIXNUM)) dcArgChar    (cvm, (DCchar)    FIX2LONG(argv[i]));      break;
 			case DC_SIGCHAR_SHORT:
@@ -194,7 +208,7 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 			case DC_SIGCHAR_FLOAT:     if(b = (t == T_FLOAT))  dcArgFloat   (cvm, (DCfloat)   RFLOAT_VALUE(argv[i]));  break;
 			case DC_SIGCHAR_DOUBLE:    if(b = (t == T_FLOAT))  dcArgDouble  (cvm, (DCdouble)  RFLOAT_VALUE(argv[i]));  break;
 
-			//@@@case DC_SIGCHAR_POINTER:
+			case DC_SIGCHAR_POINTER:
 			case DC_SIGCHAR_STRING:
 				b = 1;	
 				switch(t) {
@@ -230,7 +244,7 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 		case DC_SIGCHAR_ULONGLONG: r = INT2FIX(     dcCallLongLong(cvm, fptr));                 break;
 		case DC_SIGCHAR_FLOAT:     r = rb_float_new(dcCallFloat   (cvm, fptr));                 break;
 		case DC_SIGCHAR_DOUBLE:    r = rb_float_new(dcCallDouble  (cvm, fptr));                 break;
-		case DC_SIGCHAR_STRING://@@@implement
+		case DC_SIGCHAR_STRING:    r = rb_str_new2( dcCallPointer (cvm, fptr));                 break;
 		case DC_SIGCHAR_POINTER:
 		default:
 			rb_raise(rb_eRuntimeError, "unsupported return type or syntax error in signature");
