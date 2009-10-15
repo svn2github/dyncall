@@ -1,3 +1,29 @@
+rdyncall R package - an improved foreign function interface for R using dyncall.
+
+Dyncall C library is a portable and feature-rich foreign function interface.
+Dynport Framework is a portable dynamic binding.
+
+
+Building from checked out source of subversion repository
+
+1. Run unix shell script 'bootstrap' .
+
+   This will download dyncall library source package.
+	 
+   Requirements: 
+   Command-line tools 'wget', 'unzip', 'mv', 'rm'   
+   
+   On Windows: 
+   Make sure, command-line tools are available.
+   Then use 'sh' from rtools or use other unix-like environment such as cygwin or mingw.
+   
+   
+   
+
+      
+
+Developer notes: (till end of the file)
+
 PLANED:
 - dynport repo under revision control
 - automatic installation of pre-built shared libraries

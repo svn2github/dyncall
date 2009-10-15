@@ -1,6 +1,6 @@
 
 
-dynbind("glew","
+dynbind(c("glew","glew32"),"
 __glewActiveStencilFaceEXT(i)v;
 __glewActiveTexture(i)v;
 __glewActiveTextureARB(i)v;
