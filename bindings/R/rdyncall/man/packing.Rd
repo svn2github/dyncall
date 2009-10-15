@@ -9,7 +9,7 @@
 .unpack(x, offset, typesignature)
 }
 \arguments{
-\item{x}{Atomic vector (logical, raw, integer or numeric) or external pointer.}
+\item{x}{Atomic vector (logical, raw, integer or double) or external pointer.}
 \item{offset}{Scalar integer specifying \emph{byte offset} starting at 0.} 
 \item{typesignature}{Scalar character string specifying the C data type by a \code{\link{signature}} string.}
 \item{value}{Atomic logical} 
