@@ -36,6 +36,15 @@ SEXP r_dataptr(SEXP x, SEXP offset);
 SEXP r_addrval(SEXP x);
 SEXP r_offsetPtr(SEXP x, SEXP offset);
 
+/* rutils_str.c */
+SEXP r_ptr2str(SEXP ptr);
+SEXP r_strarrayptr(SEXP ptr);
+SEXP r_strptr(SEXP x);
+
+/* rutils_float.c */
+SEXP r_double2floatraw(SEXP real);
+SEXP r_floatraw2double(SEXP floatraw);
+
 /** ---------------------------------------------------------------------------
  ** R Interface .External registry
  */
@@ -71,6 +80,13 @@ R_CallMethodDef callMethods[] =
   /* rcallback.c */
   {"new_callback", (DL_FUNC) &r_new_callback,  3},
   {"free_callback",(DL_FUNC) &r_free_callback, 1},
+  /* rutils_str */
+  {"r_ptr2str"                  , (DL_FUNC) &r_ptr2str                          , 1},
+  {"r_strarrayptr"              , (DL_FUNC) &r_strarrayptr                      , 1},
+  {"r_strptr"                   , (DL_FUNC) &r_strptr                           , 1},
+  /* rutils_float */
+  {"r_double2floatraw"  , (DL_FUNC) &r_double2floatraw          , 1},
+  {"r_floatraw2double"  , (DL_FUNC) &r_floatraw2double          , 1},
   /* end */
   {NULL,NULL, 0}
 };

@@ -340,7 +340,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case NILSXP:    ptrValue = (DCpointer) 0; break;
             case CHARSXP:   ptrValue = (DCpointer) CHAR(arg); break;
             case SYMSXP:    ptrValue = (DCpointer) PRINTNAME(arg); break;
-            case STRSXP:    ptrValue = (DCpointer) /* CHAR( */ STRING_ELT(arg,0) /* ) */; break;
+            case STRSXP:    ptrValue = (DCpointer) CHAR(STRING_ELT(arg,0)); break;
             case LGLSXP:    ptrValue = (DCpointer) LOGICAL(arg); break;
             case INTSXP:    ptrValue = (DCpointer) INTEGER(arg); break;
             case REALSXP:   ptrValue = (DCpointer) REAL(arg); break;
@@ -427,7 +427,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
     case DC_SIGCHAR_DOUBLE:    return ScalarReal( dcCallDouble(pvm,addr) );
     case DC_SIGCHAR_POINTER:   return R_MakeExternalPtr( dcCallPointer(pvm,addr), R_NilValue, R_NilValue );
     case DC_SIGCHAR_STRING:    return mkString( dcCallPointer(pvm, addr) );
-    case DC_SIGCHAR_VOID:      dcCallVoid(pvm,addr); return R_NilValue;
+    case DC_SIGCHAR_VOID:      dcCallVoid(pvm,addr); /* TODO: return invisible */ return R_NilValue;
     case '*':
     {
       SEXP ans;

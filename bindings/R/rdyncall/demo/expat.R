@@ -9,6 +9,7 @@ parser <- XML_ParserCreate(NULL)
 
 onXMLStartTag <- function(user,tag,attr)
 {
+  # as.character( as.cstrptrarray(attr) )
   cat("Start tag:", tag, "\n")  
 }
 
