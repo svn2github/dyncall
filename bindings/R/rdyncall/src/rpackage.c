@@ -42,8 +42,8 @@ SEXP r_strarrayptr(SEXP ptr);
 SEXP r_strptr(SEXP x);
 
 /* rutils_float.c */
-SEXP r_double2floatraw(SEXP real);
-SEXP r_floatraw2double(SEXP floatraw);
+SEXP r_as_floatraw(SEXP real);
+SEXP r_floatraw2numeric(SEXP floatraw);
 
 /** ---------------------------------------------------------------------------
  ** R Interface .External registry
@@ -85,8 +85,8 @@ R_CallMethodDef callMethods[] =
   {"r_strarrayptr"              , (DL_FUNC) &r_strarrayptr                      , 1},
   {"r_strptr"                   , (DL_FUNC) &r_strptr                           , 1},
   /* rutils_float */
-  {"r_double2floatraw"  , (DL_FUNC) &r_double2floatraw          , 1},
-  {"r_floatraw2double"  , (DL_FUNC) &r_floatraw2double          , 1},
+  {"r_as_floatraw"  , (DL_FUNC) &r_as_floatraw          , 1},
+  {"r_floatraw2numeric"  , (DL_FUNC) &r_floatraw2numeric          , 1},
   /* end */
   {NULL,NULL, 0}
 };

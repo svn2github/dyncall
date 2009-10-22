@@ -11,6 +11,8 @@
 is.externalptr(x)
 is.nullptr(x)
 offsetPtr(x,offset)
+as.floatraw(x)
+floatraw2numeric(x)
 }
 \arguments{
 \item{x}{An R object.}
@@ -26,6 +28,12 @@ is set to a C \code{NULL} pointer.
 
 \code{offsetPtr} takes an external pointer as input and displaces the pointer
 by offset bytes and returns an external pointer holding the displaced address.   
+
+\code{as.floatraw} creates a raw vector where all numeric double precision values
+are converted to float and stored in the R raw vector. This is very helpfun when
+passing float pointers in to C code via \code{.dyncall}.
+
+\code{floatraw2numeric} 
 
 }
 \keyword{programming}

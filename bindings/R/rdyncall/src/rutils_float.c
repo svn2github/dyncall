@@ -5,16 +5,23 @@
 
 /* Float utils */
 
-SEXP r_double2floatraw(SEXP x)
+SEXP r_as_floatraw(SEXP x)
 {
   SEXP ans;
   int i, n;
   double *dp;
   float  *fp;
-  n = LENGTH(x);
-  ans = PROTECT( Rf_allocVector(RAWSXP, sizeof(float)*n) );
 
   dp = (double*) REAL(x);
+
+  n = LENGTH(x);
+  if (n < 1) {
+    error("length of x should be >= 1");
+    return R_NilValue;
+  }
+
+  ans = PROTECT( Rf_allocVector(RAWSXP, sizeof(float)*n) );
+
   fp = (float*) RAW(ans);
 
   for(i = 0 ; i < n ; ++i )
@@ -24,16 +31,18 @@ SEXP r_double2floatraw(SEXP x)
   return ans;
 }
 
-SEXP r_floatraw2double(SEXP x)
+SEXP r_floatraw2numeric(SEXP x)
 {
   SEXP ans;
   int i, n;
   float  *fp;
   double *dp;
-  n = LENGTH(x) / sizeof(float) ;
-  ans = PROTECT( Rf_allocVector(REALSXP, n) );
 
   fp = (float*) RAW(x);
+
+  n = LENGTH(x) / sizeof(float);
+  ans = PROTECT( Rf_allocVector(REALSXP, n) );
+
   dp = (double*) REAL(ans);
 
   for(i = 0 ; i < n ; ++i )

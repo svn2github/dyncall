@@ -1,2 +1,14 @@
-double2floatraw <- function(x) .Call("r_double2floatraw", as.numeric(x), PACKAGE="rdyncall")
-floatraw2double <- function(x) .Call("r_floatraw2double", x, PACKAGE="rdyncall")
+as.floatraw <- function(x) 
+{
+  x <- .Call("r_as_floatraw", as.numeric(x), PACKAGE="rdyncall")
+  class(x) <- "floatraw"
+  x
+}
+
+floatraw2numeric <- function(x) 
+{
+  stopifnot(is.raw(x))
+  stopifnot(class(x) == "floatraw")
+  stopifnot(length(x) >= 4)
+  .Call("r_floatraw2numeric", x, PACKAGE="rdyncall")
+}
