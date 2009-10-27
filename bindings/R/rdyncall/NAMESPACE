@@ -24,7 +24,7 @@ export(
   # utils_str.R
   ptr2str, strarrayptr, strptr, 
   # utils_float.R
-  as.floatraw, floatraw2numeric, 
+  floatraw, as.floatraw, floatraw2numeric, 
   
   # dynport.R
   dynport, loadDynportNamespace

@@ -12,3 +12,10 @@ floatraw2numeric <- function(x)
   stopifnot(length(x) >= 4)
   .Call("r_floatraw2numeric", x, PACKAGE="rdyncall")
 }
+
+floatraw <- function(n)
+{
+  x <- raw(n*4)
+  class(x) <- "floatraw"
+  x
+}
