@@ -15,6 +15,7 @@ export(
   # dynstruct.R 
   makeStructInfo, makeUnionInfo, new.struct, as.struct, parseStructInfos, parseUnionInfos, 
   align, getTypeInfo,
+  pack.struct, unpack.struct,
   # pack.R
   .pack, .unpack, 
   # callback.R

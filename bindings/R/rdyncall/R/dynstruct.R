@@ -296,10 +296,11 @@ pack.struct <- function( x, index, value )
   if (is.na(offset)) stop("unknown field index '", index ,"'")
   fieldTypeName <- as.character(fieldInfos[index,"type"])
   fieldTypeInfo <- getTypeInfo(fieldTypeName)
-  if (fieldTypeInfo$type == "base") {
+  if ( fieldTypeInfo$type %in% c("base","pointer") ) {
     .pack( x, offset, fieldTypeInfo$signature, value )
   }
   else if ( !is.null(fieldTypeInfo$fields) ) {
+    # substructure
     size <- fieldTypeInfo$size
     x[(offset+1):(offset+1+size-1)] <- as.raw(value)
   }
