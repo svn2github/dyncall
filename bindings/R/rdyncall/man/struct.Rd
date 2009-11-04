@@ -11,6 +11,8 @@
 \usage{
 new.struct(type)
 as.struct(x, type)
+unpack.struct(x, index)
+pack.struct(x, index, value)
 \S3method{$}{struct}(x, index)
 \S3method{$}{struct}(x, index) <- value
 \S3method{[}{struct}(x, index)
