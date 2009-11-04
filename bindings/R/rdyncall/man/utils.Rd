@@ -14,6 +14,7 @@ offsetPtr(x,offset)
 floatraw(n)
 as.floatraw(x)
 floatraw2numeric(x)
+as.extptr(x)
 }
 \arguments{
 \item{x}{An R object.}

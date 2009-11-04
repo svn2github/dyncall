@@ -33,3 +33,21 @@ SEXP r_offsetPtr(SEXP x, SEXP offset)
   return R_MakeExternalPtr( R_ExternalPtrAddr(x) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
 }
 
+SEXP r_asextptr(SEXP x)
+{
+	void* addr = NULL;
+	switch(TYPEOF(x))
+	{
+	case NILSXP: addr = NULL; break;
+	case INTSXP: addr = (void*) INTEGER(x)[0]; break;
+	case REALSXP: addr = (void*) (int) REAL(x)[0]; break;
+	default: error("invalid type");
+	}
+	return R_MakeExternalPtr( addr, R_NilValue, R_NilValue );
+}
+
+SEXP r_sexpraddr(SEXP x)
+{
+  return R_MakeExternalPtr( x, R_NilValue, R_NilValue );
+}
+

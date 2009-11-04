@@ -21,7 +21,7 @@ export(
   # callback.R
   new.callback,
   # utils.R 
-  .addrval, is.externalptr, is.nullptr, offsetPtr,
+  .addrval, is.externalptr, is.nullptr, offsetPtr, sexpraddr, as.extptr,
   # utils_str.R
   ptr2str, strarrayptr, strptr, 
   # utils_float.R

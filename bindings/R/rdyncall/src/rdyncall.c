@@ -90,7 +90,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
   ptrcnt = 0;
   argpos = 0;
 
-  /* function calling convention prefix '_' */
+  /* function calling convention prefix '$' */
   if (*sig == DC_SIGCHAR_CC_PREFIX) {
     /* specify calling convention by signature prefix hint */
     ++sig;
@@ -347,6 +347,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             case CPLXSXP:   ptrValue = (DCpointer) COMPLEX(arg); break;
             case RAWSXP:    ptrValue = (DCpointer) RAW(arg); break;
             case EXTPTRSXP: ptrValue = R_ExternalPtrAddr(arg); break;
+            // case ENVSXP:    ptrValue = (DCpointer) arg; break;
             default:      error("Argument type mismatch at position %d: expected pointer convertable value", argpos); /* dummy */ return R_NilValue;
           }
           dcArgPointer(pvm, ptrValue);

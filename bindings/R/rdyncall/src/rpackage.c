@@ -35,6 +35,8 @@ SEXP r_free_callback(SEXP ptr_cb);
 SEXP r_dataptr(SEXP x, SEXP offset);
 SEXP r_addrval(SEXP x);
 SEXP r_offsetPtr(SEXP x, SEXP offset);
+SEXP r_asextptr(SEXP v);
+SEXP r_sexpraddr(SEXP x);
 
 /* rutils_str.c */
 SEXP r_ptr2str(SEXP ptr);
@@ -77,6 +79,8 @@ R_CallMethodDef callMethods[] =
   {"dataptr",      (DL_FUNC) &r_dataptr,       2},
   {"addrval",      (DL_FUNC) &r_addrval,       1},
   {"offsetPtr",    (DL_FUNC) &r_offsetPtr,     2},
+  {"asextptr",     (DL_FUNC) &r_asextptr,      1},
+  {"sexpraddr",    (DL_FUNC) &r_sexpraddr,     1},
   /* rcallback.c */
   {"new_callback", (DL_FUNC) &r_new_callback,  3},
   {"free_callback",(DL_FUNC) &r_free_callback, 1},

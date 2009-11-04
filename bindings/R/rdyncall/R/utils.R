@@ -19,6 +19,13 @@ offsetPtr <- function(x, offset)
   .Call("offsetPtr", x, offset, PACKAGE="rdyncall")
 }
 
+as.extptr <- function(x)
+{
+  .Call("asextptr", x, PACKAGE="rdyncall")
+}
+
+sexpraddr <- function(x) .Call("sexpraddr", x, PACKAGE="rdyncall")
+
 #.dataptr <- function(x, offset=0L)
 #{
 #  .Call("dataptr", x, as.integer(offset), PACKAGE="rdyncall" )
