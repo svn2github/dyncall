@@ -15,6 +15,6 @@ checkout_src()
 }
 
 # choose between 'checkout_src' or 'download_zip'
-# checkout_src
-download_zip
+checkout_src
+# download_zip
 

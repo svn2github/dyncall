@@ -18,7 +18,7 @@ as.extptr(x)
 }
 \arguments{
 \item{x}{An R object.}
-\iten{n}{Number of elements to allocate.}
+\item{n}{Number of elements to allocate.}
 \item{offset}{An integer scalar specifying the offset.}
 }
 \details{

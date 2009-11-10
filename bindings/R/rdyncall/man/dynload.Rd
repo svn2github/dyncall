@@ -116,9 +116,9 @@ following sequence:
 \item The directories that are listed in the PATH environment variable. 
 }
 
-Windows Server 2003, Windows XP SP1:  The default value of \code{HKLM\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode} is 1 (current directory is searched after the system and Windows directories).
+Windows Server 2003, Windows XP SP1:  The default value of \code{HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\SafeDllSearchMode} is 1 (current directory is searched after the system and Windows directories).
 
-Windows XP:  If \code{HKLM\System\CurrentControlSet\Control\Session Manager\SafeDllSearchMode} is 1, the current directory is searched after the system and Windows directories, but before the directories in the PATH environment variable. The default value is 0 (current directory is searched before the system and Windows directories).
+Windows XP:  If \code{HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\SafeDllSearchMode} is 1, the current directory is searched after the system and Windows directories, but before the directories in the PATH environment variable. The default value is 0 (current directory is searched before the system and Windows directories).
 
 
 The first directory searched is the one directory containing the image file used to create the calling process. Doing this allows private dynamic-link library (DLL) files associated with a process to be found without adding the process's installed directory to the PATH environment variable.
