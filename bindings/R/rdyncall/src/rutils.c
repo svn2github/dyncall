@@ -29,8 +29,14 @@ SEXP r_addrval(SEXP x)
 
 SEXP r_offsetPtr(SEXP x, SEXP offset)
 {
-  if ( TYPEOF(x) != EXTPTRSXP ) error("expected an external ptr");
-  return R_MakeExternalPtr( R_ExternalPtrAddr(x) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
+  switch(TYPEOF(x)) {
+    case EXTPTRSXP:
+      return R_MakeExternalPtr( R_ExternalPtrAddr(x) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
+    case RAWSXP:
+      return R_MakeExternalPtr( ( (unsigned char*) RAW(x) ) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
+    default:
+      error("expected an external ptr or raw");
+  }
 }
 
 SEXP r_asextptr(SEXP x)
