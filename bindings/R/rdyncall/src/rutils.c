@@ -45,8 +45,8 @@ SEXP r_asextptr(SEXP x)
 	switch(TYPEOF(x))
 	{
 	case NILSXP: addr = NULL; break;
-	case INTSXP: addr = (void*) INTEGER(x)[0]; break;
-	case REALSXP: addr = (void*) (int) REAL(x)[0]; break;
+	case INTSXP: addr = (void*) (unsigned long) INTEGER(x)[0]; break;
+	case REALSXP: addr = (void*) (unsigned long) REAL(x)[0]; break;
 	default: error("invalid type");
 	}
 	return R_MakeExternalPtr( addr, R_NilValue, R_NilValue );
