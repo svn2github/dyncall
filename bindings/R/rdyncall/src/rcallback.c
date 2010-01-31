@@ -54,21 +54,21 @@ char dcCallbackHandler_R( DCCallback* pcb, DCArgs* args, DCValue* result, void* 
 			return DC_SIGCHAR_VOID;
 		}
 		switch(ch) {
-		case DC_SIGCHAR_BOOL:      item = ScalarLogical( ( dcArgs_bool(args) == DC_FALSE ) ? FALSE : TRUE ); break;
-		case DC_SIGCHAR_CHAR:      item = ScalarInteger( (int) dcArgs_char(args) ); break;
-		case DC_SIGCHAR_UCHAR:     item = ScalarInteger( (int) dcArgs_uchar(args) ); break;
-		case DC_SIGCHAR_SHORT:     item = ScalarInteger( (int) dcArgs_short(args) ); break;
-		case DC_SIGCHAR_USHORT:    item = ScalarInteger( (int) dcArgs_ushort(args) ); break;
-		case DC_SIGCHAR_INT:       item = ScalarInteger( (int) dcArgs_int(args) ); break;
-		case DC_SIGCHAR_UINT:      item = ScalarReal( (double) dcArgs_uint(args) ); break;
-		case DC_SIGCHAR_LONG:      item = ScalarReal( (double) dcArgs_long(args) ); break;
-		case DC_SIGCHAR_ULONG:     item = ScalarReal( (double) dcArgs_ulong(args) ); break;
-		case DC_SIGCHAR_LONGLONG:  item = ScalarReal( (double) dcArgs_longlong(args) ); break;
-		case DC_SIGCHAR_ULONGLONG: item = ScalarReal( (double) dcArgs_ulonglong(args) ); break;
-		case DC_SIGCHAR_FLOAT:     item = ScalarReal( (double) dcArgs_float(args) ); break;
-		case DC_SIGCHAR_DOUBLE:    item = ScalarReal( dcArgs_double(args) ); break;
-		case DC_SIGCHAR_POINTER:   item = R_MakeExternalPtr( dcArgs_pointer(args), R_NilValue, R_NilValue ); break;
-		case DC_SIGCHAR_STRING:    item = mkString( dcArgs_pointer(args) ); break;
+		case DC_SIGCHAR_BOOL:      item = ScalarLogical( ( dcbArgBool(args) == DC_FALSE ) ? FALSE : TRUE ); break;
+		case DC_SIGCHAR_CHAR:      item = ScalarInteger( (int) dcbArgChar(args) ); break;
+		case DC_SIGCHAR_UCHAR:     item = ScalarInteger( (int) dcbArgUChar(args) ); break;
+		case DC_SIGCHAR_SHORT:     item = ScalarInteger( (int) dcbArgShort(args) ); break;
+		case DC_SIGCHAR_USHORT:    item = ScalarInteger( (int) dcbArgUShort(args) ); break;
+		case DC_SIGCHAR_INT:       item = ScalarInteger( (int) dcbArgInt(args) ); break;
+		case DC_SIGCHAR_UINT:      item = ScalarReal( (double) dcbArgUInt(args) ); break;
+		case DC_SIGCHAR_LONG:      item = ScalarReal( (double) dcbArgLong(args) ); break;
+		case DC_SIGCHAR_ULONG:     item = ScalarReal( (double) dcbArgULong(args) ); break;
+		case DC_SIGCHAR_LONGLONG:  item = ScalarReal( (double) dcbArgLongLong(args) ); break;
+		case DC_SIGCHAR_ULONGLONG: item = ScalarReal( (double) dcbArgULongLong(args) ); break;
+		case DC_SIGCHAR_FLOAT:     item = ScalarReal( (double) dcbArgFloat(args) ); break;
+		case DC_SIGCHAR_DOUBLE:    item = ScalarReal( dcbArgDouble(args) ); break;
+		case DC_SIGCHAR_POINTER:   item = R_MakeExternalPtr( dcbArgPointer(args), R_NilValue, R_NilValue ); break;
+		case DC_SIGCHAR_STRING:    item = mkString( dcbArgPointer(args) ); break;
 		default:
 		case '\0':
 			warning("invalid signature");
