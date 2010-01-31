@@ -202,12 +202,12 @@ SEXP r_new_callback(SEXP sig_x, SEXP fun_x, SEXP rho_x)
 		ch = *ptr++;
 	}
 	rdata->nargs = nargs;
-	DCCallback* cb = dcNewCallback( signature, dcCallbackHandler_R, rdata);
+	DCCallback* cb = dcbNewCallback( signature, dcCallbackHandler_R, rdata);
 	return R_MakeExternalPtr( cb, R_NilValue, R_NilValue );
 }
 
 SEXP r_free_callback(SEXP x)
 {
-	dcFreeCallback( R_ExternalPtrAddr(x) );
+	dcbFreeCallback( R_ExternalPtrAddr(x) );
 	return R_NilValue;
 }
