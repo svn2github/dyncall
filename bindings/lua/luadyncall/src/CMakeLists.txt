@@ -10,6 +10,7 @@ add_library(ldyncall MODULE ldyncall.c)
 add_library(ldynguess MODULE ldynguess.c)
 add_library(ldynstruct MODULE ldynstruct.c)
 add_library(ldyntype MODULE ldyntype.c)
+add_library(larray MODULE larray.c dyntype.c)
 
 target_link_libraries(ldynload ${DYNLOAD_LIBRARIES})
 target_link_libraries(ldyncall ${DYNCALL_LIBRARIES})

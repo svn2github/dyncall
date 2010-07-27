@@ -30,13 +30,13 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/local/bin/cmake
+CMAKE_COMMAND = "/Applications/CMake 2.8-2.app/Contents/bin/cmake"
 
 # The command to remove a file.
-RM = /opt/local/bin/cmake -E remove -f
+RM = "/Applications/CMake 2.8-2.app/Contents/bin/cmake" -E remove -f
 
 # The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /opt/local/bin/ccmake
+CMAKE_EDIT_COMMAND = "/Applications/CMake 2.8-2.app/Contents/bin/ccmake"
 
 # The top-level source directory on which CMake was run.
 CMAKE_SOURCE_DIR = /Users/dadler/lab/deth0/ext/luadyncall
@@ -50,7 +50,7 @@ CMAKE_BINARY_DIR = /Users/dadler/lab/deth0/ext/luadyncall
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/opt/local/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	"/Applications/CMake 2.8-2.app/Contents/bin/ccmake" -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -60,19 +60,19 @@ edit_cache/fast: edit_cache
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/opt/local/bin/cmake -P cmake_install.cmake
+	"/Applications/CMake 2.8-2.app/Contents/bin/cmake" -P cmake_install.cmake
 .PHONY : install
 
 # Special rule for the target install
 install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/opt/local/bin/cmake -P cmake_install.cmake
+	"/Applications/CMake 2.8-2.app/Contents/bin/cmake" -P cmake_install.cmake
 .PHONY : install/fast
 
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/opt/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+	"/Applications/CMake 2.8-2.app/Contents/bin/cmake" -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local
 
 # Special rule for the target install/local
@@ -82,7 +82,7 @@ install/local/fast: install/local
 # Special rule for the target install/strip
 install/strip: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/opt/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+	"/Applications/CMake 2.8-2.app/Contents/bin/cmake" -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip
 
 # Special rule for the target install/strip
@@ -101,7 +101,7 @@ list_install_components/fast: list_install_components
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/opt/local/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	"/Applications/CMake 2.8-2.app/Contents/bin/cmake" -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -166,6 +166,20 @@ intutils: src/CMakeFiles/intutils.dir/rule
 intutils/fast:
 	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/intutils.dir/build.make src/CMakeFiles/intutils.dir/build
 .PHONY : intutils/fast
+
+# Convenience name for target.
+src/CMakeFiles/larray.dir/rule:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/larray.dir/rule
+.PHONY : src/CMakeFiles/larray.dir/rule
+
+# Convenience name for target.
+larray: src/CMakeFiles/larray.dir/rule
+.PHONY : larray
+
+# fast build rule for target.
+larray/fast:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/larray.dir/build.make src/CMakeFiles/larray.dir/build
+.PHONY : larray/fast
 
 # Convenience name for target.
 src/CMakeFiles/ldyncall.dir/rule:
@@ -275,6 +289,30 @@ cocoautil.m.s:
 	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/cocoautil.dir/build.make src/CMakeFiles/cocoautil.dir/cocoautil.m.s
 .PHONY : cocoautil.m.s
 
+dyntype.o: dyntype.c.o
+.PHONY : dyntype.o
+
+# target to build an object file
+dyntype.c.o:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/larray.dir/build.make src/CMakeFiles/larray.dir/dyntype.c.o
+.PHONY : dyntype.c.o
+
+dyntype.i: dyntype.c.i
+.PHONY : dyntype.i
+
+# target to preprocess a source file
+dyntype.c.i:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/larray.dir/build.make src/CMakeFiles/larray.dir/dyntype.c.i
+.PHONY : dyntype.c.i
+
+dyntype.s: dyntype.c.s
+.PHONY : dyntype.s
+
+# target to generate assembly for a file
+dyntype.c.s:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/larray.dir/build.make src/CMakeFiles/larray.dir/dyntype.c.s
+.PHONY : dyntype.c.s
+
 intutils.o: intutils.cpp.o
 .PHONY : intutils.o
 
@@ -298,6 +336,30 @@ intutils.s: intutils.cpp.s
 intutils.cpp.s:
 	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/intutils.dir/build.make src/CMakeFiles/intutils.dir/intutils.cpp.s
 .PHONY : intutils.cpp.s
+
+larray.o: larray.c.o
+.PHONY : larray.o
+
+# target to build an object file
+larray.c.o:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/larray.dir/build.make src/CMakeFiles/larray.dir/larray.c.o
+.PHONY : larray.c.o
+
+larray.i: larray.c.i
+.PHONY : larray.i
+
+# target to preprocess a source file
+larray.c.i:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/larray.dir/build.make src/CMakeFiles/larray.dir/larray.c.i
+.PHONY : larray.c.i
+
+larray.s: larray.c.s
+.PHONY : larray.s
+
+# target to generate assembly for a file
+larray.c.s:
+	cd /Users/dadler/lab/deth0/ext/luadyncall && $(MAKE) -f src/CMakeFiles/larray.dir/build.make src/CMakeFiles/larray.dir/larray.c.s
+.PHONY : larray.c.s
 
 ldyncall.o: ldyncall.c.o
 .PHONY : ldyncall.o
@@ -455,6 +517,7 @@ help:
 	@echo "... install/local"
 	@echo "... install/strip"
 	@echo "... intutils"
+	@echo "... larray"
 	@echo "... ldyncall"
 	@echo "... ldynguess"
 	@echo "... ldynload"
@@ -466,9 +529,15 @@ help:
 	@echo "... cocoautil.o"
 	@echo "... cocoautil.i"
 	@echo "... cocoautil.s"
+	@echo "... dyntype.o"
+	@echo "... dyntype.i"
+	@echo "... dyntype.s"
 	@echo "... intutils.o"
 	@echo "... intutils.i"
 	@echo "... intutils.s"
+	@echo "... larray.o"
+	@echo "... larray.i"
+	@echo "... larray.s"
 	@echo "... ldyncall.o"
 	@echo "... ldyncall.i"
 	@echo "... ldyncall.s"

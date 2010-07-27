@@ -1,11 +1,6 @@
 #include "dyncall.h"
 #include "dyncall_signature.h"
 
-size_t dtAlign(const char* signature)
-{
-  return dtSize(signature);
-}
-
 size_t dtSize(const char* signature)
 {
   char ch = *signature;
@@ -30,4 +25,10 @@ size_t dtSize(const char* signature)
     default: return 0;
   }
 }
+
+size_t dtAlign(const char* signature)
+{
+  return dtSize(signature);
+}
+
 
