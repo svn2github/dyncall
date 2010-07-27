@@ -85,6 +85,46 @@ local function regbasetypes()
 end
 
 function regstructinfo(structsignature)
+  local name, typeclass, signature, fieldnames = structsignature:match("(%a+)([{|])(.+)%}(.+)")
+ 
+  if name and type and signature then
+    local offset   = 0
+    local maxalign = 0
+    local maxsize  = 0
+    local fields   = { }
+
+    local fieldname = signature:gmatch("(%S+)")
+
+    for typespec, fieldname in signature:gmatch("(%S)") do
+
+      local typeinfo = gettypeinfo(typespec)
+
+      offset = align(offset, typeinfo.align)
+      maxalign = math.max(typeinfo.align,maxalign)
+      maxsize  = math.max(typeinfo.size, maxsize)
+
+      fields[fieldname] = { offset = offset, typeinfo = typeinfo }
+
+      if typeclass == "{" then -- structure
+        offset = offset + typeinfo.size
+      end
+
+    end
+
+    local structsize
+
+    if typeclass == "|" then
+      structsize = maxsize
+    else
+      structsize = offset
+    end
+   
+    settypeinfo(name, typeinfo_struct(name, signature, structsize, maxalign, fields) )
+  end
+
+end
+
+function regstructinfo_backup(structsignature)
   local name, typeclass, signature = structsignature:match("(%a+)([{|])(.+)%}")
  
   if name and type and signature then

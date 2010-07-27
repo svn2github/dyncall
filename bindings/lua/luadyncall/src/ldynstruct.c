@@ -99,7 +99,6 @@ static const struct luaL_Reg luareg_dynstruct[] =
 {
   { "newstruct",    lua_newstruct },
   { "aslightuserdata", lua_aslightuserdata },
-  // { "newdynstruct", lua_newdynstruct },
   { "dynpoke",      lua_dynpoke },
   { "dynpeek",      lua_dynpeek },
   { NULL, NULL }

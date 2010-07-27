@@ -3,7 +3,6 @@ require "dyntype"
 
 dynstruct_metatable = {
   __index = function(s, f)
-    print("GET")
     local typeinfo = rawget(s, "typeinfo")
     local fieldinfo = typeinfo.fields[f]
     if not fieldinfo then error("unknown field "..f.." for type "..typeinfo.name) end

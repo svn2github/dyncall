@@ -35,7 +35,10 @@ build = {
       incdirs = {"$(DYNCALL_INCDIR)"}
     },
     dynload = "src/dynload.lua",
-    dyncall = "src/dyncall.lua"
+    dyncall = "src/dyncall.lua",
+    dynport = "src/dynport.lua",
+    intutils= "src/intutils.lua",
+    smartptr= "src/smartptr.lua"
   }
 }
 

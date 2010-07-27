@@ -15,6 +15,12 @@
 #elif defined __ppc64__
 #define DG_ARCH_ppc64 1
 #define DG_ARCH "ppc64"
+#elif defined __arm__
+#define DG_ARCH_arm 1
+#define DG_ARCH "arm"
+#elif defined __mips__
+#define DG_ARCH_mips 1
+#define DG_ARCH "mips"
 #endif
 
 /* guess operating system (OS) */
@@ -22,13 +28,17 @@
 #if defined __APPLE__
 #define DG_OS_osx 1
 #define DG_OS "osx"
+#elif defined __LINUX__
+#define DG_OS_linux 1
+#define DG_OS "linux"
 #endif
 
 /* guess compiler (CC) */
 
 #if defined __GNUC__
-#define DG_CC_gcc __VERSION__
+#define DG_CC_gcc 1
 #define DG_CC "gcc"
+#define DG_CC_VERSION __VERSION__
 #endif
 
 #endif /* DYNGUESS_H */

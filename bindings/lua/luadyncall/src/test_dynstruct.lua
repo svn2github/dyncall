@@ -1,8 +1,8 @@
 require "dynstruct"
 
-regstructinfo("Rect{c x c y c w c h}")
+regstructinfo("Rect{cccc}x y z w;")
 x = newdynstruct("Rect")
 print(x.x)
-x.x = 257
+x.x = -34
 print(x.x)
 
