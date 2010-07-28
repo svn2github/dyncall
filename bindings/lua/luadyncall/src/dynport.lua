@@ -6,10 +6,32 @@ local function makewrapper(addr, signature)
 end
 
 loaded = { }
+  
+local path = os.getenv("LDP_PATH") or "?.dynport;/opt/local/share/dynport/?.dynport"
+
+local function find(name)  
+  local replaced = path:gsub("?", name)
+  local f = nil
+  local hist = {}
+  for filename in replaced:gmatch("([^;]+)") do
+    f = io.open(filename)
+    if f then break else
+      table.insert(hist, "\tno file '")
+      table.insert(hist, filename)
+      table.insert(hist, "'\n")
+    end
+  end
+  if f then
+    return f
+  else
+    error("dynport '"..name.."' not found:\n"..table.concat(hist), 3)
+  end
+end
 
 function dynport(name, t)
 
-  local iter = io.lines(name..".dynport")
+  local file = find(name)
+  local iter = file:lines()
   local unit = t
   
   if not unit then

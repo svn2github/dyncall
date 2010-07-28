@@ -28,7 +28,7 @@ install(FILES
 )
 
 install(FILES
-  SDL.dynport GL.dynport
+  SDL.dynport GL.dynport gl3.dynport SDL_image.dynport
   DESTINATION .
 )
 
