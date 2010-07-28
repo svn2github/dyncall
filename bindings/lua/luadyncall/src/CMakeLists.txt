@@ -16,13 +16,13 @@ target_link_libraries(ldynload ${DYNLOAD_LIBRARIES})
 target_link_libraries(ldyncall ${DYNCALL_LIBRARIES})
 
 install(TARGETS 
-smartptr ldynload ldyncall 
+smartptr ldynload ldyncall larray
 # intutils ldynguess ldynstruct ldyntype
   LIBRARY DESTINATION .
 )
 
 install(FILES 
-  dynload.lua dyncall.lua dynport.lua 
+  dynload.lua dyncall.lua dynport.lua array.lua
   #dynstruct.lua dyntype.lua 
   DESTINATION .
 )
