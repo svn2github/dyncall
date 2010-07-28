@@ -119,7 +119,16 @@ int lua_dodyncall(lua_State *L)
         case DC_SIGCHAR_DOUBLE:
         case DC_SIGCHAR_POINTER:
         case DC_SIGCHAR_STRING:
-          dcArgPointer(g_pCallVM, (DCpointer) lua_topointer(L, p) );
+          if ( lua_istable(L, p) ) {
+            lua_pushvalue(L, p);        // 1
+            lua_pushliteral(L, "pointer");
+            lua_gettable(L, -2);        // 2
+            if ( !lua_isuserdata(L, -1) ) 
+              luaL_error(L, "pointer type mismatch at argument #%d", p);
+            dcArgPointer(g_pCallVM, (DCpointer) lua_touserdata(L, -1) );
+            lua_pop(L, 2);
+          } else 
+            dcArgPointer(g_pCallVM, (DCpointer) lua_topointer(L, p) );
           ptr = 0;
           break;
         default:
