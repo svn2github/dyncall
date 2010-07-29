@@ -2,15 +2,25 @@ require"larray"
 
 local array_mt = {
   __index = function(t,i) 
-    return larray.peek( t.pointer, t.typesize * (i-1), t.typeinfo ) 
+    if type(i) == "number" then
+      return larray.peek( t.pointer, t.typesize * (i-1), t.typeinfo ) 
+    else 
+      local result = rawget(t,i)
+      if not result then
+        return getmetatable(t)[i]
+      end
+    end
   end,
   __newindex = function(t,i,v) 
-    return larray.poke( t.pointer, t.typesize * (i-1), t.typeinfo, v) 
+    if type(i) == "number" then
+      return larray.poke( t.pointer, t.typesize * (i-1), t.typeinfo, v) 
+    else
+      return rawset(t,i,v)
+    end
   end,
-  __len = function(t)
-    print("LEN!")
-    return t.length
-  end,
+  copy = function(array,src,nelements) 
+    return larray.copy( array.pointer, 0, src, 0, array.typesize * nelements)
+  end
 }
 
 function typesize(typeinfo)

@@ -70,12 +70,30 @@ int lua_sizeof(lua_State *L)
   return 1;
 }
 
+int copy(lua_State *L)
+{
+  char* dstptr         = (char*) lua_topointer(L, 1);
+  int   dstoffset      = luaL_checkint(L, 2);
+  const char* srcptr   = lua_topointer(L, 3);
+  int   srcoffset      = luaL_checkint(L, 4);
+  int   copysize       = luaL_checkint(L, 5);
+  dstptr += dstoffset;
+  srcptr += srcoffset;
+  int   i;
+  for(i=0;i<copysize;++i)
+  {
+    *dstptr++ = *srcptr++;
+  }
+  return 0;
+}
+
 static const struct luaL_Reg luareg_larray[] = 
 {
   {"newudata" ,newudata},
   {"peek"     ,peek},
   {"poke"     ,poke},
   {"sizeof"   ,lua_sizeof},
+  {"copy"     ,copy},
   {NULL       ,NULL}
 };
 
