@@ -1,6 +1,6 @@
-info = require "ldynguess"
+guess = require "ldynguess"
 
-print("arch = "..info.arch)
-print("os = "..info.os)
-print("cc = "..info.cc)
+print("arch = "..guess.arch)
+print("os = "..guess.os)
+print("cc = "..guess.cc)
 

@@ -45,33 +45,33 @@ int lua_dodyncall(lua_State *L)
           ptr++; 
           continue;
         case DC_SIGCHAR_BOOL:
-          dcArgBool(g_pCallVM, (DCbool) lua_toboolean(L, p) );
+          dcArgBool(g_pCallVM, (DCbool) luaL_checkint(L, p) );
           break;
         case DC_SIGCHAR_CHAR:
         case DC_SIGCHAR_UCHAR:
-          dcArgChar(g_pCallVM, (DCchar) lua_tonumber(L, p) );
+          dcArgChar(g_pCallVM, (DCchar) luaL_checkint(L, p) );
           break;
         case DC_SIGCHAR_SHORT:
         case DC_SIGCHAR_USHORT:
-          dcArgShort(g_pCallVM, (DCshort) lua_tonumber(L, p) );
+          dcArgShort(g_pCallVM, (DCshort) luaL_checkint(L, p) );
           break;
         case DC_SIGCHAR_INT:
         case DC_SIGCHAR_UINT:
-          dcArgInt(g_pCallVM, (DCint) lua_tonumber(L, p) );
+          dcArgInt(g_pCallVM, (DCint) luaL_checknumber(L, p) );
           break;
         case DC_SIGCHAR_LONG:
         case DC_SIGCHAR_ULONG:
-          dcArgLong(g_pCallVM, (DClong) lua_tonumber(L, p) );
+          dcArgLong(g_pCallVM, (DClong) luaL_checknumber(L, p) );
           break;
         case DC_SIGCHAR_LONGLONG:
         case DC_SIGCHAR_ULONGLONG:
-          dcArgLongLong(g_pCallVM, (DClonglong) lua_tonumber(L, p) );
+          dcArgLongLong(g_pCallVM, (DClonglong) luaL_checknumber(L, p) );
           break;
         case DC_SIGCHAR_FLOAT:
-          dcArgFloat(g_pCallVM, (DCfloat) lua_tonumber(L, p) );
+          dcArgFloat(g_pCallVM, (DCfloat) luaL_checknumber(L, p) );
           break; 
         case DC_SIGCHAR_DOUBLE:
-          dcArgDouble(g_pCallVM, (DCdouble) lua_tonumber(L, p) );
+          dcArgDouble(g_pCallVM, (DCdouble) luaL_checknumber(L, p) );
           break;
         case DC_SIGCHAR_POINTER:
           dcArgPointer(g_pCallVM, (DCpointer) lua_topointer(L, p) );
@@ -93,19 +93,35 @@ int lua_dodyncall(lua_State *L)
             const char* begin = s;
             while ( (ch = *s++) != '>' ) ;
             const char* end = s;
-            if ( lua_istable(L, p) ) {
-              lua_pushvalue(L, p);        // 1
-              lua_pushliteral(L, "pointer");
-              lua_gettable(L, -2);        // 2
-              if ( !lua_isuserdata(L, -1) ) 
+            switch( lua_type(L,p) ) {
+              case LUA_TNUMBER:
+                dcArgPointer(g_pCallVM, (DCpointer) (DCuint) lua_tonumber(L, p) );
+                break;
+              case LUA_TTABLE:
+                lua_pushvalue(L, p);        // 1
+                lua_pushliteral(L, "pointer");
+                lua_gettable(L, -2);        // 2
+                if ( !lua_isuserdata(L, -1) ) 
+                  luaL_error(L, "pointer type mismatch at argument #%d", p);
+                dcArgPointer(g_pCallVM, (DCpointer) lua_touserdata(L, -1) );
+                lua_pop(L, 2);
+                break;
+              case LUA_TLIGHTUSERDATA:
+              case LUA_TUSERDATA:
+                dcArgPointer(g_pCallVM, (DCpointer) lua_topointer(L, p) );
+                break;    
+              default:
                 luaL_error(L, "pointer type mismatch at argument #%d", p);
-              dcArgPointer(g_pCallVM, (DCpointer) lua_touserdata(L, -1) );
-              lua_pop(L, 2);
-            }
+                break;
+            } 
           }
           break;
         case DC_SIGCHAR_BOOL:
         case DC_SIGCHAR_CHAR:
+          if ( lua_isstring(L, p) ) {
+            dcArgPointer(g_pCallVM, (DCpointer) lua_tostring(L, p) );
+            break;
+          }
         case DC_SIGCHAR_UCHAR:
         case DC_SIGCHAR_SHORT:
         case DC_SIGCHAR_USHORT:
