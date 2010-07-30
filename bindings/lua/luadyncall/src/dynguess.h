@@ -28,7 +28,7 @@
 #if defined __APPLE__
 #define DG_OS_osx 1
 #define DG_OS "osx"
-#elif defined __LINUX__
+#elif defined __linux__
 #define DG_OS_linux 1
 #define DG_OS "linux"
 #endif
