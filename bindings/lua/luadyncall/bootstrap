@@ -1,0 +1,5 @@
+#!/bin/sh
+svn co https://dyncall.org/svn/dyncall/trunk/dyncall
+pushd dyncall
+svn update
+popd
