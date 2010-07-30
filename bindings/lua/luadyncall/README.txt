@@ -2,6 +2,16 @@ luadyncall - lua dyncall bindings
 == (C) 2010 Daniel Adler ========
 
 
+Bootstrap
+=========
+./bootstrap
+
+
+Build with CMake
+================
+cmake
+
+
 Configure
 =========
 $EDITOR ./config
