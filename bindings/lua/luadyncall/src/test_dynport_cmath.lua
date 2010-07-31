@@ -1,4 +1,5 @@
 require"dynport"
-cmath = dynport("cmath")
+local cmath = dynportImport("cmath", { })
+print(cmath)
 print( cmath.sqrt(144) )
 

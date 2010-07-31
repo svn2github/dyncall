@@ -29,7 +29,7 @@ larray intutils ldynguess
 )
 
 install(FILES 
-  dynload.lua dyncall.lua dynport.lua array.lua
+  dynload.lua dyncall.lua dynport.lua array.lua path.lua
   #dynstruct.lua dyntype.lua 
   DESTINATION lib/lua
 )

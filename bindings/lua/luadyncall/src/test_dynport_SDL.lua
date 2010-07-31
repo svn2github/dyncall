@@ -1,4 +1,4 @@
 require"dynport"
-SDL = dynport("SDL")
-print( SDL.SDL_GetTicks() )
+dynport("SDL")
+print( SDL_GetTicks() )
 

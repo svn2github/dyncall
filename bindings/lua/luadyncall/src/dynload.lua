@@ -2,13 +2,18 @@ require "smartptr"
 
 local dl = require "ldynload"
 
-local function loadlib(name)
+--- load library given by name using operating-system level service.
+-- @return smartptr that will free library if the object gets garbage collected.
+
+function loadlib(name)
   local handle = dl.dlLoadLibrary(name)
   if handle then return smartptr.new( handle, dl.dlFreeLibrary ) end
 end
 
 --- resolve symbols
-
+-- @param lib smartptr 
+-- @param name symbol to resolve to address
+-- @return address light userpointer
 function dynsym(lib, name)
   local handle = lib()
   return dl.dlFindSymbol( handle, name )
@@ -19,6 +24,7 @@ end
 -- the libraries.
 -- On Linux, BSD, UNIX and Mac OS X the standard places such as "/", "/lib" are searched.
 -- @param libnames a string separated by '|' (pipe) for the pure library name without prefix/suffixes.
+
 
 function dynload(libnames)
   

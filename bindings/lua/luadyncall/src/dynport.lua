@@ -1,13 +1,22 @@
 require "dynload"
 require "dyncall"
+require "path"
 
 local function makewrapper(addr, signature)
   return function(...) return dyncall(addr, signature, ...) end
 end
 
 loaded = { }
-  
-local path = os.getenv("LDP_PATH") or "?.dynport;/opt/local/share/dynport/?.dynport"
+
+local path = pathinit("LDP_PATH","?.dynport;/usr/local/share/dynport/?.dynport;/opt/local/share/dynport/?.dynport")
+
+local function find(name)
+  return pathfind( path, name, io.open )
+end
+
+--[[ 
+local LDP_PATH = "?.dynport;/usr/local/share/dynport/?.dynport;/opt/local/share/dynport/?.dynport"
+local path = os.getenv("LDP_PATH") or LDP_PATH
 
 local function find(name)  
   local replaced = path:gsub("?", name)
@@ -27,21 +36,33 @@ local function find(name)
     error("dynport '"..name.."' not found:\n"..table.concat(hist), 3)
   end
 end
+]]
 
-function dynport(name, t)
+
+--- Process dynport files.
+-- Files will be opened and processed according to the dynport format.
+-- Function wrappers and constants will be installed.
+-- Structure/Union type information have not been implemented yet.
+-- @param name dynport name to lookup. 
+-- @unit table to use for import.
+-- @field _dynport_libs contains.
+-- @return unit table with imports.
+
+function dynportImport(name, unit)
 
   local file = find(name)
-  local iter = file:lines()
-  local unit = t
-  
-  if not unit then
-    unit = loaded[name]
-    if unit then return unit end
-    unit = { }
+
+  if not unit._dynport_libs then
+    unit._dynport_libs = { }
   end
+
+  local cached = unit._dynport_libs[name]
+  if cached then return unit end
+  
+  local iter = file:lines()
   
   local libs = { }
-
+  
   function dolib()
     local libnames = ""
     for line in iter do
@@ -112,11 +133,15 @@ function dynport(name, t)
     elseif line == ":union" then dounion()
     end
   end
-
-  -- module._libs = libs
-  rawset(unit, "_LIBS", libs)
+  
+  unit._dynport_libs[name] = libs
 
   return unit
 
 end
+
+function dynport(name)
+  return dynportImport(name, _G)
+end
+
 
