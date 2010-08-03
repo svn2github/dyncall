@@ -8,10 +8,12 @@ end
 
 loaded = { }
 
-local path = pathinit("LDP_PATH","?.dynport;/usr/local/share/dynport/?.dynport;/opt/local/share/dynport/?.dynport")
+--- The dynport path is initialized by LDP_PATH environment.
+-- @usage Defaults to dynport_syspath.
+dynport_path = pathinit("LDP_PATH","?.dynport;/usr/local/share/dynport/?.dynport;/opt/local/share/dynport/?.dynport")
 
 local function find(name)
-  return pathfind( path, name, io.open )
+  return pathfind( dynport_path, name, io.open )
 end
 
 --[[ 
@@ -47,6 +49,14 @@ end
 -- @unit table to use for import.
 -- @field _dynport_libs contains.
 -- @return unit table with imports.
+
+function dynport_NEW(portname, t)
+  local t = t or _G
+  local port = loaded[portname]
+  if port then return port end
+  local file, errmsg = searchpath(portname, path)
+  if not file then error(errmsg) end
+end
 
 function dynportImport(name, unit)
 
@@ -140,8 +150,10 @@ function dynportImport(name, unit)
 
 end
 
-function dynport(name)
-  return dynportImport(name, _G)
+--- Dynamic bind C library Interfaces.
+-- @param name dynport name which will be searched by
+function dynport(portname)
+  return dynportImport(portname, _G)
 end
 
 
