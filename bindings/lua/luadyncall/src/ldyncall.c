@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "lua.h"
 #include "lauxlib.h"
 #include "dyncall.h"
@@ -95,7 +96,7 @@ int lua_dodyncall(lua_State *L)
             const char* end = s;
             switch( lua_type(L,p) ) {
               case LUA_TNUMBER:
-                dcArgPointer(g_pCallVM, (DCpointer) (DCuint) lua_tonumber(L, p) );
+                dcArgPointer(g_pCallVM, (DCpointer) (ptrdiff_t) lua_tonumber(L, p) );
                 break;
               case LUA_TTABLE:
                 lua_pushvalue(L, p);        // 1
