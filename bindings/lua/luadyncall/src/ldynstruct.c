@@ -2,6 +2,7 @@
 #include "lauxlib.h"
 #include "dyncall.h"
 #include "dyncall_signature.h"
+#include <stddef.h>
 
 static int lua_newstruct(lua_State *L)
 {
@@ -14,8 +15,7 @@ static int lua_newstruct(lua_State *L)
 
 static int lua_aslightuserdata(lua_State *L)
 {
-  int addr = lua_tointeger(L, 1);
-  lua_pushlightuserdata(L, (void*) addr );
+  lua_pushlightuserdata(L, (void*) (ptrdiff_t) luaL_checkinteger(L, 1) );
   return 1;
 }
 
