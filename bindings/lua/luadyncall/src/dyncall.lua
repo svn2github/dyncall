@@ -17,4 +17,11 @@ function dyncall(target, ...)
     return ldyncall.dodyncall( target, ...)
   end
 end
- 
+
+-- pointer utilities
+--
+
+topointer = ldyncall.topointer
+NULL = topointer(0)
+
+

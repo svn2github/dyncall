@@ -206,6 +206,11 @@ int lua_dodyncall(lua_State *L)
   return 1;
 }
 
+int topointer(lua_State* L)
+{
+  lua_pushlightuserdata(L, (void*) (ptrdiff_t) luaL_checkint(L, 1) );
+  return 1;
+}
 
 static const struct luaL_Reg luareg_dyncall[] = 
 {
@@ -221,6 +226,7 @@ static const struct luaL_Reg luareg_dyncall[] =
   { "ArgLongLong", lua_dcLongLong },
 */
   { "dodyncall", lua_dodyncall },
+  { "topointer", topointer },
   { NULL, NULL }
 };
 
