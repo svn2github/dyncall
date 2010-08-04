@@ -25,5 +25,14 @@ This package provides the following extensions:
 \item [ldynguess] guess the operating system
 \end{description}
 
+\section{C Pointers}
+
+One major issue was to decide how to handle pointer values and in
+particular NULL pointers using dynports.
+
+Lua can compare pointer-values. The current dyncall implementation comes with 
+a function \verb@topointer(value)@ which makes a pointer value from an integer 
+value. There is also a \verb@NULL@ variable which holds a pointer value of 0.
+
 \end{document}
 
