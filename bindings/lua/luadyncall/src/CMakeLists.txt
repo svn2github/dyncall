@@ -1,13 +1,18 @@
+# use lua
 include_directories(${LUA_INCLUDE_DIR})
-# include_directories(${DYNCALL_INCLUDE_DIR} ${DYNLOAD_INCLUDE_DIR})
-# Lua:
+
+# Lua Module Names:
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
-# -fPIC and AMD64
+# DynLoad and DynCall:
+include_directories( ${DynCall_SOURCE_DIR}/dyncall ${DynCall_SOURCE_DIR}/dynload ${DynCall_SOURCE_DIR}/dyncallback )
+
+# Fix arch x86_64: force PIC always (even in static libraries)
+
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
 add_definitions("-fPIC")
 endif()
-include_directories( ${PROJECT_SOURCE_DIR}/dyncall/dyncall ${PROJECT_SOURCE_DIR}/dyncall/dynload ${PROJECT_SOURCE_DIR}/dyncall/dyncallback )
+
 add_library(smartptr MODULE smartptr.c)
 add_library(intutils MODULE intutils.cpp)
 add_library(ldynload MODULE ldynload.c)
@@ -16,33 +21,33 @@ add_library(ldynguess MODULE ldynguess.c)
 add_library(ldynstruct MODULE ldynstruct.c)
 add_library(ldyntype MODULE ldyntype.c)
 add_library(larray MODULE larray.c dyntype.c)
-target_link_libraries(ldynload dynload_s) # ${DYNLOAD_LIBRARIES})
-target_link_libraries(ldyncall dyncall_s) # ${DYNCALL_LIBRARIES})
 
+target_link_libraries(ldynload dynload_s) 
+target_link_libraries(ldyncall dyncall_s) 
 
 install(TARGETS 
-smartptr ldynload 
-ldyncall 
-larray intutils ldynguess 
-# ldynstruct ldyntype
+  ldynload smartptr
+  ldyncall 
+  larray 
+  intutils 
+  ldynguess 
+  # ldynstruct ldyntype
   LIBRARY DESTINATION lib/lua
 )
 
 install(FILES 
-  dynload.lua dyncall.lua dynport.lua array.lua path.lua
-  #dynstruct.lua dyntype.lua 
+  dynload.lua 
+  dyncall.lua 
+  dynport.lua path.lua
+  array.lua
+  # dynstruct.lua
+  # dyntype.lua 
   DESTINATION lib/lua
 )
 
-#install(FILES
-#  SDL.dynport GL.dynport gl3.dynport SDL_image.dynport
-#  DESTINATION share/dynport
-#)
-
 if(APPLE)
   set(CMAKE_MODULE_LINKER_FLAGS "-bundle -undefined dynamic_lookup")
+  # build cocoautil library on mac os x
   add_library(cocoautil MODULE cocoautil.m)
-  install(FILES cocoautil.dynport DESTINATION share/dynport)
-endif(APPLE)
-
+endif()
 
