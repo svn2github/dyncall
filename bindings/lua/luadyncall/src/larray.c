@@ -32,6 +32,7 @@ int peek(lua_State* L)
     case DC_SIGCHAR_ULONGLONG: lua_pushnumber(L, (lua_Number) * ( (DCulonglong*) pointer ) ); break;
     case DC_SIGCHAR_FLOAT: lua_pushnumber(L, (lua_Number) * ( (DCfloat*) pointer ) ); break;
     case DC_SIGCHAR_DOUBLE: lua_pushnumber(L, (lua_Number) * ( (DCdouble*) pointer ) ); break;
+    case DC_SIGCHAR_POINTER: lua_pushlightuserdata(L, * ( (DCpointer*) pointer ) ); break;
     default: luaL_error(L, "invalid type signature: %s\n", typeinfo); break;
   }
   return 1; 
@@ -58,6 +59,7 @@ int poke(lua_State* L)
     case DC_SIGCHAR_ULONGLONG:  * ( (DCulonglong*) pointer ) = (DCulonglong) luaL_checknumber(L,4); break;
     case DC_SIGCHAR_FLOAT: * ( (DCfloat*) pointer ) = (DCfloat) luaL_checknumber(L,4); break;
     case DC_SIGCHAR_DOUBLE: * ( (DCdouble*) pointer ) = (DCdouble) luaL_checknumber(L,4); break;
+    case DC_SIGCHAR_POINTER: * ( (DCpointer*) pointer ) = (DCpointer) lua_topointer(L,4); break;
     default: luaL_error(L, "invalid type signature: %s\n", typeinfo); break;
   }
   return 0; 
