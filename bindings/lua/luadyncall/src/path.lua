@@ -30,6 +30,6 @@ function pathfind(path,name,openfun)
     if found then return found, expanded end
     table.insert(fails, expanded)
   end
-  return false, fails
+  return nil, fails
 end
 

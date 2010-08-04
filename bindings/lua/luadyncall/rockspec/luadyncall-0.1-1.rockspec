@@ -34,11 +34,17 @@ build = {
       libdirs = {"$(DYNCALL_LIBDIR)"},
       incdirs = {"$(DYNCALL_INCDIR)"}
     },
+    larray = {
+      sources = "src/larray.c",
+      incdirs = {"$(DYNCALL_INCDIR)"}
+    },
     dynload = "src/dynload.lua",
     dyncall = "src/dyncall.lua",
     dynport = "src/dynport.lua",
-    intutils= "src/intutils.lua",
-    smartptr= "src/smartptr.lua"
+    smartptr= "src/smartptr.lua",
+    path    = "src/path.lua",
+    array   = "src/array.c",
+    intutils= "src/intutils.lua"
   }
 }
 
