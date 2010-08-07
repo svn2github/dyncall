@@ -1,4 +1,4 @@
 require"dynport"
 dynport("SDL")
-print( SDL_GetTicks() )
+while true do print( SDL_GetTicks() ) end
 

@@ -59,7 +59,19 @@ int poke(lua_State* L)
     case DC_SIGCHAR_ULONGLONG:  * ( (DCulonglong*) pointer ) = (DCulonglong) luaL_checknumber(L,4); break;
     case DC_SIGCHAR_FLOAT: * ( (DCfloat*) pointer ) = (DCfloat) luaL_checknumber(L,4); break;
     case DC_SIGCHAR_DOUBLE: * ( (DCdouble*) pointer ) = (DCdouble) luaL_checknumber(L,4); break;
-    case DC_SIGCHAR_POINTER: * ( (DCpointer*) pointer ) = (DCpointer) lua_topointer(L,4); break;
+    case DC_SIGCHAR_POINTER: 
+      {
+        switch(lua_type(L,4)) {
+          case LUA_TUSERDATA:
+          case LUA_TLIGHTUSERDATA:
+            * ( (DCpointer*) pointer ) = (DCpointer) lua_topointer(L,4); break;
+          case LUA_TSTRING:
+            * ( (DCpointer*) pointer ) = (DCpointer) lua_tostring(L,4); break;
+          default:
+            luaL_error(L, "invalid argument for signature : %s\n", typeinfo); break;
+        }
+        break;
+      }
     default: luaL_error(L, "invalid type signature: %s\n", typeinfo); break;
   }
   return 0; 

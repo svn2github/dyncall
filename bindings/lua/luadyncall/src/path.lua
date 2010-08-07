@@ -1,4 +1,6 @@
---- path strings specify a pattern through which objects are located.
+-- functions to initialize and search through paths.
+-- path strings specify a set of directory patterns separated by ';'.
+-- the searchpath function 
 
 --- Initialize lua-style paths.
 -- Looks up environment variable envname and substitute all ';;' by syspath
@@ -7,13 +9,14 @@
 -- @return value from env variable or syspath. ';;' in env will be substituted by syspath.
 
 function pathinit(envname, syspath)
-  local s = os.getenv(envname)
-  if s then 
-    s = s:gsub(";;",syspath)
+  local envvar = os.getenv(envname)
+  local path
+  if envvar then 
+    path = envvar:gsub(";;",syspath)
   else
-    s = syspath
+    path = syspath
   end
-  return s
+  return path
 end
 
 

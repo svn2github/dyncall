@@ -1,5 +1,5 @@
 require"larray"
-typesignature = require"typesignature"
+-- typesignature = require"typesignature"
 local array_mt = {
   __index = function(t,i) 
     if type(i) == "number" then
