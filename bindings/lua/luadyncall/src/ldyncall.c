@@ -136,6 +136,7 @@ int lua_dodyncall(lua_State *L)
         case DC_SIGCHAR_DOUBLE:
         case DC_SIGCHAR_POINTER:
         case DC_SIGCHAR_STRING:
+        case DC_SIGCHAR_VOID:
           if ( lua_istable(L, p) ) {
             lua_pushvalue(L, p);        // 1
             lua_pushliteral(L, "pointer");
