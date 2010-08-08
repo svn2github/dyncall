@@ -68,7 +68,11 @@ function dynportImport(name, unit)
 
   local cached = unit._dynport_libs[name]
   if cached then return unit end
-  
+ 
+  if not file then
+    error("dynport "..name.. " not found")
+  end
+
   local iter = file:lines()
   
   local libs = { }

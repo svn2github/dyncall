@@ -38,7 +38,7 @@ function dynload(libnames)
 
   local paths    = { "", "./", "/lib/", "/usr/lib/", "/usr/local/lib/", "/opt/lib/", "/opt/local/lib/" }
   local prefixes = { "", "lib" }
-  local suffixes = { "", ".dylib", ".so", ".dll" }
+  local suffixes = { "", ".dylib", ".so", ".so.0", ".dll" }
 
   -- Mac OS X Framework search paths
   -- local fwpaths  = { "", "/System" }
@@ -49,7 +49,7 @@ function dynload(libnames)
       for k,prefix in pairs(prefixes) do
         for k,suffix in pairs(suffixes) do
           local libpath = path .. prefix .. libname .. suffix
-          lib = loadlib(libpath)
+	  lib = loadlib(libpath)
           if lib then return lib end
         end
       end
