@@ -1,5 +1,5 @@
 :lib
-SDL_image
+SDL_image|SDL_image-1.2
 .
 :fun
 IMG_InvertAlpha(i)i;

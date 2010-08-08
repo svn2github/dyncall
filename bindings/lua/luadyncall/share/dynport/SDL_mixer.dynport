@@ -1,5 +1,5 @@
 :lib
-SDL_mixer
+SDL_mixer|SDL_mixer-1.2
 .
 :fun
 Mix_AllocateChannels(i)i;

@@ -1,5 +1,5 @@
 :lib
-OpenGL
+OpenGL|GL
 .
 :fun
 glActiveTexture(I)v;
