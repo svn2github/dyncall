@@ -160,7 +160,7 @@ int lua_dodyncall(lua_State *L)
   if (top > p) 
     luaL_error(L,"too many arguments for given signature, expected %d but received %d" , p-2, top-2 );
 
-  switch(*s)
+  switch(*s++)
   {
     case DC_SIGCHAR_VOID:
       dcCallVoid(g_pCallVM, f);
@@ -198,8 +198,18 @@ int lua_dodyncall(lua_State *L)
       lua_pushstring( L, (const char*) dcCallPointer(g_pCallVM, f) );
       break;
     case DC_SIGCHAR_POINTER:
-    case '*':
       lua_pushlightuserdata( L, dcCallPointer(g_pCallVM, f) );
+      break;
+    case '*':
+      switch(*s++) {
+        case DC_SIGCHAR_UCHAR:
+        case DC_SIGCHAR_CHAR:
+          lua_pushstring( L, dcCallPointer(g_pCallVM, f) );
+          break;
+        default:
+          lua_pushlightuserdata( L, dcCallPointer(g_pCallVM, f) );
+          break;
+      }
       break;
     default:
       return luaL_error(L, "invalid signature");
