@@ -16,7 +16,7 @@ DCCallVM* g_pCallVM = NULL;
 int lua_dodyncall(lua_State *L)
 {
   void* f;
-  const char* s;
+  const char *callsignature, *s;
   int top = lua_gettop(L);
   if (top < 2) return luaL_error(L,"missing arguments #1 'addr' and #2 'signature'");
   
@@ -25,9 +25,8 @@ int lua_dodyncall(lua_State *L)
   else if (lua_isnumber(L,1) )          f = (void*) lua_tointeger(L, 1);
   else return luaL_argerror(L, 1, "expected a cfunction, userdata or number");
 
-  luaL_checktype(L,2,LUA_TSTRING);
-  s = lua_tostring(L,2);
- 
+  s = callsignature = luaL_checkstring(L,2);
+
   /* parse mode */
  
   // dcMode( g_pCallVM, DC_CALL_C_DEFAULT );
@@ -38,7 +37,7 @@ int lua_dodyncall(lua_State *L)
   int ptr = 0;
   while ( (ch = *s++) != DC_SIGCHAR_ENDARG)
   {
-    if (p > top) return luaL_error(L,"need more arguments (signature %s)", s );
+    if (p > top) return luaL_error(L,"need more arguments (call signature is '%s')", callsignature );
     if (ptr == 0) {
       switch(ch)
       {
@@ -81,7 +80,7 @@ int lua_dodyncall(lua_State *L)
           dcArgPointer(g_pCallVM, (DCpointer) lua_tostring(L, p) );
           break; 
         default:
-          return luaL_error(L, "invalid signature");
+          return luaL_error(L, "invalid typecode '%c' in call signature '%s'", s[0], callsignature);
       }
     } else { /* pointer types */
       switch(ch)
@@ -157,8 +156,8 @@ int lua_dodyncall(lua_State *L)
     ++p;
   }
 
-  if (top > p) 
-    luaL_error(L,"too many arguments for given signature, expected %d but received %d" , p-2, top-2 );
+  if (top >= p) 
+    luaL_error(L,"too many arguments for given signature, expected %d but received %d" , p-3, top-2 );
 
   switch(*s++)
   {
@@ -225,6 +224,9 @@ int topointer(lua_State* L)
 
 static const struct luaL_Reg luareg_dyncall[] = 
 {
+  { "dodyncall", lua_dodyncall },
+  { "topointer", topointer },
+  { NULL, NULL }
 /*
   { "NewCallVM", lua_dcNewCallVM },
   { "Mode", lua_dcMode },
@@ -236,9 +238,6 @@ static const struct luaL_Reg luareg_dyncall[] =
   { "ArgLong", lua_dcLong },
   { "ArgLongLong", lua_dcLongLong },
 */
-  { "dodyncall", lua_dodyncall },
-  { "topointer", topointer },
-  { NULL, NULL }
 };
 
 void lua_setmetainfo(lua_State *L)
