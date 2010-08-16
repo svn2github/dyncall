@@ -11,6 +11,16 @@ int newudata(lua_State* L)
   return 1;
 }
 
+int newudata2(lua_State* L)
+{
+  size_t size    = luaL_checkint(L, 1);
+  void * pointer = lua_newuserdata(L, size);
+  lua_pushvalue(L,-2);
+  lua_setmetatable(L,-2);
+  return 1;
+}
+
+
 int peek(lua_State* L)
 {
   char* pointer  = (char*) lua_topointer(L, 1);
@@ -104,6 +114,7 @@ int copy(lua_State *L)
 static const struct luaL_Reg luareg_larray[] = 
 {
   {"newudata" ,newudata},
+  {"newudata2", newudata2},
   {"peek"     ,peek},
   {"poke"     ,poke},
   {"sizeof"   ,lua_sizeof},
