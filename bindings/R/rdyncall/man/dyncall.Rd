@@ -1,34 +1,40 @@
 \name{dyncall}
+\alias{dyncall}
 \alias{.dyncall}
 \alias{.dyncall.cdecl}
 \alias{.dyncall.stdcall}
+\alias{.dyncall.thiscall}
+\alias{.dyncall.thiscall.msvc}
+\alias{.dyncall.thiscall.gcc}
+\alias{.dyncall.fastcall.msvc}
+\alias{.dyncall.fastcall.gcc}
 \title{Foreign Function Interface to binary code with support for multiple calling conventions.}
 \description{  
 Functions to make calls to precompiled code with support for multiple calling conventions.
 }
 \usage{
-.dyncall( address, callsignature, ... , callmode = "cdecl" )
-.dyncall.cdecl        ( address, callsignature, ... )
-.dyncall.stdcall      ( address, callsignature, ... )
-.dyncall.thiscall     ( address, callsignature, ... )
-.dyncall.thiscall.msvc( address, callsignature, ... )
-.dyncall.thiscall.gcc ( address, callsignature, ... )
-.dyncall.fastcall.msvc( address, callsignature, ... )
-.dyncall.fastcall.gcc ( address, callsignature, ... )
+.dyncall( address, signature, ... , callmode = "cdecl" )
+.dyncall.cdecl        ( address, signature, ... )
+.dyncall.stdcall      ( address, signature, ... )
+.dyncall.thiscall     ( address, signature, ... )
+.dyncall.thiscall.msvc( address, signature, ... )
+.dyncall.thiscall.gcc ( address, signature, ... )
+.dyncall.fastcall.msvc( address, signature, ... )
+.dyncall.fastcall.gcc ( address, signature, ... )
 }
 \arguments{
   \item{address}{External pointer to a foreign function such as returned by .dynsym or getNativeSymbolInfo.}
-  \item{callsignature}{Sclar character string specifying the argument and return types also known as the \link[=signature]{function call signature}.}
-  \item{callmode}{Scalar character string specifying the calling convention.}
-  \item{...}{Foreign function call arguments to be passed according to the argument types specified in \code{\link{signature}}.}
+  \item{signature}{Character string specifying the argument and return types also known as the \link[=signature]{function call signature}.}
+  \item{callmode}{Character string specifying the calling convention.}
+  \item{...}{Arguments to be passed according to the signature specified in \code{\link{signature}}.}
 }
 \details{
 
 The foreign function to be called is given by \code{address} which is typically obtained from 
 functions such as \code{\link{.dynsym}} and \code{\link{getNativeSymbolInfo}}. 
 
-The \code{\link{signature}} is a scalar character string that specifies the formal argument-
-return types of the target function in the context of C. See manual page \link[=signature]{call signature}
+The \code{\link{signature}} is a scalar character string that specifies the formal argument
+and return types of the target function in the context of the C language and type system. See manual page \link[=signature]{call signature}
 for details on the encoding. 
 
 The calling convention is specified explicitly by the \code{callmode} argument 
@@ -64,7 +70,6 @@ The following table lists valid type character codes, corresponding C types, acc
 
 \tabular{clll}{
 \strong{Type code} \tab \strong{C type}          \tab \strong{R argument type}           \tab \strong{R return type}\cr
-'\code{B}'           \tab int, bool, Bool_t      \tab raw,logical,integer,double         \tab logical\cr
 '\code{c}'           \tab char                   \tab raw,logical,integer,double         \tab integer\cr
 '\code{C}'           \tab unsigned char          \tab raw,logical,integer,double         \tab integer\cr
 '\code{s}'           \tab short                  \tab raw,logical,integer,double         \tab integer\cr
@@ -78,9 +83,10 @@ The following table lists valid type character codes, corresponding C types, acc
 '\code{f}'           \tab float                  \tab raw,logical,integer,double         \tab double\cr
 '\code{d}'           \tab double                 \tab raw,logical,integer,double         \tab double\cr
 '\code{p}'           \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr,NULL\cr
-'\code{S}'           \tab char*                  \tab character,NULL                     \tab character,NULL\cr
+'\code{B}'           \tab bool (C++)             \tab raw,logical,integer,double         \tab logical\cr
+'\code{Z}'           \tab char*                  \tab character,NULL                     \tab character,NULL\cr
 '\code{x}'           \tab SEXP                   \tab \emph{any}                         \tab \emph{any}\cr
-'\code{*}' \ldots    \tab \emph{C type}* (pointer) \tab emph{any vector},externalptr,NULL \tab externalptr\cr
+'\code{*}' \ldots    \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr\cr
 '\code{*<}' \emph{typename} '\code{>}' \tab \emph{typename}* (pointer) \tab raw,externalptr \tab externalptr\cr
 \code{v}           \tab void                   \tab \emph{invalid}                     \tab NULL\cr
 }
@@ -103,8 +109,8 @@ so that the structure/union type information works.
 \section{Calling conventions}{
 Calling conventions specify on the machine-level how a function call is invoked.
 
-The conventions differ heavily from CPU type to CPU type. Some conventions 
-are related to OS and Compiler issues.
+The conventions differ significantly among families of CPU Architectures. 
+Some conventions are related to OS and Compiler issues as well.
 While on many processor architectures, there is only one general calling 
 convention - there are multiple calling conventions available on the x86 
 processor architecture and in particular when working with Microsoft Windows 
@@ -133,7 +139,7 @@ In a later release you can expect to have more choice such as:
 \item{\code{"x64.sysv"}}{ELF-based code on X64 Architecture}
 }
 
-In many cases, \code{"cdecl"} is the best choice. Exceptions to this include, X86 architectures and in particular
+In many cases, \code{"cdecl"} is the best choice. Exceptions to this include the x86 architecture and in particular
 Microsoft Windows platforms. 
 
 The calling convention is defined during compilation of shared libraries. 
@@ -150,13 +156,15 @@ regarding Microsoft Visual C++ and the GCC compilers.
 When invoking a foreign function calls, the address, calling convention and 
 type information for arguments and return values \strong{MUST} match with 
 the compiled function. 
-Otherwise the invocation can lead to a \strong{fatal system crash}.
+Otherwise the invocation can lead to a \strong{fatal R process crash}.
 
-Calling functions via dyncall is very TYPE UNSAFE. Some safety is achieved.
-Dyncall does not perform any call, if you missed the arity of the function given with the signature and
-probably fails on several type-incompatibilities. But in general, there
-is no safe way to test if the pointer given, is a valid function pointer.
-Thus, this package can cause unexpected behaviour if the user is
+The rdyncall package has support for a certain degree of type safety in
+some cases but in general you can not expect a 100% type safety. 
+
+Dyncall does not perform the call, if the arity of the function call does
+not match the number of arguments given.
+
+The package can cause unexpected behaviour if the user is
 not aware of what she is doing. USE ON YOUR OWN RISK.
 }
 

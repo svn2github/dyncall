@@ -3,21 +3,22 @@
 \title{Dynamic bindings to shared libraries.}
 \description{Dynamic bindings to shared library functions in a batch.}
 \usage{
-dynbind(libname, lib.signature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
+dynbind(libname, signature, envir=parent.frame(), callmode="cdecl", 
+        pat=NULL, replace=NULL, funcptr=FALSE)
 }
 \arguments{
-  \item{libname}{Character string scalar specifying a (short) library name.}
-  \item{lib.signature}{Character string scalar specifying a batch of function symbol names and type signatures.}
+  \item{libname}{Character string specifying a (short) library name.}
+  \item{signature}{Character string specifying a sequence of function signatures.}
   \item{envir}{Environment where wrapper R functions should be installed.}
-  \item{callmode}{Character string scalar specifying the calling convention of the target library.}
-  \item{pat}{Character string scalar containing a regular expression that will match and which will be replaced by \code{pat}}
+  \item{callmode}{Character string specifying the calling convention of the target library.}
+  \item{pat}{Regular expression that will be matched against the name part and substituted by \code{pat}}
   \item{replace}{Character string scalar specifying the replacement of the pattern given by \code{pat}.}
   \item{funcptr}{Logical scalar specifying if symbols represent function pointer variables instead of functions.}
 }
 \details{
 The function loads a shared library specified by \code{libname} using \code{\link{dynfind}} and 
 creates wrapper R functions for functions and function variables specified by the library
-signature \code{lib.signature}. On successful resolving of symbolic names, the corresponding 
+signature \code{signature}. On successful resolving of symbolic names, corresponding 
 R wrapper functions will installed in \code{envir}.
 }
 \value{

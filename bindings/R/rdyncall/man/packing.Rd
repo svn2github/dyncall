@@ -5,13 +5,13 @@
 \title{(Un)-packing of C data types.}
 \description{Functions to manipulate C-level arrays and structures from within R.}
 \usage{
-.pack(x, offset, typesignature, value)
-.unpack(x, offset, typesignature)
+.pack(x, offset, sigchar, value)
+.unpack(x, offset, sigchar)
 }
 \arguments{
 \item{x}{Atomic vector (logical, raw, integer or double) or external pointer.}
 \item{offset}{Scalar integer specifying \emph{byte offset} starting at 0.} 
-\item{typesignature}{Scalar character string specifying the C data type by a \code{\link{signature}} string.}
+\item{sigchar}{Scalar character string specifying the C data type by a \code{\link{signature}} string.}
 \item{value}{Atomic logical} 
 }
 \details{

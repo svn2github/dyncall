@@ -1,4 +1,9 @@
+# Mac OS X: this one is needed in case, we are running from Console
+# and no initial event loop is available.
 
+if ( Sys.info()[["sysname"]] == "Darwin" && .Platform$GUI != "AQUA") {
+library(Cocoa)
+}
 
 dynbind( c("SDL","SDL-1.2","SDL-1.2.so.0"), "
 SDL_AddTimer(I*p*v)*<_SDL_TimerID>;

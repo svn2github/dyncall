@@ -1,83 +1,61 @@
 \name{rdyncall}
 \docType{package}
 \alias{rdyncall}
-\alias{dyncall}
 \alias{rdyncall-package}
 \title{Dynamic foreign library interface framework}
 \description{  
-Improved foreign function interface and framework for portable
-dynamic binding of shared libraries including type information.
+Flexible foreign function interface with support for C callbacks, pointer and 
+aggregate struct/union types. 
+An experimental framework for portable dynamic binding of 'whole' shared C 
+libraries is included with initial support for libraries such as OpenGL (up to 3.0), 
+libSDL, expat and the R shared library itself.
 }
 \details{
-\pkg{rdyncall} provides a framework to make lightweight interfaces
-between R and shared libraries work in a portable way.
+\pkg{rdyncall} is a toolkit that aims to bind Application Programming Interfaces(API)
+of shared C library functions, constants, callbacks and types with the R language in a portable way.
 
-R interfaces to C libraries such as OpenGL, libSDL and expat are 
-available out-of-the-box. See \command{\link{dynport}} for details.
+At the core a flexible foreign function interface based on the 
+\emph{dyncall} C library is used for passing arguments, invoking function calls
+and returning values between R and C with support for multiple calling conventions.
 
-allow to interface with the functions, constants, structures and 
-unions in R.
+The function calls are effectively executed by small call kernels written in
+assembly.
 
-In addition, utility functions are available to work with C low-level types.
-
-At the core, it provides a flexible foreign function interface based on
-the \emph{dyncall C library}. 
-}
-\section{Getting Started}{
-Several demos are available. And two vignettes acompany this release.
-Please make sure, you have installed the shared libraries.
-}
-\section{Applications}{
-The applications are manifold. One can use this package to get access 
-to OpenGL for 3D Graphics and SDL for controlling multimedia devices 
-(Video, Audio, User-Input). See \command{\link{dynport}} for details.  
+ and the library has been ported to various architectures such as
+x86, x64, arm, mips32/64 and ppc32.
+A string-based type signature description for function calls, callbacks, pointers
+and aggregate structures controls the desired behaviour.
+In addition, R helper functions are available to work with pointer and 
+aggregate C types as well as with C float and string arrays.
+With the experimental dynport framework, R interfaces to popular APIs and
+shared libraries are availabe such as OpenGL, SDL (including image, mixer, ttf),
+expat and the R API itself. 
+The specification is extracted using gcc-xml, boost wave and 
+specificalized xslt. See \command{\link{dynport}} for details.
+The package allows to interface with functions, constants, structures and 
+unions of C shared libraries specified in C header files.
 }
 \section{Overview}{
 \itemize{
-\item Dynamic ports to open-standard libraries such as libSDL and OpenGL. union types. See details at \code{\link{dynport}}.
-\item Flexible Foreign function interface for R with support for 
-     a wide range of C types and multiple calling conventions. See \code{\link{.dyncall}}.
-\item Managed unloading of shared library. See \code{\link{.dynload}}.
-\item Locating shared libraries. See \code{\link{dynfind}}.
-\item Dynamic binding of shared library functions and function pointers in R. See \code{\link{dynbind}}.
-\item Working with C low-level and aggregate types (structs and unions). See \code{\link{packing}} and \code{\link{cstructs}}.
+\item Calling of precompiled code with support for wide range of C types, flexible mapping type mappings and calling conventions. See \code{\link{.dyncall}}.
+\item Locating of shared libraries by short names in a portable way. See \code{\link{dynfind}}.
+\item Loading of shared libraries with managed unloading. See \code{\link{.dynload}}.
+\item Installation of wrapper functions to shared library code. See \code{\link{dynbind}}.
+\item Working with C low-level and aggregate types (structs and unions). See \code{\link{packing}} and \code{\link{struct}}.
 \item Wrapping R functions as C function pointers to be used in C callbacks. See \code{\link{new.callback}}. 
+\item Dynamic binding of complete shared library functions and interfaces (constants, enums, struct and union types). See \code{\link{dynport}}. 
 }
 }
-\section{Platform portability notes}{
-
-Windows:\cr
-Tested on 32-bit R on Windows XP. In principle would run on X64. Supports Microsoft Visual C++ dynamic bindings as well.
-
-\cr
-Mac OS X:\cr
-Tested on 32-bit R on OS X 10.4 and 10.5. Runs on PPC32 and X86 architectures. 
-Has not been tested on 64-bit Mac OS X R Version. Should work in principle.
-Has not been tested on PPC 64-bit and probably won't work there.
-
-When using libSDL, make sure you are in the Cocoa Environment of R for Mac OS X.
-
-\cr
-Linux:\cr
-
-Tested on Ubuntu and Gentoo. Runs on PPC32, X86 and X64 architectures. 
-
-\cr
-FreeBSD:\cr
-
-Tested on FreeBSD 5.0 and 7.0 on X86. Should run on X64 and PPC32 as well.
-
-\cr
-Solaris:\cr
-
-Not tested yet. In theory should work on X86, X64 and PPC32.
-
-\cr
-Game consoles:\cr
-
-R has not been ported yet. The dyncall C library has been ported to
-Playstation Portable (MIPS) and Nintendo DS (ARM).
-
+\section{Getting Started}{
+Several demos and two vignettes are available. Some demos require additional
+software to be installed on the system. Please make sure, you have installed 
+the shared libraries.
+}
+\section{Applications}{
+The package can be used to get direct access to system services such as 
+OpenGL for 3D Graphics. The SDL library can be used for controlling multimedia 
+devices (Video, Audio, User-Input) in a portable way. 
+See \command{\link{dynport}} for details.  
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 

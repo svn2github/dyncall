@@ -1,8 +1,8 @@
 \name{dynfind}
 \alias{dynfind}
 \alias{pathsFromEnv}
-\title{Find system libraries in common places.}
-\description{Searches in common places in the file-system to locate a library by a common name.}
+\title{Find system libraries in common places by short names.}
+\description{Searches in common places of file system to locate a library by a common name.}
 \usage{
 dynfind(libnames, auto.unload=TRUE)
 }
@@ -11,13 +11,6 @@ dynfind(libnames, auto.unload=TRUE)
   \item{auto.unload}{A logical specify to register a finalizer that unloads the library when no reference is dangling. See \code{\link{.dynload}} for details.}
 }
 \details{
-Shared libraries often contain similar function symbols across multiple 
-platforms, but locating those libraries in a generic and portable way 
-is difficult.
-The naming conventions and locations depend on the operating-system and other 
-factors such as software distribution that make the task of loading a shared 
-library in a portable way very tedious.
-
 The function \code{dynfind} attempts to locate and load a shared library 
 by a fragment name of the full qualified library name. Multiple of these
 fragments can be given, such that \code{dynfind} tries all of them until

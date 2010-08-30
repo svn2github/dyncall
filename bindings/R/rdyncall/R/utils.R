@@ -1,3 +1,7 @@
+# Package: rdyncall
+# File: R/utils.R
+# Description: Low-level utility functions
+
 .addrval <- function(x)
 {
   .Call("addrval", x, PACKAGE="rdyncall")

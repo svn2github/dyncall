@@ -1,5 +1,6 @@
-# File: rdyncall/R/pack.R
-# Description: (un-)packing functions for raw C struct data. 
+# Package: rdyncall
+# File: R/pack.R
+# Description: (un-)packing functions for access to C aggregate (struct/union) data types. 
 
 .pack   <- function(x, offset, sigchar, value)
 {

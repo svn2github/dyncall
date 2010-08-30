@@ -1,4 +1,6 @@
-# utilities to search for shared libraries in the system
+# Package: rdyncall
+# File: R/libLibpath.R
+# Description: utilities to search for shared libraries in the system
 
 # ----------------------------------------------------------------------------
 # global: .sysLibPath

@@ -1,3 +1,4 @@
+require(rdyncall)
 ref <- rnorm(10000)
 
 floats <- as.floatraw(ref)

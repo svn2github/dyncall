@@ -1,16 +1,16 @@
 \name{callback}
 \alias{callback}
 \alias{new.callback}
-\title{Wrap R functions as C callback function pointers.}
+\title{Wrap R functions info C callback function pointers.}
 \description{  
-Function to wrap an R function into a C function pointer to be used as a C callback function pointer.
+Wraps R functions into C callback function pointers.
 }
 \usage{
-new.callback( callsignature, fun, envir )
+new.callback( signature, fun, envir )
 }
 \arguments{
-  \item{callsignature}{Scalar character string specifying the expected \link[=signature]{call signature} of the C callback.}
-  \item{fun}{Function to be wrapped into a C function pointer.}
+  \item{signature}{Character string specifying the expected \link[=signature]{call signature} of the C callback.}
+  \item{fun}{R function to be wrapped into a C function pointer.}
   \item{envir}{Environment to be used for evaluating the function when called from within C context.}
 }
 \value{
@@ -18,15 +18,15 @@ An external pointer to be used as a opaque C function pointer in the context of 
 }
 \details{
 C callbacks are function pointers that are registered and executed from within a C context. 
-This function allows to wrap an R closure function into a C callback and reveals an 
-opaque external pointer to be registered as a C callback.
+This function allows to wrap an R function into a C callback and reveals an 
+opaque external pointer which can be registered later as a C callback.
 It is crucial to know the C callback function type to specify the arguments and return types
 using a signature, analogue to the foreign function interface. A callback function signature 
 specifies the expected arguments.
 }
 \note{
-Note: This feature is currently unstable. It is ported to x86 (tested on Windows, Mac OS X, Linux) and AMD64 (tested on Linux) platforms.
-A port to PowerPC is currently in development. 
+This feature is ported to x86, x64 and arm architectures.
+A port to PowerPC 32-bit is currently in development. 
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 

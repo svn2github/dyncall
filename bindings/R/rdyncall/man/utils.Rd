@@ -4,6 +4,13 @@
 \alias{is.externalptr}
 \alias{is.nullptr}
 \alias{offsetPtr}
+\alias{floatraw}
+\alias{as.floatraw}
+\alias{floatraw2numeric}
+\alias{as.extptr}
+\alias{ptr2str}
+\alias{strarrayptr}
+\alias{strptr}
 \title{Low-level utility functions to work with C pointers.}
 \description{Functions for low-level operations on C pointers.}
 \usage{
@@ -15,6 +22,9 @@ floatraw(n)
 as.floatraw(x)
 floatraw2numeric(x)
 as.extptr(x)
+ptr2str(x)
+strarrayptr(x)
+strptr(x)
 }
 \arguments{
 \item{x}{An R object.}
@@ -37,7 +47,9 @@ by offset bytes and returns an external pointer holding the displaced address.
 All values are converted to float and stored in the R raw vector. This is used to 
 pass R vectors via a float pointer in to C code via \code{.dyncall}.
 
-\code{floatraw2numeric} 
+\code{floatraw2numeric} coerces a C float raw vector to a numeric vector.
+
+\code{ptr2str}, \code{strarrayptr}, \code{strptr} are currently experimental.
 
 }
 \keyword{programming}

@@ -1,6 +1,6 @@
-# File: rdyncall/R/dyncall.R
+# Package: rdyncall
+# File: R/dyncall.R
 # Description: R bindings for dynload library
-#
 
 .dynload <- function(libname, auto.unload=TRUE)
 {  

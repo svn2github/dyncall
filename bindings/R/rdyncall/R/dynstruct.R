@@ -1,5 +1,7 @@
-# File: rdyncall/R/dynstruct.R
-# Description: handling of aggregate low-level C structure and union types.
+# Package: rdyncall
+# File: R/dynstruct.R
+# Description: Handling of aggregate (struct/union) C types
+
 # ----------------------------------------------------------------------------
 # dynport basetype sizes
 
@@ -27,9 +29,10 @@
 # dynport type information
 #
 
-TypeInfo <- function(...) 
+TypeInfo <- function(name, type = c("base","pointer","struct","union"), size = NA, align = NA, basetype = NA, fields = NA, signature = NA) 
 {
-  x <- list(...)
+  type <- match.arg(type)
+  x <- list(name = name, type = type, size = size, align = align, basetype = basetype, fields = fields, signature = signature)
   class(x) <- "typeinfo"
   return(x)
 }
@@ -39,11 +42,11 @@ is.TypeInfo <- function(x)
   inherits(x, "typeinfo")
 }
 
-getTypeInfo <- function(type, envir=parent.frame())
+getTypeInfo <- function(name, envir=parent.frame())
 {
-  if (is.character(type)) {
-    getTypeInfoByName(type, envir)
-  } else if (is.TypeInfo(type)) {
+  if (is.character(name)) {
+    getTypeInfoByName(name, envir)
+  } else if (is.TypeInfo(name)) {
     type
   } else {
     stop("unknown type")
@@ -98,7 +101,7 @@ makeFieldInfo <- function(fieldNames, types, offsets)
 # ----------------------------------------------------------------------------
 # parse structure signature
 
-makeStructInfo <- function(name, structSignature, fieldNames, envir=parent.frame())
+makeStructInfo <- function(name, signature, fieldNames, envir=parent.frame())
 {
   # computations:
   types    <- character()
@@ -106,22 +109,22 @@ makeStructInfo <- function(name, structSignature, fieldNames, envir=parent.frame
   offset   <- 0L
   maxAlign <- 1L
   # scan variables:
-  n        <- nchar(structSignature)
+  n        <- nchar(signature)
   i        <- 1L
   start    <- i
   while(i <= n)
   {
-    char  <- substr(structSignature,i,i)
+    char  <- substr(signature,i,i)
     if (char == "*") { 
       i <- i + 1L ; next
     } else if (char == "<") {
       i <- i + 1L
       while (i < n) {
-        if ( substr(structSignature,i,i) == ">" ) break
+        if ( substr(signature,i,i) == ">" ) break
         i <- i + 1L
       }    
     } 
-    typeName  <- substr(structSignature, start, i)
+    typeName  <- substr(signature, start, i)
     types     <- c(types, typeName)
     typeInfo  <- getTypeInfo(typeName, envir=envir)
     alignment <- typeInfo$align
@@ -172,7 +175,7 @@ parseStructInfos <- function(sigs, envir=parent.frame())
 # ----------------------------------------------------------------------------
 # parse union signature
 
-makeUnionInfo <- function(name, unionSignature, fieldNames, envir=parent.frame())
+makeUnionInfo <- function(name, signature, fieldNames, envir=parent.frame())
 {
   # computations:
   types    <- character()
@@ -181,19 +184,19 @@ makeUnionInfo <- function(name, unionSignature, fieldNames, envir=parent.frame()
   # scan variables:
   i       <- 1L
   start   <- i
-  n       <- nchar(unionSignature)
+  n       <- nchar(signature)
   while(i <= n) {
-    char  <- substr(unionSignature,i,i)
+    char  <- substr(signature,i,i)
     if (char == "*") {
       i <- i + 1L ; next
     } else if (char == "<") {
       i <- i + 1L
       while (i < n) {
-        if ( substr(unionSignature,i,i) == ">" ) break
+        if ( substr(signature,i,i) == ">" ) break
         i <- i + 1L
       }
     } 
-    typeName <- substr(unionSignature,start,i)
+    typeName <- substr(signature,start,i)
     types    <- c(types, typeName)
     typeInfo <- getTypeInfo(typeName, envir)
     maxSize  <- max( maxSize, typeInfo$size )

@@ -1,3 +1,7 @@
+# Package: rdyncall
+# File: R/utils_float.R
+# Description: Support for C float vectors in R
+
 as.floatraw <- function(x) 
 {
   x <- .Call("r_as_floatraw", as.numeric(x), PACKAGE="rdyncall")

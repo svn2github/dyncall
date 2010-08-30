@@ -1,5 +1,8 @@
-# File: rdyncall/R/dynports.R
+# Project: rdyncall
+# File: R/dynports.R
 # Description: repository for multi-platform bindings to binary components.
+# Author: Daniel Adler <dadler@uni-goettingen.de> 
+#         additional code copied from Luke Tierney 
 
 # Front-end:
 

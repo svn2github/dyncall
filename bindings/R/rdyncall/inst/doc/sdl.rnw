@@ -1,10 +1,14 @@
+% \VignetteIndexEntry{Multimedia programming with R, rdyncall, libSDL and OpenGL}
+% \VignetteKeyword{low-level}
+% \VignetteKeyword{rdyncall}
+% \VignetteKeyword{dyncall}
+% \VignetteKeyword{multimedia}
 \documentclass{article}
 \usepackage{url}
 \begin{document}
-\title{Multimedia programming with R and rdyncall}
+\title{Multimedia programming with R, rdyncall, libSDL and OpenGL}
 \author{Daniel Adler}
 \maketitle
-
 \section{Introduction}
 
 Via the rdyncall package it is possible to write system-level
@@ -28,7 +32,7 @@ This can be done using the rdyncall package and the dynports.
 library(rdyncall)
 dynport(SDL)
 dynport(GL)
-dynport(GLU) 
+dynport(GLU)
 @
 
 \section{Initialize SDL}

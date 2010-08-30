@@ -6,7 +6,7 @@
  ** Copyright (C) 2007-2010 Daniel Adler
  **/
 
-##include "Rinternals.h"
+#include "Rinternals.h"
 #include "Rdefines.h"
 #include "dyncall_callback.h"
 

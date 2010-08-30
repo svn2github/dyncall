@@ -1,14 +1,13 @@
 \name{rdyncall-internal}
 \alias{rdyncall-internal}
-\alias{getTypeInfo}
+\alias{sexpraddr}
 \title{rdyncall internal}
 \description{Internal functions and objects of rdyncall Package}
 \usage{
-getTypeInfo(typeName, envir=parent.frame())
+sexpraddr(x)
 }
 \arguments{
-\item{typeName}{A character string naming a C structure/union type information R object.}
-\item{envir}{Specifies an environment.}
+\item{x}{Any R object.}
 }
 \keyword{programming}
 \keyword{interface}

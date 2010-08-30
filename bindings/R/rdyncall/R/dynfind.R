@@ -1,6 +1,7 @@
-# R-Package: rdyncall
-# File: rdyncall/R/dynfind.R
+# Package: rdyncall
+# File: R/dynfind.R
 # Description: locating system libraries in common places  
+# Author: Daniel Adler <dadler@uni-goettingen.de>
 
 # ----------------------------------------------------------------------------
 # function: pathsFromEnv

@@ -1,7 +1,40 @@
 rdyncall R package - an improved foreign function interface for R using dyncall.
 
+What is this?
+-------------
+This package implements an interoperability framework between R and 
+foreign precompiled shared libraries.
+The framework takes cares for converting between R and C data types.
+
+Running Demonstrations
+----------------------
+The package comes with demonstrations where some require additional libraries
+such as the Simple Directmedia Library. 
+
+Please see  @@@ for details.
+
+
+Portability
+-----------
+The portability of this package strongly relies on the dyncall library.
+See dyncall manual for details (http://dyncall.org/stable/manual.pdf).
+
+Dynamic calling of C functions requires a strong support for the underlying
+architecture and operating system. The dyncall library has support for
+- Intel 32-bit (x86) and 64-bit (AMD64/x86_x64)
+- PowerPC 32-bit
+- Mips 32-bit (OABI,N32) and 64-bit (N64)
+- ARM Arm and Thumb mode with support for
+
+The package implements a foreign function interface using the dyncall C library
+which has been ported to various architectures and operating-systems.
+
+It allows to map argument and return types according to a signature string that
+specifies the static C type.
+
+
 Dyncall C library is a portable and feature-rich foreign function interface.
-Dynport Framework is a portable dynamic binding.
+Dynport Framework is a portable dynamic binding framework.
 
 
 Building from checked out source of subversion repository
@@ -17,29 +50,16 @@ Building from checked out source of subversion repository
    Make sure, command-line tools are available.
    Then use 'sh' from rtools or use other unix-like environment such as cygwin or mingw.
    
-   
-   
+Available Demos:
 
-      
-
-Developer notes: (till end of the file)
-
-PLANED:
-- dynport repo under revision control
-- automatic installation of pre-built shared libraries
-- (cross-) build server network (virtual building via DynOS / QEMU and friends)
-
-Done:
-- SDL Event demo for rdyncall's C structure support.
-
+  - SDL Event demo for rdyncall's C structure support.
+     
 TODO:
+- demo(ttf) failed on Mac OS X 10.6
 - polish callback example (expat library)
 - callbacks should fail with "not yet implemented" on platforms
 - use raw vectors for 1-to-1 bit encoding of values e.g. raw(8) for (u)int64 values
-- make dynfind locations configurable from extern
-
-  e.g. - dynAddPath, dynRemovePath
-
+- make dynfind locations configurable from extern e.g. use environment variable
 - windows: test findLibPath 
 - darwin: test findFrameworkPath 
 - type-safe signatures
