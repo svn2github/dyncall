@@ -47,7 +47,7 @@ getTypeInfo <- function(name, envir=parent.frame())
   if (is.character(name)) {
     getTypeInfoByName(name, envir)
   } else if (is.TypeInfo(name)) {
-    type
+    name
   } else {
     stop("unknown type")
   }
