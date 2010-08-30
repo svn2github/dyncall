@@ -1,9 +1,9 @@
 /** ===========================================================================
  ** R-Package: rdyncall
- ** File: rdyncall/src/rdyncall.c
+ ** File: src/rdyncall.c
  ** Description: R bindings to dyncall
  **
- ** Copyright (C) 2009 Daniel Adler
+ ** Copyright (C) 2009-2010 Daniel Adler
  **/
 
 #include <Rinternals.h>
@@ -11,6 +11,7 @@
 #include "rdyncall_signature.h"
 #include <string.h>
 #include <ctype.h>
+
 /** ---------------------------------------------------------------------------
  ** C-Function: new_callvm
  ** R-Interface: .Call

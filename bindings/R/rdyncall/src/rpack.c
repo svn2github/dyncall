@@ -1,9 +1,9 @@
 /** ===========================================================================
  ** R-Package: rdyncall
- ** File: rdyncall/src/rpack
+ ** File: src/rpack
  ** Description: (un-)packing of C structure data
  **
- ** Copyright (C) 2009 Daniel Adler
+ ** Copyright (C) 2009-2010 Daniel Adler
  **
  ** TODO
  ** - support for bitfields

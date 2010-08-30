@@ -1,9 +1,9 @@
 /** ===========================================================================
  ** R-Package: rdyncall
- ** File: rdyncall/src/rdynload.c
+ ** File: src/rdynload.c
  ** Description: R bindings to dynload
  **
- ** Copyright (C) 2007-2009 Daniel Adler
+ ** Copyright (C) 2007-2010 Daniel Adler
  **/
 
 #include <Rinternals.h>
