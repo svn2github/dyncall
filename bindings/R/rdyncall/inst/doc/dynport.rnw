@@ -1,7 +1,17 @@
-A \texttt{dynport} is a dynamically created R namespace containing 
-wrapper functions, constants and type information objects (used in conjunction
-with utility functions from the package) to gain control over the 
-full functionality.
+\documentclass{article}
+\usepackage{url}
+\begin{document}
+\title{Dynports in R}
+\author{Daniel Adler}
+\maketitle
+
+\section{Introduction}
+
+A \emph{dynport} is mapped in R as a dynamically created R namespace 
+containing wrapper functions, constants and type information objects 
+(used in conjunction with utility functions from the package) to gain 
+control over the full range of functionality offered by system service
+and binary components.
 These bindings can be written by hand but - as these are
 very structured using formal signatures - this process
 is also automated.
@@ -12,8 +22,10 @@ dynport   & library     & details\\
 \hline
 GL        & OpenGL 1.0  & Portable 3D Graphics System Library \\
 glew      & GL Extension Wrangler & Provides OpenGL 3.0 \\
-SDL       & Simple DirectMedia Layer & Access to Window Manager, Video, OpenGL Contexts, Audio, User-Device Input - keyboard,mouse and joystick.
-SDL_ttf   & SDL Font Rendering Library & True Type Font Rendering \\
-SDL_image & SDL Image I/O Library & Image Loading and Saving in many formats \\
+SDL       & Simple DirectMedia Layer & Multimedia and user-interface. \\
+SDL\_ttf   & SDL Font Rendering Library & True Type Font Rendering \\
+SDL\_image & SDL Image I/O Library & Image Loading and Saving in many formats \\
 \end{tabular}
+
+\end{document}
 
