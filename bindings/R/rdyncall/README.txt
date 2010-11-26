@@ -55,6 +55,8 @@ Available Demos:
   - SDL Event demo for rdyncall's C structure support.
      
 TODO:
+- .dyncall(0,..)
+  - check arg 0 against NULL pointers!
 - demo(ttf) failed on Mac OS X 10.6
 - polish callback example (expat library)
 - callbacks should fail with "not yet implemented" on platforms
