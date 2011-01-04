@@ -1,4 +1,8 @@
 - attr("struct") -> attr("CType")
-- parseStructInfos -> defineCStruct
-- parseUnionInfos -> defineCUnion
+- parseStructInfos -> cstruct
+- parseUnionInfos -> cunion
 - .dyncall typed pointer
+- as.struct -> as.ctype
+- new.struct -> cdata
+- new.callback -> cfunction
+
