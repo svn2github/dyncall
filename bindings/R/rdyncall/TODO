@@ -1,0 +1,4 @@
+- attr("struct") -> attr("CType")
+- parseStructInfos -> defineCStruct
+- parseUnionInfos -> defineCUnion
+- .dyncall typed pointer
