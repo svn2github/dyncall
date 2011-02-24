@@ -3,7 +3,7 @@
 # Description: Win32 Demo, playing a wav file (dynbind demo)
 # Author: Daniel Adler
 
-if (.Platform$OS.type == "window") {
+if (.Platform$OS.type == "windows") {
 
   dynbind("winmm", "PlaySoundA(Zii)v;", callmode="stdcall")
   tada <- paste( Sys.getenv("SystemRoot"), "\\Media\\tada.wav", sep="" )
