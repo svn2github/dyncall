@@ -91,7 +91,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
   ptrcnt = 0;
   argpos = 0;
 
-  /* function calling convention prefix '$' */
+  /* function calling convention prefix '_' */
   if (*sig == DC_SIGCHAR_CC_PREFIX) {
     /* specify calling convention by signature prefix hint */
     ++sig;

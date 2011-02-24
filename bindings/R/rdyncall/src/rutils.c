@@ -38,6 +38,7 @@ SEXP r_offsetPtr(SEXP x, SEXP offset)
     default:
       error("expected an external ptr or raw");
   }
+  return R_NilValue; /* dummy to remove warning */
 }
 
 SEXP r_asextptr(SEXP x)

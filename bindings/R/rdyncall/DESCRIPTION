@@ -1,7 +1,7 @@
 Package: rdyncall
-Version: 0.1
-Date: 2010-09-01 
-Title: Improved foreign function interface with support for low-level C structure/union data type access.
+Version: 0.2
+Date: 2011-02-25
+Title: Improved foreign function interface with support for handling C structure/union data types.
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
 Depends: R (>= 1.7)

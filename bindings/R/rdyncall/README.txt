@@ -6,6 +6,19 @@ This package implements an interoperability framework between R and
 foreign precompiled shared libraries.
 The framework takes cares for converting between R and C data types.
 
+
+Building from subversion source:
+--------------------------------
+
+1. checkout source 
+  $ svn co http://dyncall.org/svn/dyncall/trunk/bindings/R/rdyncall
+
+2. run bootstrap to checkout dyncall sources
+  $ sh ./bootstrap 
+  - or -
+  $ cd rdyncall/src && svn co http://dyncall.org/svn/dyncall/trunk/dyncall
+
+
 Running Demonstrations
 ----------------------
 The package comes with demonstrations where some require additional libraries
@@ -24,14 +37,13 @@ architecture and operating system. The dyncall library has support for
 - Intel 32-bit (x86) and 64-bit (AMD64/x86_x64)
 - PowerPC 32-bit
 - Mips 32-bit (OABI,N32) and 64-bit (N64)
-- ARM Arm and Thumb mode with support for
+- ARM Arm and Thumb mode 
 
 The package implements a foreign function interface using the dyncall C library
 which has been ported to various architectures and operating-systems.
 
 It allows to map argument and return types according to a signature string that
 specifies the static C type.
-
 
 Dyncall C library is a portable and feature-rich foreign function interface.
 Dynport Framework is a portable dynamic binding framework.
