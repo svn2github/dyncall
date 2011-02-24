@@ -18,7 +18,7 @@ fi
 sh ./configure $CONFIG_ARGS
 # sh ./configure --prefix=\$\(TOP\)
 else
-echo configure error: dyncall source package missing
+echo configure error: dyncall sources missing
 echo you can bootstrap by:
 echo "  cd rdyncall ; sh ./bootstrap ; cd .."
 exit 1

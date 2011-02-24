@@ -25,8 +25,9 @@ using a signature, analogue to the foreign function interface. A callback functi
 specifies the expected arguments.
 }
 \note{
-This feature is ported to x86, x64 and arm architectures.
-A port to PowerPC 32-bit is currently in development. 
+This facility is based on the dyncallback library which is ported to 
+X86, X64 and ARM Architectures. A PowerPC 32-bit port is available as well
+but considered unstable. For MIPS a port is planned.
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 

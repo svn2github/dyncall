@@ -11,3 +11,7 @@ malloc <- function(size)
   return(x)
 }
 
+x <- malloc(1024)
+x <- NULL
+gc()
+

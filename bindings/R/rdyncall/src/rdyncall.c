@@ -73,7 +73,16 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
   /* extract CallVM reference, address and signature */
 
   pvm  = (DCCallVM*) R_ExternalPtrAddr( CAR(args) ); args = CDR(args);
-  addr = R_ExternalPtrAddr( CAR(args) ); args = CDR(args);
+
+  switch(TYPEOF(CAR(args))) {
+    case EXTPTRSXP:
+      addr = R_ExternalPtrAddr( CAR(args) ); args = CDR(args);
+      if (!addr) error("Target address is null-pointer.");
+      break;
+    default:
+      error("Target address must be external pointer.");
+      break;
+  }
   signature = CHAR( STRING_ELT( CAR(args), 0 ) ); args = CDR(args);
   sig = signature;
 
