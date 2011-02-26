@@ -1,9 +1,10 @@
 \name{callback}
 \alias{callback}
 \alias{new.callback}
-\title{Wrap R functions info C callback function pointers.}
+\alias{dyncallback}
+\title{Dynamic wrapping of R functions into C callbacks.}
 \description{  
-Wraps R functions into C callback function pointers.
+Dynamic wrapping of R functions into C callbacks.
 }
 \usage{
 new.callback( signature, fun, envir )
@@ -14,20 +15,23 @@ new.callback( signature, fun, envir )
   \item{envir}{Environment to be used for evaluating the function when called from within C context.}
 }
 \value{
-An external pointer to be used as a opaque C function pointer in the context of a C callback.
+An external pointer to be used as a C function pointer in the context of a C callback registration.
 }
 \details{
 C callbacks are function pointers that are registered and executed from within a C context. 
-This function allows to wrap an R function into a C callback and reveals an 
-opaque external pointer which can be registered later as a C callback.
-It is crucial to know the C callback function type to specify the arguments and return types
-using a signature, analogue to the foreign function interface. A callback function signature 
-specifies the expected arguments.
+The function \code{new.callback} enables dynamic wrapping of R functions into a C function object that
+can be registered later as a C callback.
+
+returns an external pointer that can be registered later as a plain C callback. 
+It is important to know the expected C function type in order to specify the 
+arguments and return types using a \link{signature}, analogous to the 
+foreign function interface of \code{\link{.dyncall}}. 
 }
 \note{
-This facility is based on the dyncallback library which is ported to 
-X86, X64 and ARM Architectures. A PowerPC 32-bit port is available as well
-but considered unstable. For MIPS a port is planned.
+The implementation is based on the \emph{dyncallback} library (part of the DynCall project).
+The library has been ported to X86, X64, PowerPC 32-bit and ARM Processor Architectures and
+has been successfully tested on Linux, Windows, Mac OS X, BSD derivates and iPhone.
+The PowerPC 32-bit port is considered unstable. For MIPS a port is in development.
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
@@ -38,8 +42,6 @@ but considered unstable. For MIPS a port is planned.
 }
 \seealso{
 See \code{\link{signature}} for details on call signatures.
-\code{\link{getNativeSymbolInfo}} and \code{\link{dynfind}}. 
-\code{\link{.C}},\code{\link{.Call}},,\code{\link{.External}}
 }
 \keyword{programming}
 \keyword{interface}

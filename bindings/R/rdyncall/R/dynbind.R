@@ -3,16 +3,16 @@
 # Description: single-entry front-end to dynamic binding of library functions 
 # Author: Daniel Adler <dadler@uni-goettingen.de>
 
-dynbind <- function(libname, signature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
+dynbind <- function(libnames, signature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
 {
   # load shared library
-  libh <- dynfind(libname)
+  libh <- dynfind(libnames)
   if ( is.null(libh) )
   {
-    cat("dynbind error: Unable to find shared library '", libname[[1]], "'.\n",sep="")
+    cat("dynbind error: Unable to find shared library '", libnames[[1]], "'.\n",sep="")
     cat("Consult the projects page how to build and install the shared library for your operating-system.\n")
     cat("Make sure the shared library can be found at the default system places or adjust environment variables (e.g. %PATH% or $LD_LIBRARY_PATH).\n")
-    stop("unable to find shared library '", libname[[1]], "'.\n", call.=FALSE)
+    stop("unable to find shared library '", libnames[[1]], "'.\n", call.=FALSE)
   }
   
   # -- convert library signature to signature table

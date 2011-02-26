@@ -1,5 +1,10 @@
 \name{signature}
 \alias{signature}
+\alias{call signature}
+\alias{callback signature}
+\alias{function signature}
+\alias{type signature}
+\alias{library signature}
 \title{Signature Format}
 \description{Description of Signature Formats and Text Encoding}
 \details{
@@ -57,7 +62,7 @@ Here are some examples of some known C functions and corresponding call signatur
 }
 }
 \section{Library Signature}{
-The library signature is a text-based representation for a group of function bindings.
+The library signature is a text-based representation for a set of function bindings.
 It consists of function names and corresponding call signatures. Function bindings are separated 
 by ';' (semicolon). Whitespaces are allowed to pre- and suffix the ';'.
 \tabular{c}{

@@ -8,9 +8,10 @@
 \alias{.dyncall.thiscall.gcc}
 \alias{.dyncall.fastcall.msvc}
 \alias{.dyncall.fastcall.gcc}
-\title{Foreign Function Interface to binary code with support for multiple calling conventions.}
+\title{Dynamic and Flexible Foreign Function Interface (FFI) to precompiled function code with support for multiple calling conventions.}
 \description{  
-Functions to make calls to precompiled code with support for multiple calling conventions.
+Functions to make calls to precompiled code with support for multiple calling conventions without the need for
+additional C wrapper code.
 }
 \usage{
 .dyncall( address, signature, ... , callmode = "cdecl" )
@@ -23,151 +24,76 @@ Functions to make calls to precompiled code with support for multiple calling co
 .dyncall.fastcall.gcc ( address, signature, ... )
 }
 \arguments{
-  \item{address}{External pointer to a foreign function such as returned by .dynsym or getNativeSymbolInfo.}
-  \item{signature}{Character string specifying the argument and return types also known as the \link[=signature]{function call signature}.}
-  \item{callmode}{Character string specifying the calling convention.}
-  \item{...}{Arguments to be passed according to the signature specified in \code{\link{signature}}.}
+  \item{address}{External pointer to a foreign function, such as returned by \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}.}
+  \item{signature}{Scalar character string specifying the argument and return types as a \sQuote{\link{call signature}}.}
+  \item{callmode}{Scalar character string specifying the calling convention.}
+  \item{...}{Arguments to be passed according to the signature specified in \code{signature}.}
 }
 \details{
-
 The foreign function to be called is given by \code{address} which is typically obtained from 
-functions such as \code{\link{.dynsym}} and \code{\link{getNativeSymbolInfo}}. 
+functions such as \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}. 
 
-The \code{\link{signature}} is a scalar character string that specifies the formal argument
-and return types of the target function in the context of the C language and type system. See manual page \link[=signature]{call signature}
-for details on the encoding. 
+The \code{signature} specifies the formal argument-and-return types of the target function in the context of the C language
+encoded via a \link{call signature}. 
 
-The calling convention is specified explicitly by the \code{callmode} argument 
-using \code{.dyncall} or implicitly by using \code{.dyncall.*} functions. 
+The calling convention is specified \emph{explicitly} by the \code{callmode} argument 
+using \code{.dyncall}, or \emph{implicitly} by using \code{.dyncall.*} functions. 
 
-Arguments given with \code{...} are passed and converted according to the given call signature 
-and calling convention selected.
-
-The foreign function interface consists of two basic forms of flavours regarding the choosen
-calling convention. The explicit form used by \code{.dyncall} function uses an additional 
-\code{callmode} argument to specify the desired calling convention of the precompiled function 
-pointed by \code{address}. For efficiency reason (doing a long sequence of function calls), the 
-implicit form has the calling convention in the function name following the \code{.dyncall.} prefix.  
+Arguments passed via \code{...} are converted according to the given \link{call signature} 
+and selected \code{callmode}. If the arity of actual and formal arguments does not match or 
+incompatible type mismatches are detected, the call is aborted before risking a fatal system crash.
 
 }
 \value{  
-The return value of the foreign function call converted to an \R type according to the return type signature
-given by \code{\link{signature}}.
+The converted return value of the foreign function call according to the return \link{type signature}
+given by \code{signature}. 
 }
-\section{Call Signature}{
-
-The general form of a dyncall signature string is
-
-\tabular{rcl}{
-\emph{Argument types}.. \tab '\code{)}' \tab \emph{Return type}\cr
-}
-
-A type is specified using a one-character type code. The argument type characters are specified 
-in \emph{left-to-right} order of the corresponding C function prototype. 
-A closing bracket character \code{')'} marks the end of input argument types. Finally, a return type character is given
-to specify the return value. 
-The following table lists valid type character codes, corresponding C types, acceptable R argument types and returned R types.
-
-\tabular{clll}{
-\strong{Type code} \tab \strong{C type}          \tab \strong{R argument type}           \tab \strong{R return type}\cr
-'\code{c}'           \tab char                   \tab raw,logical,integer,double         \tab integer\cr
-'\code{C}'           \tab unsigned char          \tab raw,logical,integer,double         \tab integer\cr
-'\code{s}'           \tab short                  \tab raw,logical,integer,double         \tab integer\cr
-'\code{S}'           \tab unsigned short         \tab raw,logical,integer,double         \tab integer\cr
-'\code{i}'           \tab int                    \tab raw,logical,integer,double         \tab integer\cr
-'\code{I}'           \tab unsigned int           \tab raw,logical,integer,double         \tab double\cr
-'\code{j}'           \tab long                   \tab raw,logical,integer,double         \tab double\cr
-'\code{J}'           \tab unsigned long          \tab raw,logical,integer,double         \tab double\cr
-'\code{l}'           \tab long long              \tab raw,logical,integer,double         \tab double\cr
-'\code{L}'           \tab unsigned long long     \tab raw,logical,integer,double         \tab double\cr
-'\code{f}'           \tab float                  \tab raw,logical,integer,double         \tab double\cr
-'\code{d}'           \tab double                 \tab raw,logical,integer,double         \tab double\cr
-'\code{p}'           \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr,NULL\cr
-'\code{B}'           \tab bool (C++)             \tab raw,logical,integer,double         \tab logical\cr
-'\code{Z}'           \tab char*                  \tab character,NULL                     \tab character,NULL\cr
-'\code{x}'           \tab SEXP                   \tab \emph{any}                         \tab \emph{any}\cr
-'\code{*}' \ldots    \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr\cr
-'\code{*<}' \emph{typename} '\code{>}' \tab \emph{typename}* (pointer) \tab raw,externalptr \tab externalptr\cr
-\code{v}           \tab void                   \tab \emph{invalid}                     \tab NULL\cr
-}
-
-As input one can use logical, integer, double and raw for C/C++ boolean, integer and floating point types, where
-the first item of the R vector is casted to the C type and then gets loaded as argument.
-Pointers (type char '\code{p}') are handled such that the data pointer of R atomic vectors are loaded as arguments with
-the exception of R character vectors, where the first R character string gets loaded. NULL is interpreted as a C NULL pointer.
-
-A more high-level framework is set up on top the one-character type encodings to include support for
-C structure and union types.
-
-A pointer type mapping can also be expressed using one or more '\code{*}' prefix signature codes.
-C structures and unions can be used such as using '\code{<}' \emph{type-name} '\code{>}'.
-
-If used as a return type, the returned external pointer has the \code{struct} attribute set to that name,
-so that the structure/union type information works.
-
+\section{Signature}{
+For details on call-and-type signature encoding and argument-and-return type-mapping between R and C, see \link{signature}.
 }
 \section{Calling conventions}{
-Calling conventions specify on the machine-level how a function call is invoked.
+Calling conventions specify how a function call is invoked at the machine-level.
+Conventions differ significantly among families of CPU Architectures as well as
+OS and compiler implementations.
 
-The conventions differ significantly among families of CPU Architectures. 
-Some conventions are related to OS and Compiler issues as well.
-While on many processor architectures, there is only one general calling 
-convention - there are multiple calling conventions available on the x86 
-processor architecture and in particular when working with Microsoft Windows 
-system libraries.
+While on many processor architectures there is only one (\code{callmode=}) \code{"default"} C calling convention - 
+there are multiple calling conventions available on the Intel 32-bit X86 
+processor architecture and in particular when working on Microsoft Windows with
+the Microsoft System Libraries such as \code{KERNEL32.DLL} or \code{OPENGL32.DLL} which uses (\code{callmode=}) \code{"stdcall"}.
 
-In general, many prebuilt binaries available online will work fine with \code{"default"}.
-Windows System DLLs require \code{"stdcall"} instead. 
+The implementation is based on the \emph{dyncall} library which has support for multiple calling conventions.
+Currently \emph{dyncall} has support for the following processor architectures:
 
-\describe{
-\item{\code{"default"} or \code{"cdecl"}}{ Default C calling convention. }
-\item{\code{"stdcall"}}{ Available on the X86 architecture, otherwise falls back to "cdecl". Use when linking Microsoft Windows System Libraries (e.g. KERNEL32.DLL, USER32.DLL, OPENGL32.DLL ...). }
-\item{\code{"thiscall.gcc"}}{ Available on the X86 architecture, otherwise falls back to "cdecl". Use when calling C++ member functions that are linking x86 C++ shared libraries compiled with GCC using \code{__thiscall}.}
-\item{\code{"thiscall.msvc"}}{ Available on the X86 architecture, otherwise falls back to "cdecl". Use when linking x86 shared libraries compiled with Visual C++ using \code{__thiscall}. }
-\item{\code{"fastcall.msvc"}}{ Available on the X86 architecture, otherwise falls back to "cdecl". }
-\item{\code{"fastcall.gcc"}}{ Available on the X86 architecture, otherwise falls back to "cdecl". }
+\itemize{
+  \item X86: Intel 32-bit with support for stdcall, and thiscall and fastcall (GCC and Microsoft). Tested on Linux, Mac OS X, Windows, Net/Free/Open/Dragonfly-BSD, Solaris, Haiku, Plan9.
+  \item X64: AMD 64-bit with support for System-V (ELF) and Win64. Tested on Linux, Mac OS X, Windows, FreeBSD. 
+  \item ARM: ARM 32-bit with support for Thumb ABI. Tested on Darwin (iPhone OS, armv6 with bugs in armv7 mode) and Nintendo DS.
+  \item PPC32: PowerPC 32-bit with support for Darwin (Mac OS X) and System-V (Linux/BSD).
+  \item MIPS32: MIPS 32-bit with support for o32 (Linux) and eabi (Playstation Portable).
+  \item MIPS64: MIPS 64-bit with support for n64 ABI . Tested on OpenBSD.
 }
 
-In principle OS foreign function calls are possible with the dyncall library,
-but we have not yet implemented support on that (x64 needs an update to choose among both (sysv and win64) at run-time).
-In a later release you can expect to have more choice such as:
+On all platforms, there is always on \code{"default"} (or \code{"cdecl"} - an alias) C calling convention of the host platform.
+
+On X86 Platforms (with the exception of Plan9) several calling conventions are available at run-time:
 
 \describe{
-\item{\code{"ppc.osx"}}{Mac OS X Code on PowerPC 32-bit}
-\item{\code{"ppc.sysv"}}{ELF-based code on PowerPC 32-bit}
-\item{\code{"x64.win64"}}{Windows 64-bit code (on X64 Architecture)}
-\item{\code{"x64.sysv"}}{ELF-based code on X64 Architecture}
+\item{\code{"stdcall"}}{C functions with emph{stdcall} calling convention. Useful for all Microsoft Windows System Libraries (e.g. KERNEL32.DLL, USER32.DLL, OPENGL32.DLL ...). Third-party libraries usually prefer the default C \emph{cdecl} calling convention. }
+\item{\code{"fastcall.msvc"}}{C functions with \emph{fastcall} calling convention compiled with Microsoft Visual C++ Compiler.}
+\item{\code{"fastcall.gcc"}}{C functions with \emph{fastcall} calling convention compiled with GNU C Compiler.}
+\item{\code{"thiscall.gcc"}}{ C++ member functions compiled with GNU C Compiler.}
+\item{\code{"thiscall.msvc"}}{C++ member functions compiled with Microsoft Visual C++ Compiler.}
 }
 
-In many cases, \code{"cdecl"} is the best choice. Exceptions to this include the x86 architecture and in particular
-Microsoft Windows platforms. 
+In case, the user specifies one of the calling conventions and is on a non-x86 system, the callmode falls back to \code{"default"}.
 
-The calling convention is defined during compilation of shared libraries. 
-One specifies the calling convention using function prototype attributes such as 
-\code{__attribute__((stdcall))} or \code{__stdcall} for short.
-
-On X86 Architectures, the \emph{fastcall} and \emph{thiscall} (C++) calling convention differ 
-regarding Microsoft Visual C++ and the GCC compilers. 
-\code{"fastcall.msvc"} and \code{"thiscall.msvc"} are used for the Microsoft Visual C++ compiled code, while
-\code{"fastcall.gcc"} and \code{"fastcall.gcc"} use GCC compiled code. 
-
+\code{"cdecl"} is usually the best choice. Exceptions to this include the x86 architecture and in particular
+Microsoft Windows System Libraries.
 }
 \note{
-When invoking a foreign function calls, the address, calling convention and 
-type information for arguments and return values \strong{MUST} match with 
-the compiled function. 
-Otherwise the invocation can lead to a \strong{fatal R process crash}.
-
-The rdyncall package has support for a certain degree of type safety in
-some cases but in general you can not expect a 100% type safety. 
-
-Dyncall does not perform the call, if the arity of the function call does
-not match the number of arguments given.
-
-The package can cause unexpected behaviour if the user is
-not aware of what she is doing. USE ON YOUR OWN RISK.
+The address, calling convention and type information for arguments and return values \strong{MUST} match with 
+the compiled function, otherwise the invocation can lead to a \strong{fatal R process crash}.
 }
-
 \examples{
 \donttest{
 rlib <- dynfind("R")
@@ -185,8 +111,8 @@ x <- .dynsym(rlib,"sqrt")
 \seealso{
 \code{\link{signature}} for call signatures.
 \code{\link{dynbind}} for automatic binding of multiple functions from shared libraries.
-\code{\link{getNativeSymbolInfo}} and \code{\link{dyn.load}}. 
-\code{\link{.C}},\code{\link{.Call}},,\code{\link{.External}}
+\code{\link{getNativeSymbolInfo}} and \code{\link{.dynsym}}. 
+\code{\link{.C}},\code{\link{.Call}},\code{\link{.External}}
 }
 \keyword{programming}
 \keyword{interface}
