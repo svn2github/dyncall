@@ -476,7 +476,12 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             break;
           case DC_SIGCHAR_POINTER:
           case DC_SIGCHAR_STRING:
-            error("low-level typed pointer on pointer not implemented");
+            switch(type_id)
+            {
+              case EXTPTRSXP: 
+                ptrValue = R_ExternalPtrAddr( arg ); break;
+              default: error("low-level typed pointer on pointer not implemented");
+            }
             break;
           default:
             error("low-level typed pointer on C char pointer not implemented");
