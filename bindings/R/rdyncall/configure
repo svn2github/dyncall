@@ -6,7 +6,7 @@
 
 if [ -d src/dyncall ]; then
 cd src/dyncall
-CONFIG_ARGS="--prefix=\$(TOP)"
+CONFIG_ARGS="--prefix=\$(TOP) --prefix-bd=."
 UNAME_SYS=`uname -s`
 if [ "$UNAME_SYS" = "Darwin" ]; then
   OS_VERSION=`uname -r`

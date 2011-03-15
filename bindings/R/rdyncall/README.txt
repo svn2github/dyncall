@@ -102,3 +102,8 @@ Building R package from subversion source tree
     (e.g. http://dyncall.org/r0.6/dyncall-0.6.tar.gz
 
 
+Tested Platforms:
+-----------------
+
+OpenBSD 4.8/amd64: SDL demos fail.
+Debian 6.0/amd64: All tests passed.

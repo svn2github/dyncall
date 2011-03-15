@@ -1,5 +1,10 @@
 BUGS:
 - On Mac OS X, SDL demos should be run from within a GUI R Session.
+- OpenBSD 4.8/amd64: SDL failed due to pthread.
+- R version on OpenBSD does not provide a shared R library, thus
+  the symbols are not resolvable.
+  Additional Test for resolving self:
+  While .dynsym(as.extptr(NULL), "R_ShowMessage") works on Mac OS X, it fails on OpenBSD.
 
 TODO:
 - demo(ttf) failed on Mac OS X 10.6
