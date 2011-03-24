@@ -1,11 +1,13 @@
 
 
 .sysName <- Sys.info()[["sysname"]]
+.callMode <- "cdecl"
 if (.sysName == "Windows") {
-  .callMode <- "stdcall"
   .libName <- "OPENGL32"
+  if ( .Platform$r_arch == "i386") {
+  .callMode <- "stdcall"
+  }
 } else {
-  .callMode <- "cdecl"
   .libName <- if (.sysName == "Darwin") "OpenGL" else c("libGL.so","libGL.so.1")
 }
 dynbind(.libName,"
