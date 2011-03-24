@@ -1,6 +1,11 @@
 PKG_CPPFLAGS=-Idyncall/dyncall -Idyncall/dynload -Idyncall/dyncallback
 PKG_LIBS=-Ldyncall/dyncall -ldyncall_s -Ldyncall/dynload -ldynload_s -Ldyncall/dyncallback -ldyncallback_s
-all: make-dyncall $(SHLIB)
-.PHONY: make-dyncall
-make-dyncall:
-	cd dyncall ; ${MAKE}
+
+.PHONY: all mylibs
+
+all: mylibs $(SHLIB)
+# $(SHLIB): mylibs
+
+mylibs:
+	(cd dyncall ; CC=$(CC) AR=$(AR) make)
+

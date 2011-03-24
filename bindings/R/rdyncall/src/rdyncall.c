@@ -77,11 +77,14 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
   switch(TYPEOF(CAR(args))) {
     case EXTPTRSXP:
       addr = R_ExternalPtrAddr( CAR(args) ); args = CDR(args);
-      if (!addr) error("Target address is null-pointer.");
+      if (!addr) {
+        error("Target address is null-pointer.");
+        return R_NilValue; /* dummy */
+      }
       break;
     default:
       error("Target address must be external pointer.");
-      break;
+      return R_NilValue; /* dummy */
   }
   signature = CHAR( STRING_ELT( CAR(args), 0 ) ); args = CDR(args);
   sig = signature;
@@ -390,25 +393,29 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         b = sig;
         while( isalnum(*sig) || *sig == '_' ) sig++;
         if (*sig != '>') {
-          error("Invalid signature '%s' - missing '>' marker for structure at argument %d.", signature, argpos);/* dummy */ return R_NilValue;
+          error("Invalid signature '%s' - missing '>' marker for structure at argument %d.", signature, argpos);
+          return R_NilValue; /* Dummy */
         }
         sig++;
         /* check pointer type */
         SEXP structName = getAttrib(arg, install("struct"));
         if (structName == R_NilValue) {
           error("typed pointer needed here");
+          return R_NilValue; /* Dummy */
         }
         e = sig-1;
         l = e - b;
         n = CHAR(STRING_ELT(structName,0));
         if ( (strlen(n) != l) || (strncmp(b,n,l) != 0) ) {
           error("incompatible pointer types");
+          return R_NilValue; /* Dummy */
         }
         switch(type_id) {
           case NILSXP:    ptrValue = (DCpointer) 0; break;
           case EXTPTRSXP: ptrValue = R_ExternalPtrAddr(arg); break;
           case RAWSXP:    ptrValue = (DCpointer) RAW(arg); break;
           default:        error("internal error: typed-pointer can be external pointers or raw only.");
+          return R_NilValue; /* Dummy */
         }
         dcArgPointer(pvm, ptrValue);
         ptrcnt = 0;
@@ -425,7 +432,8 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
               case CPLXSXP:   ptrValue = (DCpointer) COMPLEX(arg); break;
               case RAWSXP:    ptrValue = (DCpointer) RAW(arg); break;
               case EXTPTRSXP: ptrValue = R_ExternalPtrAddr(arg); break;
-              default:        error("Argument type mismatch at position %d: expected pointer convertable value", argpos); /* dummy */ return R_NilValue;
+              default:        error("Argument type mismatch at position %d: expected pointer convertable value", argpos); 
+                return R_NilValue; /* dummy */
             }
             break;
           case DC_SIGCHAR_CHAR:
@@ -434,27 +442,32 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             {
               case NILSXP:    ptrValue = (DCpointer) 0; break;
               case STRSXP:    ptrValue = (DCpointer) CHAR( STRING_ELT(arg,0) ); break;
-              default:        error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); /* dummy */ return R_NilValue;
+              default:        error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); 
+                return R_NilValue; /* dummy */
             }
             break;
           case DC_SIGCHAR_USHORT:
           case DC_SIGCHAR_SHORT:
               error("Signature '*[sS]' not implemented");
+              return R_NilValue; /* dummy */
           case DC_SIGCHAR_UINT:
           case DC_SIGCHAR_INT:
             switch(type_id)
             {
               case NILSXP:  ptrValue = (DCpointer) 0; break;
               case INTSXP:  ptrValue = (DCpointer) INTEGER(arg); break;
-              default:      error("Argument type mismatch at position %d: expected 'pointer to C integer' convertable value", argpos); /* dummy */ return R_NilValue;
+              default:      error("Argument type mismatch at position %d: expected 'pointer to C integer' convertable value", argpos); 
+                return R_NilValue; /* dummy */
             }
             break;
           case DC_SIGCHAR_ULONG:
           case DC_SIGCHAR_LONG:
-              error("Signature '*[jJ]' not implemented"); break;
+              error("Signature '*[jJ]' not implemented"); 
+              return R_NilValue; /* dummy */
           case DC_SIGCHAR_ULONGLONG:
           case DC_SIGCHAR_LONGLONG:
-              error("Signature '*[lJ]' not implemented"); break;
+              error("Signature '*[lJ]' not implemented"); 
+              return R_NilValue; /* dummy */
           case DC_SIGCHAR_FLOAT:
             switch(type_id)
             {
@@ -463,7 +476,8 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
                 if ( strcmp( CHAR(STRING_ELT(getAttrib(arg, install("class")),0)),"floatraw") == 0 ) {
                   ptrValue = (DCpointer) REAL(arg);
                 }
-              default:      error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); /* dummy */ return R_NilValue;
+              default:      error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); 
+                return R_NilValue; /* dummy */
             }
             break;
           case DC_SIGCHAR_DOUBLE:
@@ -471,7 +485,8 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             {
               case NILSXP:  ptrValue = (DCpointer) 0; break;
               case REALSXP: ptrValue = (DCpointer) REAL(arg); break;
-              default:      error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); /* dummy */ return R_NilValue;
+              default:      error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); 
+                return R_NilValue; /* dummy */
             }
             break;
           case DC_SIGCHAR_POINTER:
@@ -481,11 +496,12 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
               case EXTPTRSXP: 
                 ptrValue = R_ExternalPtrAddr( arg ); break;
               default: error("low-level typed pointer on pointer not implemented");
+                return R_NilValue; /* dummy */
             }
             break;
           default:
             error("low-level typed pointer on C char pointer not implemented");
-            break;
+            return R_NilValue; /* dummy */
         }
         dcArgPointer(pvm, ptrValue);
         ptrcnt = 0;
@@ -496,7 +512,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
 
   if (args != R_NilValue) {
     error ("Too many arguments for signature '%s'.", signature);
-    /* dummy */ return R_NilValue;
+    return R_NilValue; /* dummy */
   }
   /* process return type, invoke call and return R value  */
 
@@ -527,25 +543,30 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
     {
       SEXP ans;
       ptrcnt = 1;
-      PROTECT(ans = R_MakeExternalPtr( dcCallPointer(pvm, addr), R_NilValue, R_NilValue ) );
       while (*sig == '*') { ptrcnt++; sig++; }
-      if (*sig == '<') {
-        /* struct/union pointers */
-        char buf[128];
-        const char* begin = ++sig;
-        const char* end   = strchr(sig, '>');
-        size_t n = end - begin;
-        strncpy(buf, begin, n);
-        buf[n] = '\0';
-        setAttrib(ans, install("struct"), mkString(buf) );
-        setAttrib(ans, install("class"), mkString("struct") ); 
-      } else {
-        /* process things such as *v, **i, .. */
+      switch(*sig) {
+        case '<': {
+          /* struct/union pointers */
+          PROTECT(ans = R_MakeExternalPtr( dcCallPointer(pvm, addr), R_NilValue, R_NilValue ) );
+          char buf[128];
+          const char* begin = ++sig;
+          const char* end   = strchr(sig, '>');
+          size_t n = end - begin;
+          strncpy(buf, begin, n);
+          buf[n] = '\0';
+          setAttrib(ans, install("struct"), mkString(buf) );
+          setAttrib(ans, install("class"), mkString("struct") ); 
+        } break;
+        case 'c': {
+          PROTECT(ans = mkString( dcCallPointer(pvm, addr) ) );
+        } break;
+        default: error("Unsupported returnt type signature"); return R_NilValue;
       }
       UNPROTECT(1);
       return(ans);
     }
-    default: error("Unknown return type specification for signature '%s'.", signature); /* return dummy: */ return R_NilValue;
+    default: error("Unknown return type specification for signature '%s'.", signature); 
+             return R_NilValue; /* dummy */
   }
 
 }
