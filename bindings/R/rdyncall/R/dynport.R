@@ -41,7 +41,7 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
           0L, 3L))
   assign(".__S3MethodsTable__.", new.env(hash = TRUE, 
           parent = baseenv()), envir = env)
-  .Internal(registerNamespace(name, env))
+  # .Internal(registerNamespace(name, env))
   env
 }
 
@@ -53,7 +53,9 @@ loadDynportNamespace <- function(name, portfile, do.attach=TRUE)
   # create namespace  
   env <- makeNamespace(name)
   # process portfile
-  sys.source(portfile, envir=env)  
+  sys.source(portfile, envir=env) 
+  # register 
+  .Internal(registerNamespace(name, env))
   # export all objects, expect '.' variables reserved for internal use
   namespaceExport(env, ls(env))
   # attach namespace
