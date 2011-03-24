@@ -1,7 +1,3 @@
 #!/bin/sh
-# R Package: rdyncall
-# File: cleanup.win
-# Description: cleanup script (windows flavour)
-# Copyright (C) 2007-2009 Daniel Adler
-make -C src/dyncall clean
+cd src/dyncall ; make clean
 

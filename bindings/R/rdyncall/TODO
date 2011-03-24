@@ -1,4 +1,6 @@
 BUGS:
+- dynport once failed, dynport returns NULL afterwards..
+- Win64: build system
 - On Mac OS X, SDL demos should be run from within a GUI R Session.
 - OpenBSD 4.8/amd64: SDL failed due to pthread.
 - R version on OpenBSD does not provide a shared R library, thus
