@@ -1,0 +1,12 @@
+PKG_CPPFLAGS=-Idyncall/dyncall -Idyncall/dynload -Idyncall/dyncallback
+PKG_LIBS=-Ldyncall/dyncall -ldyncall_s -Ldyncall/dynload -ldynload_s -Ldyncall/dyncallback -ldyncallback_s
+
+# required by R >= 2.9
+
+all: make-dyncall $(SHLIB)
+.PHONY: make-dyncall
+make-dyncall:
+	cd dyncall ; ${MAKE}
+clean:
+	cd dyncall ; ${MAKE} clean
+
