@@ -4,6 +4,7 @@
 # Description: configure script (windows flavour)
 # Copyright (C) 2007-2009 Daniel Adler
 
-cd src/dyncall
-sh ./configure --target-x86 --target-windows --tool-gcc --prefix=\$\(TOP\)
+# cd src/dyncall
+# sh ./configure --target-windows --target-universal --tool-gcc --prefix=\$\(TOP\) --prefix-bd=.
+
 
