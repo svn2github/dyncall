@@ -31,6 +31,5 @@ EOF
 
 checkout_src
 # download_zip
-
-configure_dyncall
+# configure_dyncall
 
