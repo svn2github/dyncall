@@ -109,4 +109,5 @@ OpenBSD 4.8/x64: SDL demos fail (SDL to pthread dependency fails).
 Debian 6.0/x64: ok.
 Mac OS X 10.6/x64: ok.
 Windows XP/x86: ok.
+Windows XP/x64: SDL demos fail.
 
