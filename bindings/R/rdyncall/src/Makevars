@@ -7,5 +7,5 @@ all: mylibs $(SHLIB)
 # $(SHLIB): mylibs
 
 mylibs:
-	(cd dyncall ; CC=$(CC) AR=$(AR) make)
+	(cd dyncall ; CC=$(CC) AR=$(AR) make -f Makefile.generic)
 
