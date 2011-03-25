@@ -105,9 +105,10 @@ Building R package from subversion source tree
 Tested Platforms:
 -----------------
 
-OpenBSD 4.8/x64: SDL demos fail (SDL to pthread dependency fails).
 Debian 6.0/x64: ok.
-Mac OS X 10.6/x64: ok.
-Windows XP/x86: ok.
-Windows XP/x64: SDL demos fail.
+Mac OS X 10.4/ppc R-2.10.0: ok.
+Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
+Windows XP/x86 R-2.12.2: ok.
+Windows XP/x64 R-2.12.2: sqrt ok - others fail.
+OpenBSD 4.8/x64: SDL demos fail (SDL to pthread dependency fails).
 

@@ -4,7 +4,7 @@ Date: 2011-03-25
 Title: Dynamic and Flexible Foreign Function Interface for R (FFI) with support for handling C pointer, struct, union and function types.
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
-Depends: R (>= 2.11)
+Depends: R (>= 2.10)
 Description: Dynamic bindings to shared libraries without additional C wrappers. Support for binding functions, function pointer variables, importing of constants, enums, registration and handling of C structures and unions, support for common calling conventions on several platforms. 
 License: BSD
 URL: http://dyncall.org
