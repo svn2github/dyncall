@@ -1,8 +1,32 @@
 # Mac OS X: this one is needed in case, we are running from Console
 # and no initial event loop is available.
-
+  
+# On Mac OS X Console, a Cocoa Environment is needed for SDL.
 if ( Sys.info()[["sysname"]] == "Darwin" && .Platform$GUI != "AQUA") {
-library(Cocoa)
+
+  # This seem to be the most practical solution for now:
+  # A dummy quartz device is created and closed again.
+  
+  quartz()
+  dev.off()
+
+  # An alternative solution via R package 'cocoa' from dyncall site.
+  # source: http://dyncall.org/svn/trunk/bindings/R/cocoa 
+  
+  # from: http://www.mail-archive.com/r-help@r-project.org/msg91375.html
+  # is.installed <- function(mypkg) is.element(mypkg, installed.packages()[,1])
+  #if (!is.installed("cocoa")) {
+  #  install.packages("cocoa",,"http://dyncall.org/r")
+  #}
+  #library(cocoa)
+
+  # Probably on 10.3 using Carbon with older SDL:
+  #
+  # FIXME: Create NSAutoreleasePool 
+  # if (!is.installed("CarbonEL")) {
+  #   install.packages("CarbonEL",,"http://rforge.net")
+  # }
+  # library(CarbonEL)
 }
 
 dynbind( c("SDL","SDL-1.2","SDL-1.2.so.0"), "
