@@ -23,6 +23,6 @@ f <- function(x,y,f,i)
 
 cb <- new.callback("iipi)i", f)
 
-r <- .dyncall(cb, "iipi)i", 1,1,cb,700 )
+r <- .dyncall(cb, "iipi)i", 1,1,cb,100 )
 r == 2
 
