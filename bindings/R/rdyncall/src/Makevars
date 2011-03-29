@@ -1,5 +1,5 @@
 PKG_CPPFLAGS=-Idyncall/dyncall -Idyncall/dynload -Idyncall/dyncallback
-PKG_LIBS=-Ldyncall/dyncall -ldyncall_s -Ldyncall/dynload -ldynload_s -Ldyncall/dyncallback -ldyncallback_s
+PKG_LIBS=dyncall/dyncall/libdyncall_s.a dyncall/dynload/libdynload_s.a dyncall/dyncallback/libdyncallback_s.a
 
 .PHONY: all mylibs
 
