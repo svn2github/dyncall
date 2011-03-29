@@ -319,8 +319,17 @@ print.struct <- function(x, indent=0, ...)
   structInfo <- getTypeInfo(structName)
   fieldInfos <- structInfo$fields
   fieldNames <- rownames(fieldInfos)
+  
+  cat( "struct ", structName, " ")
+  if (typeof(x) == "externalptr") {
+    cat ("*")
+    if (is.nullptr(x)) {
+      cat("=NULL\n")
+      return()
+    }
+  } 
+  cat("{")
   # print data without last
-  cat( "struct ", structName, " {\n")
   for (i in seq(along=fieldNames)) 
   { 
     cat( rep("  ", indent+1), fieldNames[[i]] , ":" )
