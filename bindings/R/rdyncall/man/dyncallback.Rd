@@ -37,9 +37,6 @@ The PowerPC 32-bit port is considered unstable. For MIPS a port is in developmen
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
   \url{http://dyncall.org}
 }
-\author{
-  Daniel Adler \email{dadler@uni-goettingen.de}
-}
 \seealso{
 See \code{\link{signature}} for details on call signatures.
 }

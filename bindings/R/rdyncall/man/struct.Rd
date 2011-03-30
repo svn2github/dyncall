@@ -72,8 +72,5 @@ A union signature format is as following:
 union-typename '\|' field-types '\}' field-names (white space separated) ';' 
 
 }
-\author{
-  Daniel Adler \email{dadler@uni-goettingen.de}
-}
 \keyword{programming}
 \keyword{interface}

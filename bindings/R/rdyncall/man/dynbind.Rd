@@ -15,7 +15,8 @@ dynbind(libnames, signature, envir=parent.frame(), callmode="cdecl",
   \item{callmode}{Scalar character string specifying the calling convention of the target library.}
   \item{pat}{Scalar characgter string specifying a regular expression to be matched against the name part of function signatures and replaced by \code{replace}}
   \item{replace}{Scalar character string specifying the replacement of the regular expression pattern given by \code{pat}.}
-  \item{funcptr}{Scalar logical scalar specifying if symbols represent function pointer variables (\code{TRUE}) or functions (\code{FALSE}).}
+  \item{funcptr}{Scalar logical indicating whether symbols are resolved to 
+  functions (\code{FALSE}) or to a pointer-to-function variables (\code{TRUE}) - see details below.}
 }
 \details{
 The function dynamically loads a shared library specified by short library names given by \code{libnames} using \code{\link{dynfind}}.
@@ -25,25 +26,28 @@ functions of the shared library via \code{\link{.dyncall}}.
 The \link{library signature} comprises a sequence of \link{function signatures} separated by \samp{;} semicolon symbols and optionally white-spaces before and after semicolons.
 
 \tabular{c}{
-\emph{functionName} \samp{(} \emph{argumentTypes} \samp{)} \emph{returnType} \samp{;} \ldots \cr 
+\emph{symbol} \samp{(} \emph{argumentTypes} \samp{)} \emph{returnType} \samp{;} \ldots \cr 
 }
 
 For each \link{function signature}, a corresponding R wrapper is created with the following pattern:
 
 \tabular{c}{
-\code{ functionName <- function(...) .dyncall.CALLMODE ( target, signature, ... ) }
+\code{ symbol <- function(...) .dyncall.CALLMODE ( target, signature, ... ) }
 }
 
 The suffix \emph{CALLMODE} is replaced by \code{callmode} to match a corresponding FFI calling convention (one of the \code{.dyncall.*} functions), 
 see \code{\link{.dyncall}} for details on calling conventions.
-If a regular expression \code{pat} and \code{replace} is given, the substitution is applied to the \emph{functionName} before installation in the environment \code{envir}.
+If a regular expression \code{pat} and \code{replace} is given, the substitution is applied to the \emph{symbol} before installation in the environment \code{envir}.
 
-Usually, the \emph{functionName} refers to an \emph{exported function} of the shared library (funcptr is \code{FALSE}) and \emph{target} is an external pointer resolved by \code{\link{.dynsym}} that holds the resolved \code{address} of the function given by 
-\emph{functionName}.
+The \emph{target} is replaced by the exported pointer that refers to the resolved address of the \emph{symbol}.
+The \emph{signature} is replaced by the call signature string ( \emph{argumentTypes} \samp{)} \emph{returnType} ).
 
-In case, the \emph{functionName}s refer to \emph{exported function pointer variables} of a shared library, \code{funcptr} can be set to \code{TRUE}:
-The expression \emph{target} is substituted with \code{ .unpack( address, "p", 0 ) } where \code{address} represents an external pointer that holds the resolved address of the \emph{function pointer variable}.
-Each time, the wrapper function is called, the function pointer variable is dereferenced in order to obtain the real function target address.
+As a special case, \code{dynbind} supports binding of pointer-to-function variables via setting \code{funcptr} to \code{TRUE} that changes the \emph{target} part
+using \code{.unpack} to dereference the address at run-time:
+
+\tabular{c}{
+\code{ symbol <- function(...) .dyncall.CALLMODE ( .unpack(target, "p", 0) , signature, ... ) }
+}
 
 }
 
@@ -51,9 +55,6 @@ Each time, the wrapper function is called, the function pointer variable is dere
 List object consisting of the follow fields:
 \item{libhandle}{External pointer returned by \code{\link{.dynload}}}
 \item{unresolved.symbols}{Character string vector containing the names of unresolved symbols}
-}
-\author{
-  Daniel Adler \email{dadler@uni-goettingen.de}
 }
 \examples{
 \donttest{

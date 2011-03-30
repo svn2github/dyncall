@@ -105,9 +105,6 @@ x <- .dynsym(rlib,"sqrt")
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
   \url{http://dyncall.org}
 }
-\author{
-  Daniel Adler \email{dadler@uni-goettingen.de}
-}
 \seealso{
 \code{\link{signature}} for call signatures.
 \code{\link{dynbind}} for automatic binding of multiple functions from shared libraries.
