@@ -557,6 +557,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
           setAttrib(ans, install("struct"), mkString(buf) );
           setAttrib(ans, install("class"), mkString("struct") ); 
         } break;
+        case 'C':
         case 'c': {
           PROTECT(ans = mkString( dcCallPointer(pvm, addr) ) );
         } break;
