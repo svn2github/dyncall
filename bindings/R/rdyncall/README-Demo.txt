@@ -81,14 +81,17 @@ Recommended Debian Packages:
 
   Name                    Description
 
+  libsdl1.2debian         common SDL documentation
   libsdl1.2debian-<NAME>  with NAME = alsa,all,esd,arts,oss,nas or pulseaudio (depending on your sound system)
   libexpat1		  Expat XML run-time library
   libgl1-mesa-glx 	  OpenGL for X11 run-time
   libgl1-mesa-dri	  OpenGL Accelaration
   libglu1-mesa 		  OpenGL Utility run-time
    
- 
---- NetBSD pkgsrc (based on 5.1) ----------------------------------------------
+  Verified installation on Version 5 and 6.
+
+
+--- NetBSD pkgsrc -------------------------------------------------------------
 
 Usage
   Install via pkg_add -v ...
@@ -99,6 +102,6 @@ Usage
 
   SDL       1.2       /usr/pkg/lib/libSDL.so
   expat     2.0.1     /usr/pkg/lib/libexpat.so
-  
 
+  Verified on Version 5.1.  
 

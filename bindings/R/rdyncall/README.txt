@@ -71,4 +71,5 @@ Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
 Windows XP/x86 R-2.12.2: ok.
 Windows XP/x64 R-2.12.2: sqrt ok - others fail.
 OpenBSD 4.8/x64: SDL demos fail (SDL to pthread dependency fails).
+Debian 5.0/x86: ok.
 
