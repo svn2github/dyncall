@@ -45,7 +45,7 @@ can find the libraries.
 
 --- Windows Installation Notes ------------------------------------------------
 
-Download, unpack. Make sure *.dll files are in your PATH.
+Download, unpack. Make sure *.DLL files are in PATH.
 
 Downloads:
 
@@ -55,7 +55,7 @@ Downloads:
   SDL_ttf   http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.10-win32.zip
   SDL_mixer http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.11-win32.zip
   expat     http://expat.sourceforge.org
- 
+
   No Installation needed for pre-installed software (part of OS Installation):
   
   Standard C Run-Time is at %WINDIR%/system32/MSVCRT.DLL
