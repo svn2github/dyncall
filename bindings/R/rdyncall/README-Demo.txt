@@ -50,7 +50,7 @@ Download, unpack. Make sure *.DLL files are in PATH.
 Downloads:
 
   32-Bit:  
-  
+  -------
   SDL       http://www.libsdl.org/release/SDL-1.2.14-win32.zip
   SDL_ttf   http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.10-win32.zip
   SDL_mixer http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.11-win32.zip
@@ -59,6 +59,16 @@ Downloads:
   No Installation needed for pre-installed software (part of OS Installation):
   
   Standard C Run-Time is at %WINDIR%/system32/MSVCRT.DLL
+
+
+  64-Bit:
+  -------
+  SDL       http://mamedev.org/tools/20100102/sdl-1.2.14-r5428-w64.zip
+  
+  Note: The prebuilt SDL from http://www.drangon.org/mingw did not work,
+        exiting with OpenGL errors.
+        If you know of other resources for prebuilt 64-bit packages
+        for SDL and expat, please report.
 
 --- Mac OS X Installation Notes -----------------------------------------------
     
