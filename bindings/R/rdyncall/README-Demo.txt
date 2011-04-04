@@ -132,6 +132,12 @@ Usage
 
   Verified on Version 5.1.  
 
+
+--- OpenBSD -------------------------------------------------------------------
+
+The SDL Demo failed on OpenBSD 4.8 using the R 2.7 from Repo.
+
+
 --- FreeBSD packages ----------------------------------------------------------
 
 Usage
