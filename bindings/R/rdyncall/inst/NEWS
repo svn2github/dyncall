@@ -1,10 +1,14 @@
 NEWS for R package 'rdyncall'
 ==============================================================================
 
+
 Version 0.1
 
-- Initial release with the following features
-- Improved foreign function interface .dyncall()
-- Preliminary first prototyp of 'dynport'
+- Initial alpha release at UseR 2009. 
 
-  
+
+Version 0.2
+
+- Initial release on CRAN.
+
+
