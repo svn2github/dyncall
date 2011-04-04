@@ -25,9 +25,26 @@ Callback Demos:
   'expat':     XML Parser via expat using Callbacks.
 
 
+--- GETTING STARTED -----------------------------------------------------------
+
+1. Install additional Library Run-Time Components such as 'SDL' and 'Expat'.
+
+   Follow install check-list instructions in this document for particular OS.
+
+  
+2. Start R & load 'rdyncall' Package:
+
+   $ R
+   > library(rdyncall)
+
+
+3. Run SDL/OpenGL Demo 'SDL'
+
+   > demo(SDL)
+
+
 --- INSTALLATION --------------------------------------------------------------
 
-To run the demos, the target system has to install.
 The following Libraries are used as 'run-time' pre-compiled binaries
 for the particular target OS and Hardware platform.
 Some notes on installation of additional run-time libraries
@@ -75,7 +92,7 @@ Downloads:
 Downloads:
   libSDL: http://www.libsdl.org/release/SDL-1.2.14.dmg
   
-  No Installation needed for pre-installed software (part of Mac OS X):
+  No Installation needed for pre-installed software (checked on Mac OS X 10.{4,6})
     Standard C Run-Time: located /usr/lib/libc.dylib
     Expat: located at /usr/lib/libexpat.dylib
     OpenGL: located at /System/Library/Frameworks/OpenGL.framework/OpenGL
@@ -104,7 +121,7 @@ Recommended Debian Packages:
 --- NetBSD pkgsrc -------------------------------------------------------------
 
 Usage
-  Install via pkg_add -v ...
+  $ pkg_add -v <pkgname> <pkgname>..
       
   Recommended pkgsrc Packages:
 
@@ -115,6 +132,16 @@ Usage
 
   Verified on Version 5.1.  
 
+--- FreeBSD packages ----------------------------------------------------------
+
+Usage
+  $ pkg_add -r <pkgname> <pkgname>..
+
+  Recommended Packages:
+
+  xorg
+  
+  .. to be continued ..  
 
 --- Fedora RPMs ---------------------------------------------------------------
 
