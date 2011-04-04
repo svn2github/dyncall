@@ -1,4 +1,9 @@
+# Package: rdyncall
+# File: demo/ttf.R
+# Description: TrueType Font loading and drawing via SDL and SDL_ttf.
+
 dynport(SDL_ttf)
+
 fbSurf <- NULL
 textSurf <- NULL
 
