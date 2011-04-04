@@ -65,11 +65,13 @@ See README-Demo.txt for details.
 Tested Platforms:
 -----------------
 
-Debian 6.0/x64: ok.
+FreeBSD 8.2/x86: ok.
+Linux/Debian 5.0/x86: ok.
+Linux/Debian 6.0/x64: ok.
+Linux/Fedora 14/x86: ok.
 Mac OS X 10.4/ppc R-2.10.0: ok.
 Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
-Windows XP/x86 R-2.12.2: ok.
-Windows XP/x64 R-2.12.2: sqrt ok - others fail.
+NetBSD 5.0/x86: ok.
 OpenBSD 4.8/x64: SDL demos fail (SDL to pthread dependency fails).
-Debian 5.0/x86: ok.
-
+Windows XP/x86 R-2.12.2: ok.
+Windows XP/x64 R-2.12.2: ok - (had to use the correct SDL 64-bit version - see README-Demo.txt).

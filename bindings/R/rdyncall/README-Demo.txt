@@ -115,3 +115,18 @@ Usage
 
   Verified on Version 5.1.  
 
+
+--- Fedora RPMs ---------------------------------------------------------------
+
+Usage
+  pkcon install ...
+
+  SDL                 1.2       /usr/lib/libSDL-1.2.so.0
+  mesa-libGL          7.9-2
+  mesa-libGLU         7.9-2
+
+Pre-installed:
+  expat               1.5.2     /lib/libexpat.so.1.5.2
+  c                             /lib/libc.so.6
+
+
