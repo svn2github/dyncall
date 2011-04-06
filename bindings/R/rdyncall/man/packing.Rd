@@ -30,3 +30,19 @@ Byte \code{offset} calculations begin at byte offset 0 relative to the first byt
 \seealso{
 Details on the text string encoding for \code{\link{signature}}.
 }
+\examples{
+# transfer double to array of floats and back, compare precision:
+n <- 6
+input <- rnorm(n)
+buf <- raw(n*4)
+for (i in 1:n) {
+  .pack(buf, 4*(i-1), "f", input[i])
+}
+output <- numeric(n)
+for (i in 1:n) {
+  output[i] <- .unpack(buf, 4*(i-1), "f")
+}
+# difference between double and float
+difference <- output-input
+print( cbind(input,output,difference) )
+}

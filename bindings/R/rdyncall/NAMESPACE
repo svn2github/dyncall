@@ -2,6 +2,7 @@ useDynLib(rdyncall)
 export(
   # dyncall.R
   .dyncall, 
+  .dyncall.default,
   .dyncall.cdecl, 
   .dyncall.stdcall, 
   .dyncall.thiscall, .dyncall.thiscall.gcc, .dyncall.thiscall.msvc, 

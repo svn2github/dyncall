@@ -32,7 +32,7 @@ The \link{library signature} comprises a sequence of \link{function signatures} 
 For each \link{function signature}, a corresponding R wrapper is created with the following pattern:
 
 \tabular{c}{
-\code{ symbol <- function(...) .dyncall.CALLMODE ( target, signature, ... ) }
+\code{ function(...) .dyncall.CALLMODE ( target, signature, ... ) }
 }
 
 The suffix \emph{CALLMODE} is replaced by \code{callmode} to match a corresponding FFI calling convention (one of the \code{.dyncall.*} functions), 
@@ -40,14 +40,11 @@ see \code{\link{.dyncall}} for details on calling conventions.
 If a regular expression \code{pat} and \code{replace} is given, the substitution is applied to the \emph{symbol} before installation in the environment \code{envir}.
 
 The \emph{target} is replaced by the exported pointer that refers to the resolved address of the \emph{symbol}.
-The \emph{signature} is replaced by the call signature string ( \emph{argumentTypes} \samp{)} \emph{returnType} ).
+The \emph{signature} is replaced by the call signature string ' \emph{argumentTypes} \samp{)} \emph{returnType} '.
 
-As a special case, \code{dynbind} supports binding of pointer-to-function variables via setting \code{funcptr} to \code{TRUE} that changes the \emph{target} part
-using \code{.unpack} to dereference the address at run-time:
+As a special case, \code{dynbind} supports binding of pointer-to-function variables via setting \code{funcptr} to \code{TRUE} that substitutes \code{target} 
+with the expression \code{.unpack(target,"p",0)} to dereference the address at run-time.
 
-\tabular{c}{
-\code{ symbol <- function(...) .dyncall.CALLMODE ( .unpack(target, "p", 0) , signature, ... ) }
-}
 
 }
 
