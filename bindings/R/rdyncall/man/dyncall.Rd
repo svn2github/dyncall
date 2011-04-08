@@ -1,6 +1,7 @@
 \name{dyncall}
 \alias{dyncall}
 \alias{.dyncall}
+\alias{.dyncall.default}
 \alias{.dyncall.cdecl}
 \alias{.dyncall.stdcall}
 \alias{.dyncall.thiscall}
@@ -15,6 +16,7 @@ additional C wrapper code.
 }
 \usage{
 .dyncall( address, signature, ... , callmode = "cdecl" )
+.dyncall.default      ( address, signature, ... )
 .dyncall.cdecl        ( address, signature, ... )
 .dyncall.stdcall      ( address, signature, ... )
 .dyncall.thiscall     ( address, signature, ... )
@@ -76,7 +78,9 @@ On X86 Platforms (with the exception of Plan9) several calling conventions are a
 \item{\code{"thiscall.msvc"}}{C++ member functions compiled with Microsoft Visual C++ Compiler.}
 }
 
-In case, the user specifies one of the calling conventions and is on a non-x86 system, the callmode falls back to \code{"default"}.
+In case,  one of the above calling conventions are specified when running
+on a non-windows 32-bit Operating-System, the callmode falls back to 
+\code{"default"}. 
 
 \code{"cdecl"} is usually the best choice. Exceptions to this include the x86 architecture and in particular
 Microsoft Windows System Libraries.

@@ -1,22 +1,19 @@
 \name{dynbind}
 \alias{dynbind}
 \title{Dynamic R bindings to shared library functions.}
-\description{Function to create dynamic R bindings to shared library functions via installation
-of lightweight R wrapper functions. The wrapper functions delegate calls to precompiled functions and 
-function pointer variables using \code{\link{.dyncall}}.}
+\description{Function to create dynamic R bindings to shared library functions via installation of lightweight R wrapper functions.}
 \usage{
-dynbind(libnames, signature, envir=parent.frame(), callmode="cdecl", 
+dynbind(libnames, signature, envir=parent.frame(), callmode="default", 
         pat=NULL, replace=NULL, funcptr=FALSE)
 }
 \arguments{
-  \item{libnames}{Vector of character strings specifying short library names of the shared library to be loaded.}
-  \item{signature}{Scalar character string specifying the set of function bindings (\link{library signature}).}
-  \item{envir}{Environment where R wrapper functions should be installed.}
-  \item{callmode}{Scalar character string specifying the calling convention of the target library.}
-  \item{pat}{Scalar characgter string specifying a regular expression to be matched against the name part of function signatures and replaced by \code{replace}}
-  \item{replace}{Scalar character string specifying the replacement of the regular expression pattern given by \code{pat}.}
-  \item{funcptr}{Scalar logical indicating whether symbols are resolved to 
-  functions (\code{FALSE}) or to a pointer-to-function variables (\code{TRUE}) - see details below.}
+  \item{libnames}{vector of character strings specifying short library names of the shared library to be loaded.}
+  \item{signature}{character string specifying the \link{library signature} (the set of C function names and types).}
+  \item{envir}{the environment to assign wrappers into.}
+  \item{callmode}{character string specifying the C calling convention.}
+  \item{pat}{NULL or, if symbolic name mangling needed: character string specifying a regular expression to be matched against the name part of function signatures and replaced by \code{replace}}
+  \item{replace}{NULL or, if symbolic name mangling needed: character string specifying the replacement of the regular expression pattern given by \code{pat}.}
+  \item{funcptr}{logical, indicates the type of the resolved addresses, if \code{TRUE} addresses represent the C function entries, else if \code{FALSE} addresses represent function pointer variables (rarely needed).}
 }
 \details{
 The function dynamically loads a shared library specified by short library names given by \code{libnames} using \code{\link{dynfind}}.

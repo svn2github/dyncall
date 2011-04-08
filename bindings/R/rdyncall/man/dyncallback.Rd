@@ -10,27 +10,36 @@ Dynamic wrapping of R functions into C callbacks.
 new.callback( signature, fun, envir = new.env() )
 }
 \arguments{
-  \item{signature}{Character string specifying the expected \link[=signature]{call signature} of the C callback.}
-  \item{fun}{R function to be wrapped into a C function pointer.}
-  \item{envir}{Environment to be used for evaluating the function when called from within C context.}
+  \item{signature}{a character string specifying the \link[=signature]{call signature} of the C function callback type.}
+  \item{fun}{the function to be wrapped into a C function pointer.}
+  \item{envir}{the environment in which \code{fun} is to be evaluated (when it gets called from within C context).}
 }
 \details{
 C callbacks are function pointers that are registered and executed from within a C context. 
 The function \code{new.callback} enables dynamic wrapping of R functions into a C function object that
 can be registered later as a C callback.
-The callback \code{signature} should match the type of the C function callback 
-which is later used for registration.
+The callback \code{signature} should match the type of the C function callback.
 }
 \value{
 An external pointer to be used as a C function pointer in the context of a C callback registration.
 }
-\note{
+
+\section{Portability}{
 The implementation is based on the \emph{dyncallback} library (part of the DynCall project).
-The library has been ported to X86, X64, PowerPC 32-bit and ARM Processor Architectures and
-has been successfully tested on Linux, Windows, Mac OS X, BSD derivates and iPhone.
-On PowerPC, the Mac OS X / Darwin port works fine, while the System V ABI (Linux/BSD) is
-currently unstable. For MIPS a port is in development.
+Currently, the library has support for the following processor architectures: X86, X64, PowerPC 32-bit and ARM; 
+It has been ported to the following OSs: Linux, Windows, Mac OS X and BSD derivates.
+The port to Linux/BSD on PowerPC is currently unstable. (MacOS X/Darwin on PowerPC 32-bit works fine!)
 }
+\note{
+
+The type information for arguments and return values \strong{MUST} match with 
+the compiled function, otherwise callbacks invocated can lead to a \strong{fatal R process crash}.
+
+If the number of arguments given with the R function does not match with the callback type information, 
+R will signal a non-fatal error (similar to what happens when calling an R function with a wrong number of arguments or dynamic type mismatches).
+
+}
+
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
   \url{http://dyncall.org}

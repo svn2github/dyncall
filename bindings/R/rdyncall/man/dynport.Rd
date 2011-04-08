@@ -2,28 +2,24 @@
 \alias{dynport}
 \alias{dynports}
 \alias{loadDynportNamespace}
-\title{Dynamic portable interface bindings to shared libraries.}
-\description{Dynports aims to provide platform-portable bindings of statically compiled libraries to 
-dynamic programming language environments such as R.
-The development is in early stage. This is the first prototyp, written in R 
-and design for the R environment. Future revisions are planed to incorporate 
-other dynamic languages and extend the type system interface.}
+\title{Dynamic bindings to C APIs and shared libraries.}
+\description{Dynports provide the ability to bind popuplar C Libraries 'as-is' to R across platforms.
+}
 \usage{
 dynport(portname, portfile=NULL, repo=system.file("dynports",package="rdyncall") )
 loadDynportNamespace(name, portfile, do.attach=TRUE)
 }
 \arguments{
-\item{portname}{Symbolic literal or character string specifying a \emph{dynport}.}
-\item{portfile}{Character string specifying a script file.}
-\item{repo}{Character string specifying a repository of dynport script files.}  
-\item{do.attach}{Logical specifying if the loaded dynport namespace should be attached as a package in the search path.}
-\item{name}{Character string specifying the name of a namespace.}
+\item{portname}{the name of a dynport, given as a literal or character string.}
+\item{portfile}{character string giving the path to a script file for debugging/development purpose.}
+\item{repo}{character string giving the path to the dynport script repository.}  
+\item{do.attach}{Logical, if \code{TRUE} the created R namespace should be attached as a package in the search path.}
+\item{name}{character string specifying the name of a namespace.}
 }
 \details{
-The \emph{dynport} project was establish to develop an infrastructure to dynamically bind 
-precompiled code with interpreted dynamic programming environments in a portable fashion.
-Also it is currently in early stage, it already provides a convenient portable interface 
-to \emph{whole shared libraries} on all R platforms without additional glue code in C.   
+\code{dynport} offers to binding \emph{entire} C APIs and libraries dynamically to the R interpreter in a portable
+manner. 
+A repository of \emph{Dynports} to popular C libraries such as Expat, SDL and OpenGL is pre-installed with the package.
 
 The following dynports are available and have been tested on multiple platforms:
 
@@ -40,17 +36,24 @@ The following dynports are available and have been tested on multiple platforms:
 \code{R}         \tab R shared library            \cr
 }
 
-Keep in mind, that you need to pre-install the binaries on your system. The installation 
-procedure depends on your Operating System. In general, dynport need to locate the binaries.
-See \code{\link{dynfind}} for details on how to find libraries.
+When loading a \emph{Dynport}, a virtual R name space is installed and populated with lightweight R wrappers to C entities of the corresponding C API.
+This dynamic installation procedure is driven by R scripts located in \file{R_HOME/library/rdyncall/dynports}.
+Bindings are specified once per library in a portable text format called a \emph{Dynport}.
+
+At the current stage of development of the framework, the \emph{dynport} files are R scripts where a large portion simple consists of 
+\code{\link{signature}} information.
+
+\emph{Dynport}s are driven by R scripts located in 
+Keep in mind: Dynports need pre-installed binaries on your system. The installation 
+procedure depends on your Operating System. In general, dynport need to locate the binaries which is carried out by \code{\link{dynfind}}.
   
-A dynport is an R script located in \file{R_HOME/library/rdyncall/dynports}.
 It is executed in a fresh R namespace context. The script loads shared libraries. 
 It binds functions and function pointers, assigns constants and enum, and registers 
 C union and structure data types.
+
 A tool suite is in development to extract these informations from C headers automatically.
 It was successfully used to generate the available dynports. In case, you are in need to
-have a specific binding for R, feel free to contact me. 
+have a specific binding for R, feel free to contact the package author. 
 
 }
 \references{
