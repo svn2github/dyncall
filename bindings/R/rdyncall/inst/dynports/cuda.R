@@ -1,5 +1,3 @@
-
-
 dynbind("cuda", "
 cuArray3DCreate(**<CUarray_st>*<CUDA_ARRAY3D_DESCRIPTOR>)i;
 cuArray3DGetDescriptor(*<CUDA_ARRAY3D_DESCRIPTOR>*<CUarray_st>)i;

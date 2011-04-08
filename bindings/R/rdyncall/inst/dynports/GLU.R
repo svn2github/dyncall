@@ -1,14 +1,4 @@
-
-
-.sysName <- Sys.info()[["sysname"]]
-if (.sysName == "Windows") {
-  .callMode <- "stdcall"
-  .libName <- "GLU32"
-} else {
-  .callMode <- "cdecl"
-  .libName <- if (.sysName == "Darwin") "OpenGL" else c("GLU","libGLU.so.1")
-}
-dynbind(.libName, "
+dynbind(c("GLU32","OpenGL","GLU","libGLU.so.1"),callmode="stdcall","
 gluBeginCurve(*<GLUnurbs>)v;
 gluBeginPolygon(*<GLUtesselator>)v;
 gluBeginSurface(*<GLUnurbs>)v;

@@ -1,14 +1,4 @@
-
-
-.sysName <- Sys.info()[["sysname"]]
-if (.sysName == "Windows") {
-  .callMode <- "stdcall"
-  .libName <- "OPENGL32"
-} else {
-  .callMode <- "cdecl"
-  .libName <- if (.sysName == "Darwin") "OpenGL" else c("libGL.so","libGL.so.1")
-}
-dynbind( .libName, "
+dynbind(c("OPENGL32","OpenGL","GL","libGL.so.1"),callmode="stdcall","
 glActiveTexture(I)v;
 glAttachShader(II)v;
 glBeginConditionalRender(II)v;

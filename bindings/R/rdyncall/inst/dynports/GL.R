@@ -1,16 +1,4 @@
-
-
-.sysName <- Sys.info()[["sysname"]]
-.callMode <- "cdecl"
-if (.sysName == "Windows") {
-  .libName <- "OPENGL32"
-  if ( .Platform$r_arch == "i386") {
-  .callMode <- "stdcall"
-  }
-} else {
-  .libName <- if (.sysName == "Darwin") "OpenGL" else c("libGL.so","libGL.so.1")
-}
-dynbind(.libName,"
+dynbind(c("OPENGL32","OpenGL","GL","libGL.so.1"),callmode="stdcall","
 glAccum(If)v;
 glAlphaFunc(If)v;
 glAreTexturesResident(i*I*C)C;
@@ -347,7 +335,7 @@ glVertex4s(ssss)v;
 glVertex4sv(*s)v;
 glVertexPointer(iIi*v)v;
 glViewport(iiii)v;
-",callmode=.callMode)
+")
 GLEXT_64_TYPES_DEFINED=
 GL_1PASS_EXT=0x80A1
 GL_1PASS_SGIS=0x80A1

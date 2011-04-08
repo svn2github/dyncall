@@ -1,5 +1,3 @@
-
-
 dynbind("SDL_image", "
 IMG_InvertAlpha(i)i;
 IMG_Linked_Version()*<SDL_version>;

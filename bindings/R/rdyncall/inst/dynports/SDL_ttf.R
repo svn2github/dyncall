@@ -1,5 +1,3 @@
-
-
 dynport("SDL")
 dynbind("SDL_ttf", "
 TTF_ByteSwappedUNICODE(i)v;

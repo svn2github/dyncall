@@ -1,5 +1,3 @@
-
-
 dynbind("R", "
 ATTRIB(*<SEXPREC>)*<SEXPREC>;
 BODY(*<SEXPREC>)*<SEXPREC>;
