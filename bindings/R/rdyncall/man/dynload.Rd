@@ -28,20 +28,20 @@ When library handles are no longer needed (and garbage collected), handle finali
 }
 \details{
 The function \code{.dynload} attempts to load a library given by \code{libname}
-which specifies the location in an OS-specific way. 
+that specifies the location in an OS-specific way. 
 
-On success, it loads the library to the run-time process and returns an external pointer representing a 
-handle on the library \code{libhandle} for later use with \code{.dynsym} and \code{.dynunload}. 
+If successfull, it loads the library to the run-time process and returns a library handle (external pointer)
+that can be used later with \code{.dynsym} and \code{.dynunload}. 
 Otherwise \code{NULL} is returned. Function pointers can be resolved using 
-\code{.dynsym} to lookup a symbol given by the symbolic name \code{symname}. 
+\code{.dynsym} to look up a symbol given by the symbolic name \code{symname}. 
 
 Although the same core functionality is available using the R base package functions \code{dyn.load} and \code{getNativeSymbolInfo}, 
-this framework features an improved life-time management and uses the lookup semantics
+this framework features an improved life-cycle management and uses the lookup semantics
 of the underlying operating-system:
 
-If both, \code{auto.unload} and \code{protect.lib},  are set to \code{TRUE} (default behaviour),
-the resolved addresses from \code{.dynsym} protect the library handle returned from \code{dyn.load}.
-A finalizer for the library is then actually called, when no resolved addresses (stored in external pointers protecting its library handle) are active.
+If both, \code{auto.unload} and \code{protect.lib},  are set to \code{TRUE} (default),
+the external pointer objects, representing resolved symbolic addresses returned by \code{.dynsym} , protect the library handle returned from \code{dyn.load}.
+A finalizer for the library is then called, when no resolved addresses (stored in external pointers protecting its library handle) are active.
 
 }
 

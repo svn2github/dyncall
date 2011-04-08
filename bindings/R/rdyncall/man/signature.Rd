@@ -48,7 +48,7 @@ The following table lists valid type signatures, corresponding C types, acceptab
 '\code{Z}'           \tab char*                  \tab character,NULL                     \tab character or NULL\cr
 '\code{x}'           \tab SEXP                   \tab \emph{any}                         \tab \emph{any}\cr
 '\code{v}'           \tab void                   \tab \emph{invalid}                     \tab NULL\cr
-'\code{*}' \ldots    \tab \emph{C type}* (pointer) \tab emph{any vector},externalptr,NULL \tab externalptr\cr
+'\code{*}' \ldots    \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr\cr
 "\code{*<}" \emph{typename} '\code{>}' \tab \emph{typename}* (pointer) \tab raw,externalptr \tab externalptr\cr
 }
 
