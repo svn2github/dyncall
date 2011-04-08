@@ -4,9 +4,10 @@
 \alias{.dynsym}
 \title{Loading of shared libraries and resolving of symbols (Alternative Framework).}
 \description{An alternative framework for loading of shared libraries and resolving of symbols.
-The framework improves life-cycle management of loaded shared libraries: 
+The framework offers \emph{automatic unload management} of loaded shared libraries and
+provides a direct interface to the dynamic linker of the underlying Operating-System.
 Resolved symbols reference opened libraries and protect them from garbage collection.
-When library handles are no longer needed (and garbage collected), handle finalizers unloa dthe library from the R process.
+When library handles are no longer needed (and garbage collected), handle finalizers unload the library from the R process.
 }
 \usage{
 .dynload(libname, auto.unload=TRUE)
@@ -104,9 +105,9 @@ dlopen() searches for a compatible Mach-O file in the directories specified by a
 
 The following text is taken from the Window SDK Documentation:
 
-If no file name extension is specified, the default library extension 
+If no file name extension is specified [...], the default library extension 
 \code{.dll} is appended. However, the file name string can include a trailing point character (.) to 
-indicate that the module name has no extension. When no path is specified, the function searches 
+indicate that the [shared library] module name has no extension. When no path is specified, the function searches 
 for loaded modules whose base name matches the base name of the module to be loaded. 
 If the name matches, the load succeeds. Otherwise, the function searches for the file in the 
 following sequence:
@@ -128,7 +129,7 @@ Windows XP:  If \code{HKLM\\System\\CurrentControlSet\\Control\\Session Manager\
 
 The first directory searched is the one directory containing the image file used to create the calling process. Doing this allows private dynamic-link library (DLL) files associated with a process to be found without adding the process's installed directory to the PATH environment variable.
 
-The search path can be altered using the SetDllDirectory function. This solution is recommended instead of using SetCurrentDirectory or hard-coding the full path to the DLL.
+The search path can be altered using the \code{SetDllDirectory} function. This solution is recommended instead of using \code{SetCurrentDirectory} or hard-coding the full path to the DLL.
 
 If a path is specified and there is a redirection file for the application, the function searches for the module in the application's directory. If the module exists in the application's directory, the LoadLibrary function ignores the specified path and loads the module from the application's directory. If the module does not exist in the application's directory, LoadLibrary loads the module from the specified directory. For more information, see Dynamic Link Library Redirection from the Windows SDK Documentation.
 }

@@ -58,7 +58,7 @@ gluTessProperty(*<GLUtesselator>Id)v;
 gluTessVertex(*<GLUtesselator>*d*v)v;
 gluUnProject(ddd*d*d*i*d*d*d)i;
 gluUnProject4(dddd*d*d*idd*d*d*d*d)i;
-",callmode=.callMode)
+")
 GLU_AUTO_LOAD_MATRIX=100200
 GLU_BEGIN=100100
 GLU_CCW=100121

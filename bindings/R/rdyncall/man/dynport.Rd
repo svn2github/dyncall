@@ -24,19 +24,21 @@ A repository of \emph{Dynports} to popular C libraries such as Expat, SDL and Op
 The following dynports are available and have been tested on multiple platforms:
 
 \tabular{ll}{
-\strong{dynport} \tab \strong{Description}        \cr
-\code{SDL}       \tab Simple DirectMedia Layer library \cr
-\code{SDL_image} \tab SDL Image Library           \cr
-\code{SDL_ttf}   \tab SDL True Type Font Rendering \cr
-\code{GL}        \tab OpenGL 1.1 API              \cr
-\code{GLU}       \tab OpenGL Utility Library      \cr
+\strong{dynport} \tab \strong{Description}                    \cr
+\code{SDL}       \tab Simple DirectMedia Layer library        \cr
+\code{SDL_image} \tab SDL Image Library                       \cr
+\code{SDL_ttf}   \tab SDL True Type Font Rendering            \cr
+\code{GL}        \tab OpenGL 1.1 API                          \cr
+\code{GLU}       \tab OpenGL Utility Library                  \cr
 \code{glew}      \tab OpenGL Extension Wrangler (OpenGL 3.0)  \cr
-\code{expat}     \tab Expat XML Parser Library    \cr
-\code{ode}       \tab Open Dynamics (physics-) Engine \cr
-\code{R}         \tab R shared library            \cr
+\code{expat}     \tab Expat XML Parser Library                \cr
+\code{R}         \tab R shared library                        \cr
+\code{ode}       \tab Open Dynamics (Physics-) Engine         \cr
+\code{cuda}      \tab NVIDIA Cuda                             \cr
+\code{opencl}    \tab OpenCL                                  \cr
 }
 
-When loading a \emph{Dynport}, a virtual R name space is installed and populated with lightweight R wrappers to C entities of the corresponding C API.
+When loading a \emph{Dynport}, a virtual R name space is installed and populated with lightweight R wrappers to entities (functions, object-like macro defines, constants...) of the corresponding C API.
 This dynamic installation procedure is driven by R scripts located in \file{R_HOME/library/rdyncall/dynports}.
 Bindings are specified once per library in a portable text format called a \emph{Dynport}.
 

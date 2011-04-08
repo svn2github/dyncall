@@ -1,3 +1,8 @@
+Checklist:
+- check examples (in particular example(dyncall) )
+- check available list of dynports
+
+
 BUGS:
 - dynport once failed, dynport returns NULL afterwards..
 - Win64: build system
