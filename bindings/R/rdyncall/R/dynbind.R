@@ -3,7 +3,7 @@
 # Description: single-entry front-end to dynamic binding of library functions 
 # Author: Daniel Adler <dadler@uni-goettingen.de>
 
-dynbind <- function(libnames, signature, envir=parent.frame(), callmode="cdecl", pat=NULL, replace=NULL, funcptr=FALSE)
+dynbind <- function(libnames, signature, envir=parent.frame(), callmode="default", pat=NULL, replace=NULL, funcptr=FALSE)
 {
   # load shared library
   libh <- dynfind(libnames)
