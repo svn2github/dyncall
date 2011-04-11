@@ -20,20 +20,6 @@ and returning values between R and C with support for multiple calling conventio
 
 The function calls are effectively executed by small call kernels written in
 assembly.
-
- and the library has been ported to various architectures such as
-x86, x64, arm, mips32/64 and ppc32.
-A string-based type signature description for function calls, callbacks, pointers
-and aggregate structures controls the desired behaviour.
-In addition, R helper functions are available to work with pointer and 
-aggregate C types as well as with C float and string arrays.
-With the experimental dynport framework, R interfaces to popular APIs and
-shared libraries are availabe such as OpenGL, SDL (including image, mixer, ttf),
-expat and the R API itself. 
-The specification is extracted using gcc-xml, boost wave and 
-specificalized xslt. See \command{\link{dynport}} for details.
-The package allows to interface with functions, constants, structures and 
-unions of C shared libraries specified in C header files.
 }
 \section{Overview}{
 \itemize{
@@ -47,7 +33,7 @@ unions of C shared libraries specified in C header files.
 }
 }
 \section{Getting Started}{
-Several demos and two vignettes are available. Some demos require additional
+Several demos are available. Some demos require additional
 software to be installed on the system. Please make sure, you have installed 
 the shared libraries.
 }

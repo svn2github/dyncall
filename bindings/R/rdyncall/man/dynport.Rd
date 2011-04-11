@@ -2,25 +2,30 @@
 \alias{dynport}
 \alias{dynports}
 \alias{loadDynportNamespace}
-\title{Dynamic bindings to C APIs and shared libraries.}
-\description{Dynports provide the ability to bind popuplar C Libraries 'as-is' to R across platforms.
+\title{Dynamic binding of C APIs and shared libraries.}
+\description{Front-end function to dynamically bind C Libraries and automatically wrap them as a virtual R name spaces.
 }
 \usage{
-dynport(portname, portfile=NULL, repo=system.file("dynports",package="rdyncall") )
+dynport(portname, portfile=NULL,
+ repo=system.file("dynports",package="rdyncall") )
 loadDynportNamespace(name, portfile, do.attach=TRUE)
 }
 \arguments{
 \item{portname}{the name of a dynport, given as a literal or character string.}
-\item{portfile}{character string giving the path to a script file for debugging/development purpose.}
-\item{repo}{character string giving the path to the dynport script repository.}  
-\item{do.attach}{Logical, if \code{TRUE} the created R namespace should be attached as a package in the search path.}
-\item{name}{character string specifying the name of a namespace.}
+\item{portfile}{character string giving the path to a script file.}
+\item{repo}{character string giving the path to the root of the \emph{dynport} repository.}  
+\item{do.attach}{logical, if \code{TRUE} the created R name space should be attached as a package in the search path.}
+\item{name}{character string specifying the name of a name space.}
 }
 \details{
-\code{dynport} offers to binding \emph{entire} C APIs and libraries dynamically to the R interpreter in a portable
-manner. 
-A repository of \emph{Dynports} to popular C libraries such as Expat, SDL and OpenGL is pre-installed with the package.
 
+A \emph{Dynport} is a dynamic binding to a shared C library and its C Application Programming Interface  
+wrapped by R objects.
+
+When loading a \emph{Dynport} via function \code{dynport}, a virtual R name space is installed and populated with lightweight R wrappers of C entities 
+(functions, object-like macro defines, constants...) of the corresponding C API.
+
+An initial repository of \emph{Dynports} to some portable C libraries such as Expat, SDL and OpenGL is pre-installed with the package.
 The following dynports are available and have been tested on multiple platforms:
 
 \tabular{ll}{
@@ -38,25 +43,29 @@ The following dynports are available and have been tested on multiple platforms:
 \code{opencl}    \tab OpenCL                                  \cr
 }
 
-When loading a \emph{Dynport}, a virtual R name space is installed and populated with lightweight R wrappers to entities (functions, object-like macro defines, constants...) of the corresponding C API.
+Dynports need pre-installed binaries on your system. The installation 
+procedure depends on your Operating System. 
+In general, dynport needs to locate the binaries which is carried out by \code{\link{dynfind}}.
+
+Many portable C libraries can be regarded as reusable software components ; applicable in universal contexts providing
+a generic service such as 3D graphics rendering, sound processing, abstraction to hardware and the like.
+A C compiler and R binding C code is usually needed to make use of such a library within the R interpreter.
+\code{dynport} attempts to wrap the granular functionality provided by a C API using a dynamic binding approach that
+works across multiple platforms:
+To offer the services of a C library dynamically at run-time without compilation, it is not enought to load the shared library and
+resolve symbols. In order to work with a C API from within dynamic interpreters such as R, 
+additional meta-information is needed to create type-safe foreign function call wrappers, handle aggregate data types 
+and use symbolic constant values ; this is usually defined in C header files.
+
+\emph{Dynport} files contain a compressed text-based and portable representation of such information.
 This dynamic installation procedure is driven by R scripts located in \file{R_HOME/library/rdyncall/dynports}.
-Bindings are specified once per library in a portable text format called a \emph{Dynport}.
 
-At the current stage of development of the framework, the \emph{dynport} files are R scripts where a large portion simple consists of 
-\code{\link{signature}} information.
+At the current stage of development of the framework, the \emph{dynport} files are R scripts where a large portion consists of 
+\code{\link{signature}} information. 
 
-\emph{Dynport}s are driven by R scripts located in 
-Keep in mind: Dynports need pre-installed binaries on your system. The installation 
-procedure depends on your Operating System. In general, dynport need to locate the binaries which is carried out by \code{\link{dynfind}}.
   
-It is executed in a fresh R namespace context. The script loads shared libraries. 
-It binds functions and function pointers, assigns constants and enum, and registers 
-C union and structure data types.
-
 A tool suite is in development to extract these informations from C headers automatically.
-It was successfully used to generate the available dynports. In case, you are in need to
-have a specific binding for R, feel free to contact the package author. 
-
+It was used to generate the initial repository of dynports. 
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Library}. \cr 

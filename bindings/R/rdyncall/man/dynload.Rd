@@ -3,11 +3,9 @@
 \alias{.dynunload}
 \alias{.dynsym}
 \title{Loading of shared libraries and resolving of symbols (Alternative Framework).}
-\description{An alternative framework for loading of shared libraries and resolving of symbols.
-The framework offers \emph{automatic unload management} of loaded shared libraries and
-provides a direct interface to the dynamic linker of the underlying Operating-System.
-Resolved symbols reference opened libraries and protect them from garbage collection.
-When library handles are no longer needed (and garbage collected), handle finalizers unload the library from the R process.
+\description{Alternative framework for loading of shared libraries and resolving of symbols.
+The framework offers \emph{automatic unload management} of shared libraries and
+provides a direct interface to the dynamic linker of the OS.
 }
 \usage{
 .dynload(libname, auto.unload=TRUE)
@@ -15,11 +13,11 @@ When library handles are no longer needed (and garbage collected), handle finali
 .dynunload(libhandle)
 }
 \arguments{
-  \item{libname}{character string giving the pathname to a shared library - passed and interpreted directly by the OS loader.}
+  \item{libname}{character string giving the pathname to a shared library in OS-specific notation.}
   \item{libhandle}{external pointer representing a handle to an opened library.}
-  \item{symname}{character string specifying the symbolic name to lookup.}
+  \item{symname}{character string specifying a symbolic name to be resolved.}
   \item{auto.unload}{logical, if \code{TRUE} a finalizer will be registered that will automatically unload the library.}
-  \item{protect.lib}{logical, if \code{TRUE} the external pointer representing the resolved address references the libhandle object and protects library auto unloading as long as the external pointer is alive.}
+  \item{protect.lib}{logical, if \code{TRUE} resolved external pointers protect library handles from finalization.}
 }
 \value{
 \code{.dynload} returns an external pointer \code{libhandle} on success. Otherwise NULL is returned, if the library is not found or the linkage failed.
@@ -27,22 +25,25 @@ When library handles are no longer needed (and garbage collected), handle finali
 \code{.dynunload} always returns \code{NULL}.    
 }
 \details{
-The function \code{.dynload} attempts to load a library given by \code{libname}
-that specifies the location in an OS-specific way. 
+\code{.dynload} loads a shared library into the current R process using the OS-specific dynamic linker interface. 
+The \code{libname} is passed \emph{as-is} directly to the dynamic linker and thus is given in OS-specific notation - see below for details. 
+On success, a handle to the library represented as an external pointer R objects is returned, otherwise \code{NULL}. 
 
-If successfull, it loads the library to the run-time process and returns a library handle (external pointer)
-that can be used later with \code{.dynsym} and \code{.dynunload}. 
-Otherwise \code{NULL} is returned. Function pointers can be resolved using 
-\code{.dynsym} to look up a symbol given by the symbolic name \code{symname}. 
+If \code{auto.unload} is \code{TRUE}, a finalizer function is registered that will unload the library on garbage collection via \code{.dynunload}.
 
-Although the same core functionality is available using the R base package functions \code{dyn.load} and \code{getNativeSymbolInfo}, 
-this framework features an improved life-cycle management and uses the lookup semantics
-of the underlying operating-system:
+\code{.dynsym} looks up symbol names in loaded libraries and resolves them to memory addresses returned as external pointer R objects.
+Otherwise \code{NULL} is returned. 
 
-If both, \code{auto.unload} and \code{protect.lib},  are set to \code{TRUE} (default),
-the external pointer objects, representing resolved symbolic addresses returned by \code{.dynsym} , protect the library handle returned from \code{dyn.load}.
-A finalizer for the library is then called, when no resolved addresses (stored in external pointers protecting its library handle) are active.
+If \code{protect.lib} is \code{TRUE}, the library handle is \emph{protected} by resolved address external pointers from unloading.
 
+Setting both \code{auto.unload} and \code{protect.lib} to \code{TRUE}, libraries remain loaded as long as resolved symbols are in use, and they get automatic unloaded 
+when no resolved symbols remain.
+
+Dynamic linkers usually hold an internal link count, such that a library can be opened multiple times via \code{.dynload} 
+- with a balanced number of calls to \code{.dynunload} that decreases the link count to unload the library again.
+
+Similar functionality is available via \code{dyn.load} and \code{getNativeSymbolInfo}, 
+except that path names are filtered and no automatic unloading of libraries is supported.
 }
 
 \section{Portability}{

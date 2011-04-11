@@ -24,8 +24,8 @@ Base type are specified using a one-character type code.  A closing bracket char
 single return type signature. 
 }
 \section{Type Signature}{
-Type signatures are used within Call Signatures (see above) and the (un)-\code{\link{packing}} functions
-to manipulate and extract C data types.
+Type signatures are used within Call Signatures (see above),(un)-\code{\link{packing}} functions
+to manipulate and extract C data types, and, to describe the field types within struct and union aggregate data types.
 
 The following table lists valid type signatures, corresponding C types, acceptable R argument types and returned R types.
 
@@ -69,13 +69,63 @@ by ';' (semicolon). Whitespaces are allowed to pre- and suffix the ';'.
 \emph{function-name} \samp{(} \emph{argument-types} \samp{)} \emph{return-type} \samp{;} \ldots \cr
 }
 }
-\section{Structure and Union Type Signatures}{
-Structure and union type signatures are used by the parser functions \code{\link{parseStructInfos}} and \code{\link{parseUnionInfos}} 
-to register new \code{\link{TypeInfo}} objects.
+\section{Structure Type Signatures}{
+Structure Type Signatures describe the layout of aggregate \code{struct} C data type.
+Type signatures are used within the \emph{field-types}. \emph{field-names} consists of space separated identifier names and
+should match the number of fields.
+
+\tabular{rcl}{
+\emph{struct-name} '\{' \emph{field-types} \tab '\}' \emph{field-names} '\code{;}' \cr
+}
+
+Example:
+
+The C \code{struct} type
+
+\preformatted{
+struct Rect \{ 
+  signed short x, y; 
+  unsigned short w, h;
+\};
+}
+
+can be registered via:
+
+\code{parseStructType("Rect{ssSS}x y w h;")}
+}
+
+\section{Union Type Signatures}{
+Union Type Signatures describe the components of the \code{union} C data type.
+Type signatures are used within the \emph{field-types}. \emph{field-names} consists of space separated identifier names and
+should match the number of fields.
+
+\tabular{rcl}{
+\emph{union-name} '|' \emph{field-types} \tab '\}' \emph{field-names} '\code{;}' \cr
+}
+
+Example:
+
+The C \code{union} type
+
+\preformatted{
+union Value \{ 
+  int anInt; 
+  float aFloat; 
+  struct LongValue aStruct
+\};
+} 
+
+can be registered via:
+
+\code{parseUnionType("Value|if<LongValue>}anInt aFloat aStruct;")}
+
 }
 \seealso{
 \code{\link{.dyncall}} for foreign function interface, \code{\link{dynbind}} for 
-batched dynamic bindings and \code{\link{new.callback}} for use in callbacks. 
+batched dynamic bindings,\code{\link{new.callback}} for use in callbacks,
+\code{\link{.pack}} for (un-)packing interface and \code{\link{parseStructInfo}} for 
+registration of aggregate types.
+
 }
 \keyword{programming}
 \keyword{interface}

@@ -11,8 +11,8 @@
 \arguments{
 \item{x}{Atomic vector (logical, raw, integer or double) or external pointer.}
 \item{offset}{Scalar integer specifying \emph{byte offset} starting at 0.} 
-\item{sigchar}{Scalar character string specifying the C data type by a \code{\link{signature}} string.}
-\item{value}{Atomic logical} 
+\item{sigchar}{character string specifying the C data type by a \code{\link{signature}} string.}
+\item{value}{input value to be coerced and stored.} 
 }
 \details{
 The function \code{.pack} converts an R value into a C data type and writes it at the byte position specified
