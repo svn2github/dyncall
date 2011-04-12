@@ -32,7 +32,7 @@ SEXP r_offsetPtr(SEXP x, SEXP offset)
   switch(TYPEOF(x)) 
   {
     case EXTPTRSXP:
-      return R_MakeExternalPtr( R_ExternalPtrAddr(x) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
+      return R_MakeExternalPtr( (unsigned char*) R_ExternalPtrAddr(x) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
     case RAWSXP:
       return R_MakeExternalPtr( ( (unsigned char*) RAW(x) ) + (ptrdiff_t) INTEGER(offset)[0], R_NilValue, R_NilValue );
     default:
