@@ -1,9 +1,10 @@
 /** ===========================================================================
  ** R-Package: rdyncall
- ** File: src/rpack
+ ** File: src/rpack.c
  ** Description: (un-)packing of C structure data
  **
- ** Copyright (C) 2009-2010 Daniel Adler
+ ** Copyright (C) 2009-2011 Daniel Adler <dadler@uni-goettingen.de>
+ ** License: BSD - See LICENSE file for details.
  **
  ** TODO
  ** - support for bitfields
@@ -11,8 +12,8 @@
 
 // #define USE_RINTERNALS
 #include <Rinternals.h>
+#include <string.h>
 #include "rdyncall_signature.h"
-
 /** ---------------------------------------------------------------------------
  ** C-Function: r_dataptr
  ** Description: retrieve the 'data' pointer on an R expression.
@@ -31,11 +32,36 @@ static char* r_dataptr(SEXP data_x)
     case REALSXP:   return (char*) REAL(data_x);
     case CPLXSXP:   return (char*) COMPLEX(data_x);
     case STRSXP:    return (char*) CHAR( STRING_ELT(data_x,0) );
-	case EXTPTRSXP: return (char*) R_ExternalPtrAddr(data_x);
-	case RAWSXP:    return (char*) RAW(data_x);
-	default: return NULL;
+    case EXTPTRSXP: return (char*) R_ExternalPtrAddr(data_x);
+    case RAWSXP:    return (char*) RAW(data_x);
+    default: return NULL;
   }
 }
+
+static char* r_dataptr2(SEXP x, SEXP off, size_t element_size)
+{
+  if ( LENGTH(off) == 0 ) error("missing offset");
+  char* p;
+  ptrdiff_t o = INTEGER(off)[0], s;
+  
+  switch(TYPEOF(x))
+  {
+    case CHARSXP:   p = (char*) CHAR(x);    s = LENGTH(x)*sizeof(char); break;
+    case LGLSXP:    p = (char*) LOGICAL(x); s = LENGTH(x)*sizeof(Rboolean); break;
+    case INTSXP:    p = (char*) INTEGER(x); s = LENGTH(x)*sizeof(int); break;
+    case REALSXP:   p = (char*) REAL(x);    s = LENGTH(x)*sizeof(double); break;
+    case CPLXSXP:   p = (char*) COMPLEX(x); s = LENGTH(x)*sizeof(Rcomplex); break; 
+    case STRSXP:    p = (char*) CHAR( STRING_ELT(x,0) ); s = strlen(p)*sizeof(char); break;
+    case RAWSXP:    p = (char*) RAW(x); s = LENGTH(x)*sizeof(char); break;
+    case EXTPTRSXP: return (char*) R_ExternalPtrAddr(x) + o; break;
+    default: error("invalid object type"); break;
+  }
+  if (p == NULL) error("NULL address pointer");
+  if (o < 0 || o+element_size > s) error("offset %d is out-of-bounds of the R object (max size %d)", o, s);
+  return p + o; 
+}
+
+
 
 /** ---------------------------------------------------------------------------
  ** C-Function: r_pack
@@ -45,33 +71,26 @@ static char* r_dataptr(SEXP data_x)
  **/
 SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 {
-  char* ptr = r_dataptr(ptr_x);
-
-  if (ptr == NULL) error("invalid address pointer");
-
-  ptr += INTEGER(offset)[0];
-
-  const char* sig = CHAR(STRING_ELT(sig_x,0) );
-
   int type_of = TYPEOF(value_x);
+  const char* sig = CHAR(STRING_ELT(sig_x,0) );
   switch(sig[0])
   {
-	case DC_SIGCHAR_BOOL:
-	{
-	  int* Bp = (int*) ptr;
-	  switch(type_of)
-	  {
-	  case LGLSXP:  *Bp = (int) LOGICAL(value_x)[0]; break;
-	  case INTSXP:  *Bp = (int) ( INTEGER(value_x)[0] == 0) ? 0 : 1; break;
-	  case REALSXP: *Bp = (int) ( REAL(value_x)[0] == 0.0) ? 0 : 1; break;
-	  case RAWSXP:  *Bp = (int) ( RAW(value_x)[0] == 0) ? 0 : 1; break;
-	  default: error("value mismatch with 'B' pack type");
-	  }
-	}
-	break;
-	case DC_SIGCHAR_CHAR:
-	{
-	  char* cp = (char*) ptr;
+    case DC_SIGCHAR_BOOL:
+    {
+      int* Bp = (int*) r_dataptr2(ptr_x, offset, sizeof(Rboolean));
+      switch(type_of)
+      {
+        case LGLSXP:  *Bp = (int) LOGICAL(value_x)[0]; break;
+        case INTSXP:  *Bp = (int) ( INTEGER(value_x)[0] == 0) ? 0 : 1; break;
+        case REALSXP: *Bp = (int) ( REAL(value_x)[0] == 0.0) ? 0 : 1; break;
+        case RAWSXP:  *Bp = (int) ( RAW(value_x)[0] == 0) ? 0 : 1; break;
+	default: error("value mismatch with 'B' pack type");
+      }
+    }
+    break;
+    case DC_SIGCHAR_CHAR:
+    {
+      char* cp = (char*) r_dataptr2(ptr_x, offset, sizeof(char));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *cp = (char) LOGICAL(value_x)[0]; break;
@@ -84,7 +103,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_UCHAR:
 	{
-	  unsigned char* cp = (unsigned char*) ptr;
+	  unsigned char* cp = (unsigned char*) r_dataptr2(ptr_x,offset,sizeof(unsigned char));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *cp = (unsigned char) LOGICAL(value_x)[0]; break;
@@ -97,7 +116,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_SHORT:
 	{
-	  short* sp = (short*) ptr;
+	  short* sp = (short*) r_dataptr2(ptr_x,offset,sizeof(short));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *sp = (short) LOGICAL(value_x)[0]; break;
@@ -110,7 +129,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_USHORT:
 	{
-	  unsigned short* sp = (unsigned short*) ptr;
+	  unsigned short* sp = (unsigned short*) r_dataptr2(ptr_x,offset,sizeof(unsigned short));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *sp = (unsigned short) LOGICAL(value_x)[0]; break;
@@ -123,7 +142,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_INT:
 	{
-	  int* ip = (int*) ptr;
+	  int* ip = (int*) r_dataptr2(ptr_x,offset,sizeof(int));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *ip = (int) LOGICAL(value_x)[0]; break;
@@ -136,7 +155,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_UINT:
 	{
-	  unsigned int* ip = (unsigned int*) ptr;
+	  unsigned int* ip = (unsigned int*) r_dataptr2(ptr_x,offset,sizeof(unsigned int));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *ip = (unsigned int) LOGICAL(value_x)[0]; break;
@@ -149,7 +168,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_LONG:
 	{
-	  long* ip = (long*) ptr;
+	  long* ip = (long*) r_dataptr2(ptr_x,offset,sizeof(long));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *ip = (long) LOGICAL(value_x)[0]; break;
@@ -162,7 +181,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_ULONG:
 	{
-	  unsigned long* ip = (unsigned long*) ptr;
+	  unsigned long* ip = (unsigned long*) r_dataptr2(ptr_x,offset,sizeof(unsigned long));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *ip = (unsigned long) LOGICAL(value_x)[0]; break;
@@ -175,7 +194,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_LONGLONG:
 	{
-	  long long* Lp = (long long*) ptr;
+	  long long* Lp = (long long*) r_dataptr2(ptr_x,offset,sizeof(long long));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *Lp = (long long) LOGICAL(value_x)[0]; break;
@@ -188,7 +207,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_ULONGLONG:
 	{
-	  unsigned long long* Lp = (unsigned long long*) ptr;
+	  unsigned long long* Lp = (unsigned long long*) r_dataptr2(ptr_x,offset,sizeof(unsigned long long));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *Lp = (unsigned long long) LOGICAL(value_x)[0]; break;
@@ -201,7 +220,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_FLOAT:
 	{
-	  float* fp = (float*) ptr;
+	  float* fp = (float*) r_dataptr2(ptr_x,offset,sizeof(float));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *fp = (float) LOGICAL(value_x)[0]; break;
@@ -214,7 +233,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_DOUBLE:
 	{
-	  double* dp = (double*) ptr;
+	  double* dp = (double*) r_dataptr2(ptr_x,offset,sizeof(double));
 	  switch(type_of)
 	  {
 	  case LGLSXP:  *dp = (double) LOGICAL(value_x)[0]; break;
@@ -228,7 +247,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	case DC_SIGCHAR_POINTER:
 	case '*':
 	{
-	  void** pp = (void**) ptr;
+	  void** pp = (void**) r_dataptr2(ptr_x,offset,sizeof(void*));
 	  switch(type_of)
 	  {
 	  case NILSXP:   *pp = (void*) 0; break;
@@ -246,7 +265,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_STRING:
 	{
-	  char** Sp = (char**) ptr;
+	  char** Sp = (char**) r_dataptr2(ptr_x,offset,sizeof(char*));
 	  switch(type_of)
 	  {
 	  case NILSXP:   *Sp = (char*) NULL; break;
@@ -259,7 +278,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
 	break;
 	case DC_SIGCHAR_SEXP:
 	{
-	  SEXP* px = (SEXP*) ptr;
+	  SEXP* px = (SEXP*) r_dataptr2(ptr_x,offset,sizeof(SEXP*));
 	  *px = value_x;
 	}
 	break;
@@ -276,33 +295,61 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
  **/
 SEXP r_unpack(SEXP ptr_x, SEXP offset, SEXP sig_x)
 {
-  char* ptr = r_dataptr(ptr_x);
-  if (ptr == NULL) error("invalid address pointer");
-  ptr += INTEGER(offset)[0];
+  char* ptr;
   const char* sig = CHAR(STRING_ELT(sig_x,0) );
   switch(sig[0])
   {
-    case DC_SIGCHAR_BOOL:     return ScalarLogical( ((int*)ptr)[0] );
-    case DC_SIGCHAR_CHAR:     return ScalarInteger( ( (char*)ptr)[0] );
-    case DC_SIGCHAR_UCHAR:     return ScalarInteger( ( (unsigned char*)ptr)[0] );
-    case DC_SIGCHAR_SHORT:    return ScalarInteger( ( (short*)ptr)[0] );
-    case DC_SIGCHAR_USHORT:    return ScalarInteger( ( (unsigned short*)ptr)[0] );
-    case DC_SIGCHAR_INT:      return ScalarInteger( ( (int*)ptr )[0] );
-    case DC_SIGCHAR_UINT:      return ScalarReal( (double) ( (unsigned int*)ptr )[0] );
-	case DC_SIGCHAR_LONG:     return ScalarReal( (double) ( (long*)ptr )[0] );
-	case DC_SIGCHAR_ULONG:    return ScalarReal( (double) ( (unsigned long*) ptr )[0] );
-    case DC_SIGCHAR_FLOAT:    return ScalarReal( (double) ( (float*) ptr )[0] );
-    case DC_SIGCHAR_DOUBLE:   return ScalarReal( ((double*)ptr)[0] );
-    case DC_SIGCHAR_LONGLONG: return ScalarReal( (double) ( ((long long*)ptr)[0] ) );
-    case DC_SIGCHAR_ULONGLONG: return ScalarReal( (double) ( ((unsigned long long*)ptr)[0] ) );
+    case DC_SIGCHAR_BOOL:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(Rboolean));
+      return ScalarLogical( ((int*)ptr)[0] );
+    case DC_SIGCHAR_CHAR:     
+      ptr = r_dataptr2(ptr_x,offset,sizeof(char));
+      return ScalarInteger( ( (char*)ptr)[0] );
+    case DC_SIGCHAR_UCHAR:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(unsigned char));
+      return ScalarInteger( ( (unsigned char*)ptr)[0] );
+    case DC_SIGCHAR_SHORT:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(short));
+      return ScalarInteger( ( (short*)ptr)[0] );
+    case DC_SIGCHAR_USHORT:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(unsigned short));
+      return ScalarInteger( ( (unsigned short*)ptr)[0] );
+    case DC_SIGCHAR_INT:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(int));
+      return ScalarInteger( ( (int*)ptr )[0] );
+    case DC_SIGCHAR_UINT:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(unsigned int));
+      return ScalarReal( (double) ( (unsigned int*)ptr )[0] );
+    case DC_SIGCHAR_LONG:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(long));
+      return ScalarReal( (double) ( (long*)ptr )[0] );
+    case DC_SIGCHAR_ULONG:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(unsigned long));
+      return ScalarReal( (double) ( (unsigned long*) ptr )[0] );
+    case DC_SIGCHAR_FLOAT:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(float));
+      return ScalarReal( (double) ( (float*) ptr )[0] );
+    case DC_SIGCHAR_DOUBLE:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(double));
+      return ScalarReal( ((double*)ptr)[0] );
+    case DC_SIGCHAR_LONGLONG:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(long long));
+      return ScalarReal( (double) ( ((long long*)ptr)[0] ) );
+    case DC_SIGCHAR_ULONGLONG:
+      ptr = r_dataptr2(ptr_x,offset,sizeof(unsigned long long));
+      return ScalarReal( (double) ( ((unsigned long long*)ptr)[0] ) );
     case '*':
-    case DC_SIGCHAR_POINTER:  return R_MakeExternalPtr( ((void**)ptr)[0] , R_NilValue, R_NilValue );
+    case DC_SIGCHAR_POINTER:  
+      ptr = r_dataptr2(ptr_x,offset,sizeof(void*));
+      return R_MakeExternalPtr( ((void**)ptr)[0] , R_NilValue, R_NilValue );
     case DC_SIGCHAR_STRING:   {
+      ptr = r_dataptr2(ptr_x,offset,sizeof(char*));
     	char* s = ( (char**) ptr )[0];
 		if (s == NULL) return R_MakeExternalPtr( 0, R_NilValue, R_NilValue );
 		return mkString(s);
     }
-    case DC_SIGCHAR_SEXP:     return (SEXP) ptr;
+    case DC_SIGCHAR_SEXP:     
+      return (SEXP) ptr;
     default: error("invalid signature");
   }
   return R_NilValue;
