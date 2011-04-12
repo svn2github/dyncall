@@ -3,29 +3,27 @@
 \alias{.pack}
 \alias{.unpack}
 \title{(Un)-packing of C data types.}
-\description{Functions to manipulate C-level arrays and structures from within R.}
+\description{Functions to unpack/pack (read/write) foreign C data types from/to R atomic vectors and C data objects such as arrays and pointers to structures.}
 \usage{
 .pack(x, offset, sigchar, value)
 .unpack(x, offset, sigchar)
 }
 \arguments{
-\item{x}{Atomic vector (logical, raw, integer or double) or external pointer.}
-\item{offset}{Scalar integer specifying \emph{byte offset} starting at 0.} 
+\item{x}{atomic vector (logical, raw, integer or double) or external pointer.}
+\item{offset}{integer specifying \emph{byte offset} starting at 0.} 
 \item{sigchar}{character string specifying the C data type by a \code{\link{signature}} string.}
-\item{value}{input value to be coerced and stored.} 
+\item{value}{R object value to be coerced and packed to a foreign C data type.} 
 }
 \details{
-The function \code{.pack} converts an R value into a C data type and writes it at the byte position specified
-by byte \code{offset} in the object's data area represented by \code{x}.
+The function \code{.pack} converts an R \code{value} into a C data type according to the \link{signature} \code{sigchar} 
+and writes the raw foreign data at byte position \code{offset} into the object \code{x}.
+The function \code{.unpack} extracts a C data type according to the \link{signature} \code{sigchar} 
+at byte position \code{offset} from the object \code{x} and converts the value to an R value and returns it.
 
-The function \code{.unpack} extracts a C data type at position specified by byte \code{offset} in the object's data area
-represented by \code{x} and converts the value to an R value according to the conversion specified on
-the manual page for \code{\link{signature}}.  
-
-Byte \code{offset} calculations begin at byte offset 0 relative to the first byte in a vectors data area (at R item index 1).
+Byte \code{offset} calculations start at 0 relative to the first byte in an atomic vectors data area.
 }
 \value{
-\code{.unpack} returns an R value according to the signature specified.
+\code{.unpack} returns a read C data type coerced to an R value.
 }
 \seealso{
 Details on the text string encoding for \code{\link{signature}}.

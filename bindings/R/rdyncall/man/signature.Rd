@@ -5,10 +5,10 @@
 \alias{function signature}
 \alias{type signature}
 \alias{library signature}
-\title{Signature Format}
-\description{Description of Signature Formats and Text Encoding}
+\title{Type Signature Format}
+\description{Description of Type Signature Formats and Text Encoding}
 \details{
-The following page contains text string encodings and conversion rules for mapping types between R and C.
+The following page contains text format encodings and conversion rules for mapping types between R and C.
 }
 \section{Call Signatures}{
 Call Signatures are used by \code{\link{.dyncall}} and \code{\link{callback}}s.
@@ -18,7 +18,7 @@ The general form of a call signature is as following:
 \emph{argument type signatures}.. \tab '\code{)}' \tab \emph{return type signature}\cr
 }
 
-The argument type signatures are specified in \emph{left-to-right} order \bold{without} white spaces in accordance with the C function type that will be interfaced.
+The argument type signatures are specified in \emph{left-to-right} order \bold{without} white spaces in accordance with the target C function type that will be called.
 See the next section for details on the argument and return type signatures.
 Base type are specified using a one-character type code.  A closing bracket character '\code{)}' marks the end of argument types, followed by a
 single return type signature. 

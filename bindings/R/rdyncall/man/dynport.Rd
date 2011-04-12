@@ -3,7 +3,8 @@
 \alias{dynports}
 \alias{loadDynportNamespace}
 \title{Dynamic binding of C APIs and shared libraries.}
-\description{Front-end function to dynamically bind C Libraries and automatically wrap them as a virtual R name spaces.
+\description{Function to dynamically bind C APIs and shared libraries via automatically 
+created R name spaces that consist of thin wrappers to foreign functions, symbolic constants and data types.
 }
 \usage{
 dynport(portname, portfile=NULL,
@@ -45,7 +46,7 @@ The following dynports are available and have been tested on multiple platforms:
 
 Dynports need pre-installed binaries on your system. The installation 
 procedure depends on your Operating System. 
-In general, dynport needs to locate the binaries which is carried out by \code{\link{dynfind}}.
+In general, \code{dynport} needs to locate the binaries which is carried out by \code{\link{dynfind}}.
 
 Many portable C libraries can be regarded as reusable software components ; applicable in universal contexts providing
 a generic service such as 3D graphics rendering, sound processing, abstraction to hardware and the like.
@@ -93,7 +94,7 @@ SDL_SetVideoMode(320,256,32,SDL_OPENGL+SDL_DOUBLEBUF)
 # Clear Color and Clear Screen
 glClearColor(0,0,1,0) # blue
 glClear(GL_COLOR_BUFFER_BIT)
-# Flip Double-Buffers
+# Flip Double-Buffer
 SDL_GL_SwapBuffers()
 }
 }
