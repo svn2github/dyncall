@@ -1,9 +1,12 @@
 dynbind("SDL_image", "
+IMG_Init(i)i;
 IMG_InvertAlpha(i)i;
 IMG_Linked_Version()*<SDL_version>;
 IMG_Load(*c)*<SDL_Surface>;
 IMG_LoadBMP_RW(*<SDL_RWops>)*<SDL_Surface>;
+IMG_LoadCUR_RW(*<SDL_RWops>)*<SDL_Surface>;
 IMG_LoadGIF_RW(*<SDL_RWops>)*<SDL_Surface>;
+IMG_LoadICO_RW(*<SDL_RWops>)*<SDL_Surface>;
 IMG_LoadJPG_RW(*<SDL_RWops>)*<SDL_Surface>;
 IMG_LoadLBM_RW(*<SDL_RWops>)*<SDL_Surface>;
 IMG_LoadPCX_RW(*<SDL_RWops>)*<SDL_Surface>;
@@ -16,9 +19,12 @@ IMG_LoadXCF_RW(*<SDL_RWops>)*<SDL_Surface>;
 IMG_LoadXPM_RW(*<SDL_RWops>)*<SDL_Surface>;
 IMG_LoadXV_RW(*<SDL_RWops>)*<SDL_Surface>;
 IMG_Load_RW(*<SDL_RWops>i)*<SDL_Surface>;
-IMG_ReadXPMFromArray(*)*<SDL_Surface>;
+IMG_Quit()v;
+IMG_ReadXPMFromArray(**c)*<SDL_Surface>;
 IMG_isBMP(*<SDL_RWops>)i;
+IMG_isCUR(*<SDL_RWops>)i;
 IMG_isGIF(*<SDL_RWops>)i;
+IMG_isICO(*<SDL_RWops>)i;
 IMG_isJPG(*<SDL_RWops>)i;
 IMG_isLBM(*<SDL_RWops>)i;
 IMG_isPCX(*<SDL_RWops>)i;
@@ -29,3 +35,7 @@ IMG_isXCF(*<SDL_RWops>)i;
 IMG_isXPM(*<SDL_RWops>)i;
 IMG_isXV(*<SDL_RWops>)i;
 ")
+IMG_INIT_JPG=1;
+IMG_INIT_PNG=2;
+IMG_INIT_TIF=4;
+

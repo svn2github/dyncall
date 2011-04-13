@@ -323,7 +323,7 @@ glVertexAttribIPointer(IiIi*v)v;
 glVertexAttribPointer(IiICi*v)v;
 glViewport(iiii)v;
 glWaitSync(*<__GLsync>IJ)v;
-",callmode=.callMode)
+")
 GL_ACTIVE_ATTRIBUTES=0x8B89
 GL_ACTIVE_ATTRIBUTE_MAX_LENGTH=0x8B8A
 GL_ACTIVE_TEXTURE=0x84E0
