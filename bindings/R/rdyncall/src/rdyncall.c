@@ -24,8 +24,9 @@ SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
 
   const char* mode_S = CHAR( STRING_ELT( mode_x, 0 ) );
 
-  int mode_i;
+  int mode_i = DC_CALL_C_DEFAULT;
   if      (strcmp(mode_S,"default") == 0 || strcmp(mode_S,"cdecl") == 0) mode_i = DC_CALL_C_DEFAULT;
+#if WIN32
   else if (strcmp(mode_S,"stdcall") == 0)	mode_i = DC_CALL_C_X86_WIN32_STD;
   else if (strcmp(mode_S,"thiscall") == 0) 	mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
   else if (strcmp(mode_S,"thiscall.gcc") == 0)  mode_i = DC_CALL_C_X86_WIN32_THIS_GNU;
@@ -33,8 +34,10 @@ SEXP r_new_callvm(SEXP mode_x, SEXP size_x)
   else if (strcmp(mode_S,"fastcall") == 0)      mode_i = DC_CALL_C_X86_WIN32_FAST_GNU;
   else if (strcmp(mode_S,"fastcall.msvc") == 0) mode_i = DC_CALL_C_X86_WIN32_FAST_MS;
   else if (strcmp(mode_S,"fastcall.gcc") == 0)  mode_i = DC_CALL_C_X86_WIN32_FAST_GNU;
-  else { error("invalid 'callmode'"); /* dummy */ return R_NilValue; }
-
+#endif
+/*
+   else { error("invalid 'callmode'"); return R_NilValue; }
+*/
 
   DCCallVM* pvm = dcNewCallVM(size_i);
   dcMode( pvm, mode_i );
