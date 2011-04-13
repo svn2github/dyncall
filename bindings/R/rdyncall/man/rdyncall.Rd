@@ -2,29 +2,25 @@
 \docType{package}
 \alias{rdyncall}
 \alias{rdyncall-package}
-\title{Dynamic foreign library interface framework}
-\description{  
-Flexible foreign function interface with support for C callbacks, pointer and 
-aggregate struct/union types. 
-An experimental framework for portable dynamic binding of 'whole' shared C 
-libraries is included with initial support for libraries such as OpenGL (up to 3.0), 
-libSDL, expat and the R shared library itself.
+\title{Dynamic C Library Binding Framework with a flexible Foreign Function Interface (FFI) (includes cross-platform bindings to OpenGL)}
+\description{
+The FFI supports all fundamental C types, multiple calling conventions, handling of struct/union C data types and wrapping of R functions as C callback function pointers. 
+The Binding Framework offers to bind C Libraries to R via dynamically created name spaces comprising thin wrappers to the C Interface using a portable binding specification format.
+The package comes with an initial repository of portable bindings to libraries such as OpenGL, glew, OpenCL and SDL. 
+Users are enabled to develop system-level software with R using APIs such as OpenGL directly in R, portable across platforms.
 }
 \details{
-\pkg{rdyncall} is a toolkit that aims to bind Application Programming Interfaces(API)
+\pkg{rdyncall} is a toolkit that aims to bind Application Programming Interfaces (API)
 of shared C library functions, constants, callbacks and types with the R language in a portable way.
 
-At the core a flexible foreign function interface based on the 
-\emph{dyncall} C library is used for passing arguments, invoking function calls
-and returning values between R and C with support for multiple calling conventions.
-
-The function calls are effectively executed by small call kernels written in
-assembly.
+The flexible Foreign Function Interface is mainly based on the \emph{dyncall} C library which has been ported all major R platforms.
+It is very small in size, and provides the flexibility to call arbitrary functions with support for the full range of C types and multiple calling conventions.
+C Callbacks are wrapped via the \emph{dyncallback} C library.
 }
 \section{Overview}{
 \itemize{
-\item Calling of precompiled code with support for wide range of C types, flexible mapping type mappings and calling conventions. See \code{\link{.dyncall}}.
-\item Locating of shared libraries by short names in a portable way. See \code{\link{dynfind}}.
+\item Calling of precompiled code with support for wide range of C types, flexible mapping type mappings and multiple calling conventions. See \code{\link{.dyncall}}.
+\item Searching of shared libraries portably across operating-systems by short names. See \code{\link{dynfind}}.
 \item Loading of shared libraries with managed unloading. See \code{\link{.dynload}}.
 \item Installation of wrapper functions to shared library code. See \code{\link{dynbind}}.
 \item Working with C low-level and aggregate types (structs and unions). See \code{\link{packing}} and \code{\link{struct}}.
@@ -34,7 +30,7 @@ assembly.
 }
 \section{Getting Started}{
 Several demos are available. Some demos require additional
-software to be installed on the system. Please make sure, you have installed 
+software to be installed on the system such as SDL. Please make sure, you have installed 
 the shared libraries.
 }
 \section{Applications}{

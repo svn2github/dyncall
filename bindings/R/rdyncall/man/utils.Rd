@@ -42,10 +42,10 @@ is set to a C \code{NULL} pointer.
 \code{offsetPtr} takes an external pointer as input and displaces the pointer
 by offset bytes and returns an external pointer holding the displaced address.   
 
-\code{floatraw} creates a array to store floats backed by a raw vector.
+\code{floatraw} creates an array to store \code{n} floats implemented by a raw vector.
 \code{as.floatraw} coerces a numeric vector into a single-precision float vector backed by a raw vector.
 All values are converted to float and stored in the R raw vector. This is used to 
-pass R vectors via a float pointer in to C code via \code{.dyncall}.
+pass R vectors via a float pointer to C code via \code{.dyncall}.
 
 \code{floatraw2numeric} coerces a C float raw vector to a numeric vector.
 

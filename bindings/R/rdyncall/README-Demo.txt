@@ -19,6 +19,7 @@ Multimedia with SDL and GL:
   'randomfield':  Real-time Random fields generator(1024x1024) using fast texture mapping and blending. Procudes 1024x1024 matrices with 5000 gaussian blends.
   'blink_gl3':    Skeleton using modern OpenGL 3 API. (which might not work on old systems).
   'ttf':          Requires as well SDL_ttf (http://www.libsdl.org/projects/SDL_ttf/)
+  'intro':        Multimedia Audio/Visual Demonstration (in the spirit of demoscene).
 
 Callback Demos:
   'callbacks': Wraps R functions into Callbacks and get called via dyncall FFI. Callbacks are recursively invoked via dyncall functions.
@@ -53,8 +54,9 @@ required for some rdyncall demos:
   libSDL    Multimedia Framework    http://libsdl.org 
   OpenGL    3D Real-Time Graphics   http://OpenGL.org, http://www.mesa3d.org
   Expat     XML Parser              http://expat.sourceforge.org
-  SDL_ttf   Fonts                   http://libsdl.org/projects/SDL_ttf
-  SDL_mixer Mixer                   http://libsdl.org/projects/SDL_mixer
+  SDL_ttf   Fonts Loading           http://libsdl.org/projects/SDL_ttf
+  SDL_mixer Sound Playing           http://libsdl.org/projects/SDL_mixer
+  SDL_image Graphics Formats I/O    http://libsdl.org/projects/SDL_image
 
 Place the *.DLL, *.so and *.dylib files in a standard location or
 modify LD_LIBRARY_PATH(unix) or PATH(windows) so that the package
@@ -62,6 +64,7 @@ can find the libraries.
 
 --- Windows Installation Notes ------------------------------------------------
 
+Installaion:
 Download, unpack. Make sure *.DLL files are in PATH.
 
 Downloads:
@@ -91,6 +94,12 @@ Downloads:
     
 Downloads:
   libSDL: http://www.libsdl.org/release/SDL-1.2.14.dmg
+  SDL_mixer:
+  SDL_image:
+
+SDL Family Installation:
+  For each {SDL,SDL_ttf,SDL_image,SDL_mixer}-*.dmg file:
+  mount and copy *.framework folder to /Library/Frameworks.
   
   No Installation needed for pre-installed software (checked on Mac OS X 10.{4,6})
     Standard C Run-Time: located /usr/lib/libc.dylib
@@ -136,7 +145,13 @@ Usage
 --- OpenBSD -------------------------------------------------------------------
 
 The SDL Demo failed on OpenBSD 4.8 using the R 2.7 from Repo.
+Anyway, the usage was:
+  $ pkg_add -v <pkgname> <pkgname>..
 
+  Name
+  
+  SDL
+  expat
 
 --- FreeBSD packages ----------------------------------------------------------
 
