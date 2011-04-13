@@ -20,7 +20,7 @@ The function dynamically loads a shared library specified by short library names
 According to the \link{library signature}, a set of front-end R wrapper functions are constructed that delegate calls to 
 functions of the shared library via \code{\link{.dyncall}}.
 
-The \link{library signature} comprises a sequence of \link{function signatures} separated by \samp{;} semicolon symbols and optionally white-spaces before and after semicolons.
+The \link{library signature} comprises a sequence of \link{function signature}s separated by \samp{;} semicolon symbols and optionally white-spaces before and after semicolons.
 
 \tabular{c}{
 \emph{symbol} \samp{(} \emph{argumentTypes} \samp{)} \emph{returnType} \samp{;} \ldots \cr 

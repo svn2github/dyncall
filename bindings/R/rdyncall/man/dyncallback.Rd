@@ -16,9 +16,9 @@ new.callback( signature, fun, envir = new.env() )
 }
 \details{
 C callbacks are function pointers that are registered and executed from within a C context. 
-The function \code{new.callback} enables dynamic wrapping of R functions into a C function object that
-can be registered later as a C callback.
-The callback \code{signature} should match the type of the C function callback.
+The function \code{new.callback} wraps an R functions given by \code{fun} into a C function object 
+specified by \link{callback signature} \code{signature}. The returned external pointer
+can be registered as a C callback.
 }
 \value{
 An external pointer to be used as a C function pointer in the context of a C callback registration.
@@ -32,8 +32,7 @@ The port to Linux/BSD on PowerPC is currently unstable. (MacOS X/Darwin on Power
 }
 \note{
 
-The type information for arguments and return values \strong{MUST} match with 
-the compiled function, otherwise callbacks invocated can lead to a \strong{fatal R process crash}.
+The callback signature \strong{MUST} match the foreign C callback function type, otherwise an activated callback call from C can lead to a \strong{fatal R process crash}.
 
 If the number of arguments given with the R function does not match with the callback type information, 
 R will signal a non-fatal error (similar to what happens when calling an R function with a wrong number of arguments or dynamic type mismatches).
@@ -48,7 +47,7 @@ R will signal a non-fatal error (similar to what happens when calling an R funct
 See \code{\link{signature}} for details on call signatures.
 }
 \examples{
-# Sort vectors directly via 'qsort' C library function:
+# Sort vectors directly via 'qsort' C library function using an R callback:
 
 dynbind(c("c","msvcrt"), "qsort(piip)v;")
 cb <- new.callback("pp)i",function(px,py){  

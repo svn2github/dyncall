@@ -3,8 +3,8 @@
 \alias{dynports}
 \alias{loadDynportNamespace}
 \title{Dynamic binding of C APIs and shared libraries.}
-\description{Function to dynamically bind C APIs and shared libraries via automatically 
-created R name spaces that consist of thin wrappers to foreign functions, symbolic constants and data types.
+\description{Function to dynamically bind C APIs and shared libraries via dynamically
+created wrappers for foreign function calls, symbolic constants and data types.
 }
 \usage{
 dynport(portname, portfile=NULL,
@@ -19,21 +19,21 @@ loadDynportNamespace(name, portfile, do.attach=TRUE)
 \item{name}{character string specifying the name of a name space.}
 }
 \details{
-
-A \emph{Dynport} is a dynamic binding to a shared C library and its C Application Programming Interface  
-wrapped by R objects.
+A \emph{Dynport} is a binding specification for a particular C Libraries that serves as the description for 
+creating dynamic wrapper interfaces.
 
 When loading a \emph{Dynport} via function \code{dynport}, a virtual R name space is installed and populated with lightweight R wrappers of C entities 
-(functions, object-like macro defines, constants...) of the corresponding C API.
+(functions, object-like macro defines, constants...).
 
-An initial repository of \emph{Dynports} to some portable C libraries such as Expat, SDL and OpenGL is pre-installed with the package.
+An initial repository of \emph{Dynports} for a selection of common C libraries such as Expat, SDL and OpenGL is pre-installed with the package.
 The following dynports are available and have been tested on multiple platforms:
 
 \tabular{ll}{
 \strong{dynport} \tab \strong{Description}                    \cr
 \code{SDL}       \tab Simple DirectMedia Layer library        \cr
-\code{SDL_image} \tab SDL Image Library                       \cr
-\code{SDL_ttf}   \tab SDL True Type Font Rendering            \cr
+\code{SDL_image} \tab Loading of image files (png,jpeg..)     \cr
+\code{SDL_mixer} \tab Loading/Playing of ogg/mp3/mod music files.\cr
+\code{SDL_ttf}   \tab Loading/Rendering of True Type Fonts.   \cr
 \code{GL}        \tab OpenGL 1.1 API                          \cr
 \code{GLU}       \tab OpenGL Utility Library                  \cr
 \code{glew}      \tab OpenGL Extension Wrangler (OpenGL 3.0)  \cr
@@ -42,10 +42,11 @@ The following dynports are available and have been tested on multiple platforms:
 \code{ode}       \tab Open Dynamics (Physics-) Engine         \cr
 \code{cuda}      \tab NVIDIA Cuda                             \cr
 \code{opencl}    \tab OpenCL                                  \cr
+\code{stdio}     \tab C Standard Library I/O Functions        \cr
 }
 
-Dynports need pre-installed binaries on your system. The installation 
-procedure depends on your Operating System. 
+Dynports rely on pre-installed shared libraries on the host system. The installation 
+procedure for installation of shared libraries depends on the Operating System.
 In general, \code{dynport} needs to locate the binaries which is carried out by \code{\link{dynfind}}.
 
 Many portable C libraries can be regarded as reusable software components ; applicable in universal contexts providing

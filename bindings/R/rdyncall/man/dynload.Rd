@@ -42,7 +42,7 @@ when no resolved symbols remain.
 Dynamic linkers usually hold an internal link count, such that a library can be opened multiple times via \code{.dynload} 
 - with a balanced number of calls to \code{.dynunload} that decreases the link count to unload the library again.
 
-Similar functionality is available via \code{dyn.load} and \code{getNativeSymbolInfo}, 
+Similar functionality is available via \code{\link[base]{dyn.load}} and \code{getNativeSymbolInfo}, 
 except that path names are filtered and no automatic unloading of libraries is supported.
 }
 
@@ -136,7 +136,7 @@ If a path is specified and there is a redirection file for the application, the 
 }
 \seealso{
   This facility is used by \code{\link{dynfind}} and \code{\link{dynbind}}.
-  Similar functionality is available from \code{\link{dyn.load}} and \code{\link{getNativeSymbolInfo}}.
+  Similar functionality is available from \code{\link[base]{dyn.load}} and \code{\link[base]{getNativeSymbolInfo}}.
 }
 \keyword{programming}
 \keyword{interface}

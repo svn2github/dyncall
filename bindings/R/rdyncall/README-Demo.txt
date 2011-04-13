@@ -155,12 +155,14 @@ Anyway, the usage was:
 
 --- FreeBSD packages ----------------------------------------------------------
 
+Tested on FreeBSD 8.2
 Usage
   $ pkg_add -r <pkgname> <pkgname>..
 
   Recommended Packages:
 
-  xorg
+  xorg  (this includes libGL)
+  
   
   .. to be continued ..  
 
