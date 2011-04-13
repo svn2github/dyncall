@@ -11,8 +11,8 @@
     C=1L,
     s=2L,
     S=2L,
-    i=.Machine$sizeof.long,
-    I=.Machine$sizeof.long,
+    i=4L,
+    I=4L,
     j=.Machine$sizeof.long,
     J=.Machine$sizeof.long,
     l=.Machine$sizeof.longlong,
@@ -328,7 +328,7 @@ print.struct <- function(x, indent=0, ...)
       return()
     }
   } 
-  cat("{")
+  cat("{\n")
   # print data without last
   for (i in seq(along=fieldNames)) 
   { 
