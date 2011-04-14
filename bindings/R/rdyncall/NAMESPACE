@@ -10,7 +10,7 @@ export(
   # dynload.R
   .dynload, .dynunload, .dynsym,
   # dynfind.R
-  dynfind, pathsFromEnv,
+  dynfind, 
   # dynbind.R 
   dynbind,
   # dynstruct.R 
@@ -31,9 +31,6 @@ export(
   # dynport.R
   dynport, loadDynportNamespace
 )
-
-# S3method("[<-", struct)
-# S3method("[", struct)
 S3method("$<-", struct)
 S3method("$", struct)
 S3method(print,struct)

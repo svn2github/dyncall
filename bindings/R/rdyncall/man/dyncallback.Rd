@@ -1,6 +1,6 @@
 \name{callback}
-\alias{callback}
 \alias{new.callback}
+\alias{callback}
 \alias{dyncallback}
 \title{Dynamic wrapping of R functions into C callbacks.}
 \description{  

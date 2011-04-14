@@ -2,7 +2,7 @@
 # File: R/dynports.R
 # Description: repository for multi-platform bindings to binary components.
 # Author: Daniel Adler <dadler@uni-goettingen.de> 
-#         additional code copied from Luke Tierney 
+#         additional code copied from Luke Tierney's implementation for Name Spaces in R.
 
 # Front-end:
 
@@ -21,7 +21,7 @@ dynport <- function(portname, portfile=NULL, repo=system.file("dynports", packag
 }
 
 
-# the following code is copied from 'loadNamespace':
+# the following code is copied from 'loadNamespace' (from Luke Tierney):
 makeNamespace <- function(name, version = NULL, lib = NULL) {
   impenv <- new.env(parent = .BaseNamespaceEnv, hash = TRUE)
   attr(impenv, "name") <- paste("imports", name, sep = ":")

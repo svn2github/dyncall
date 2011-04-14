@@ -1,6 +1,6 @@
 \name{packing}
-\alias{packing}
 \alias{.pack}
+\alias{packing}
 \alias{.unpack}
 \title{(Un)-packing of C data types.}
 \description{Functions to unpack/pack (read/write) foreign C data types from/to R atomic vectors and C data objects such as arrays and pointers to structures.}

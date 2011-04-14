@@ -1,7 +1,6 @@
 # Package: rdyncall
 # File: R/dynfind.R
 # Description: locating system libraries in common places  
-# Author: Daniel Adler <dadler@uni-goettingen.de>
 
 # ----------------------------------------------------------------------------
 # function: pathsFromEnv
@@ -12,12 +11,12 @@ pathsFromEnv <- function(name)
 
 .libLocations <- c("/lib","/usr/lib", "/usr/local/lib", "/opt/local/lib")
 
-if (Sys.info()[["sysname"]] == "Darwin")
+.sysname <- Sys.info()[["sysname"]]
+
+if (.sysname == "Darwin")
 {
   .libLocations <- c(.libLocations, "/Library/Frameworks/R.framework/Resources/lib/" )
 }
-
-.sysname <- Sys.info()[["sysname"]]
 
 try.framework.locations <- c("/Library/Frameworks","/System/Library/Frameworks")
 dynfind.darwin.framework <- function(frameworks, auto.unload=TRUE)

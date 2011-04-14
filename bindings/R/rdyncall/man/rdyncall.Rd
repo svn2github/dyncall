@@ -31,7 +31,7 @@ C Callbacks are wrapped via the \emph{dyncallback} C library.
 }
 \section{Overview}{
 \itemize{
-\item Flexible FFI with support for all C types, type-safety checks and multiple calling conventions. See \code{\link{.dyncall}}.
+\item Flexible FFI with support for most C types, type-safety checks and multiple calling conventions. See \code{\link{.dyncall}}.
 \item Searching for Shared Libraries across platforms by short names. See \code{\link{dynfind}}.
 \item Loading of shared libraries with automatic garbage-collector controlled unloading. See \code{\link{.dynload}}.
 \item Dynamic creation of call wrappers to foreign code. See \code{\link{dynbind}}.

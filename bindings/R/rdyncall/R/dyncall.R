@@ -1,7 +1,6 @@
 # Package: rdyncall
 # File: R/dyncall.R
 # Description: dyncall bindings for R
-# Author: Daniel Adler <dadler@uni-goettingen.de>
 
 # ----------------------------------------------------------------------------
 # call vm alloc/free (internal)

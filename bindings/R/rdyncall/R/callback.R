@@ -1,7 +1,6 @@
 # Package: rdyncall
 # File: R/callback.R
 # Description: R Callbacks
-# Author: Daniel Adler <dadler@uni-goettingen.de>
 
 new.callback <- function(signature, fun, envir=new.env())
 {

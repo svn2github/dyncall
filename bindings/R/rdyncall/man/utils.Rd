@@ -1,8 +1,8 @@
 \name{utils}
+\alias{is.nullptr}
 \alias{align}
 \alias{.addrval}
 \alias{is.externalptr}
-\alias{is.nullptr}
 \alias{offsetPtr}
 \alias{floatraw}
 \alias{as.floatraw}
@@ -14,9 +14,9 @@
 \title{Low-level utility functions to work with C pointers.}
 \description{Functions for low-level operations on C pointers.}
 \usage{
+is.nullptr(x)
 .addrval(x)
 is.externalptr(x)
-is.nullptr(x)
 offsetPtr(x,offset)
 floatraw(n)
 as.floatraw(x)
@@ -32,10 +32,10 @@ strptr(x)
 \item{offset}{An integer scalar specifying the offset.}
 }
 \details{
-\code{.addrval} returns an external pointer to the given R object.
-
 \code{is.nullptr} can be applied to external pointers and tests if it
 is set to a C \code{NULL} pointer. 
+
+\code{.addrval} returns an external pointer to the given R object.
 
 \code{is.externalptr} tests if the object is an external pointer.
 

@@ -6,22 +6,24 @@
 \alias{type signature}
 \alias{library signature}
 \title{Type Signature Format}
-\description{Description of Type Signature Formats and Text Encoding}
+\description{The following Type Information notation is used to describe C functions and aggregate data types.}
 \details{
-The following page contains text format encodings and conversion rules for mapping types between R and C.
-}
-\section{Call Signatures}{
-Call Signatures are used by \code{\link{.dyncall}} and \code{\link{callback}}s.
-The general form of a call signature is as following:
+The \pkg{rdyncall} package makes extensive use of cross-platform type information encoded as text strings.
+The low-level facilities offered by the package such as foreign function calls, wrappers for callbacks and handling of
+foreign data types are data-driven by signatures - which makes the FFI very flexible and dynamic and does
+such that foreign function calls, callbacks and the handling of aggregate data types is data-driven and
+thus very flexible - developers can specify the signature dynamically at run-time without the need for
+extra compilation of C code for each and every variant of a functionc call or data type.
 
-\tabular{rcl}{
-\emph{argument type signatures}.. \tab '\code{)}' \tab \emph{return type signature}\cr
+The following list gives an overview of the formats and how they are related to each other.
+
+\itemize{
+\item Type Signatures describe fundamental C types. This notation is integrated into all signature formats below, because fundamental C typesh are contained in functions, callbacks as well as aggregate data types. 
+\item Call Signatures describe C function calls and are used for foreign function calls and when wrapping R functions as callback C function pointers.
+\item Library Signatures describe a series of library functions using names and call signatures.
+\item Structure- and Union Type Signatures describe record-like C data types. 
 }
 
-The argument type signatures are specified in \emph{left-to-right} order \bold{without} white spaces in accordance with the target C function type that will be called.
-See the next section for details on the argument and return type signatures.
-Base type are specified using a one-character type code.  A closing bracket character '\code{)}' marks the end of argument types, followed by a
-single return type signature. 
 }
 \section{Type Signature}{
 Type signatures are used within Call Signatures (see above),(un)-\code{\link{packing}} functions
@@ -52,6 +54,20 @@ The following table lists valid type signatures, corresponding C types, acceptab
 "\code{*<}" \emph{typename} '\code{>}' \tab \emph{typename}* (pointer) \tab raw,externalptr \tab externalptr\cr
 }
 
+}
+\section{Call Signatures}{
+Call Signatures are used by \code{\link{.dyncall}} and \code{\link{callback}}s.
+The general form of a call signature is as following:
+
+\tabular{rcl}{
+\emph{argument type signatures}.. \tab '\code{)}' \tab \emph{return type signature}\cr
+}
+
+The argument type signatures are specified in \emph{left-to-right} order \bold{without} white spaces in accordance with the target C function type that will be called.
+See the next section for details on the argument and return type signatures.
+Base type are specified using a one-character type code.  A closing bracket character '\code{)}' marks the end of argument types, followed by a
+single return type signature. 
+
 Here are some examples of some known C functions and corresponding call signatures:
 
 \tabular{ll}{
@@ -68,6 +84,16 @@ by ';' (semicolon). Whitespaces are allowed to pre- and suffix the ';'.
 \tabular{c}{
 \emph{function-name} \samp{(} \emph{argument-types} \samp{)} \emph{return-type} \samp{;} \ldots \cr
 }
+
+Here is an example of a Library Signature for some OpenGL functions:
+
+\preformatted{"glAccum(If)v;
+glClear(I)v;
+glClearColor(ffff)v;
+fopen(*c*c)*<__sFILE>;
+"
+}
+
 }
 \section{Structure Type Signatures}{
 Structure Type Signatures describe the layout of aggregate \code{struct} C data type.

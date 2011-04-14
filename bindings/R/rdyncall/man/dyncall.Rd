@@ -1,6 +1,6 @@
 \name{dyncall}
-\alias{dyncall}
 \alias{.dyncall}
+\alias{dyncall}
 \alias{.dyncall.default}
 \alias{.dyncall.cdecl}
 \alias{.dyncall.stdcall}
@@ -9,10 +9,12 @@
 \alias{.dyncall.thiscall.gcc}
 \alias{.dyncall.fastcall.msvc}
 \alias{.dyncall.fastcall.gcc}
-\title{Flexible Foreign Function Interface (FFI) with support for all C types and multiple calling conventions.}
+\title{Flexible Foreign Function Interface (FFI) with support for most C types and multiple calling conventions.}
 \description{  
-Functions to make calls to precompiled code with support for multiple calling conventions without the need for
-additional C wrapper code.
+Functions to make calls to foreign functions.
+The FFI is very flexible and handles almost all possible C argument and return types so that arbitrary precompiled code can be called directly from the R interpreter without
+the need for  additional C wrapper code in most cases.
+The interface has been ported to many processor architectures and operating systems and has support for multiple calling conventions on Microsoft Windows 32-Bit platforms as well.
 }
 \usage{
 .dyncall( address, signature, ... , callmode = "cdecl" )
@@ -27,7 +29,7 @@ additional C wrapper code.
 }
 \arguments{
   \item{address}{external pointer to a foreign function, such as that returned by \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}.}
-  \item{signature}{character string, specifying the \sQuote{\link{call signature}}.}
+  \item{signature}{character string specifying the \sQuote{\link{call signature}}.}
   \item{callmode}{character string specifying the calling convention.}
   \item{...}{arguments to be passed to the foreign code, according to the signature specified in \code{signature}.}
 }
@@ -35,26 +37,23 @@ additional C wrapper code.
 The foreign function to be called is given by \code{address} and is typically obtained from 
 functions such as \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}. 
 
-The \code{signature} specifies the formal argument-and-return types of the 
-target function in the context of the C language encoded via as
-described in the \link{call signature} text format. 
+The \code{signature} is a character string that specifies the formal argument-and-return types of the 
+foreign function encodied as a \link{call signature} string.
 
 The calling convention is specified \emph{explicitly} by the \code{callmode} argument 
 using \code{.dyncall}, or \emph{implicitly} by using \code{.dyncall.*} functions. 
 
-Arguments passed via \code{...} are converted according to the given 
-\link{call signature} and selected \code{callmode}. If the arity of actual 
-arguments does not match the formal arguments expressed via \code{signature},
-or incompatible type mismatches are detected during preparation phase,
-the call is aborted before risking a fatal system crash.
+Arguments passed via \code{...} are converted to C according to \code{signature} as described in the manual page on \link{type signature}s. 
+
+Some fairly basic type-safety argument checks are performed before issueing the call: The arity of formals and actual arguments must match and they must be compatible as well.
+Otherwise, the foreign function call is aborted with an error before risking a fatal system crash.
+
 }
 \value{  
-The converted return value of the foreign function call according to the return \link{type signature}
-given by \code{signature}. 
+The \code{.dyncall} and \code{.dyncall.}\emph{*} functions return the C return type of the foreign function specified by the given \code{signature}, converted to a compatible R value as described in \link[=type signature]{return type signature}.
 }
-\section{Signature}{
-For details on call-and-type signature encoding and argument-and-return 
-type-mapping between R and C, see \link{signature}.
+\section{Argument and Return-Type Mapping}{
+For details on argument- and return-type mapping between R and C, and call- and type signatures - see \link{signature} manual page.
 }
 \section{Calling conventions}{
 Calling conventions specify how a function call is invoked at the machine-level.
@@ -79,17 +78,17 @@ On Microsoft Windows/X86 Platform  several calling conventions are available at 
 \item{\code{"thiscall.msvc"}}{C++ member functions compiled with Microsoft Visual C++ Compiler.}
 }
 
-In case,  one of the above calling conventions are specified when running
-on a non-windows 32-bit Operating-System, the callmode falls back to 
-\code{"default"}. 
+In case, one of the above calling conventions are specified when running
+on a non-Windows 32-bit Operating-System, the callmode always falls back to 
+\code{"default"}.
 
 }
 \section{Portability}{
 
-The implementation is based on the \emph{dyncall} library which has been ported
-to the following Processor Architectures: X86, X64, ARM, PowerPC 32-bit, MIPS 32-bit and MIPS 64-bit
-with support for several Operating-Systems such as Linux, Mac OS X, Windows, (Open,Free,Net,DragonFly)BSD, Haiku, Open Solaris
-as well as embedded platforms such as Nintendo DS (ARM) and Sony Playstation Portable (MIPS 32-bit).
+The implementation of the \code{.dyncall} FFI is based on the \emph{dyncall} C library (part of the \emph{DynCall Project}) which has been ported
+to the following Processor Architectures: X86, X64, ARM (including THUMB support), PowerPC 32-bit, MIPS 32-bit and MIPS 64-bit
+with tested support for several Operating-Systems such as Linux, Mac OS X, Windows, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris
+as well as embedded platforms such as Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit) and iOS (ARM - with armv6 working, armv7 unstable).
 }
 \note{
 The address, calling convention and call signature \strong{MUST} match the foreign function type, otherwise the invocation can lead to a \strong{fatal R process crash}.
@@ -107,7 +106,7 @@ x <- .dynsym(mathlib,"sqrt")
 \code{\link{signature}} for call signatures.
 \code{\link{dynbind}} for automatic binding of multiple functions from shared libraries.
 \code{\link[base]{getNativeSymbolInfo}} and \code{\link{.dynsym}}. 
-\code{\link[base]{.C}},\code{\link[base]{.Call}},\code{\link[base]{.External}}
+\code{\link[base]{.C}} for the original FFI of R.
 }
 \keyword{programming}
 \keyword{interface}
