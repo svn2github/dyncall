@@ -1,7 +1,7 @@
 Checklist:
 - check examples (in particular example(dyncall) )
 - check available list of dynports
-
+- check win32 expat binary installation
 
 BUGS:
 - dynport once failed, dynport returns NULL afterwards..

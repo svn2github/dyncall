@@ -1,7 +1,6 @@
 # Package: rdyncall 
 # File: demo/blink.R
 # Description: Simple SDL,OpenGL demonstration - a blinking screen
-# Author: Daniel Adler
 
 require(rdyncall)
 dynport(SDL)

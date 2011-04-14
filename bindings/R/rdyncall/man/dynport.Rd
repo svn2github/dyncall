@@ -70,7 +70,7 @@ A tool suite is in development to extract these informations from C headers auto
 It was used to generate the initial repository of dynports. 
 }
 \references{
-  Adler, D., Philipp, T. (2008) \emph{DynCall Library}. \cr 
+  Adler, D., Philipp, T. (2008) \emph{DynCall Project}. \cr 
   \url{http://dyncall.org} \cr
   Clark, J. (1998). expat - XML Parser Toolkit. \cr
   \url{http://expat.sourceforge.net} \cr

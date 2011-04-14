@@ -1,4 +1,7 @@
-require(rdyncall)
+# Package: rdyncall
+# File: demo/intro.R
+# Description: Texture-mapped scroll-text, playing music 'Hybrid Song' composed in jan. -96 by Quazar of Sanxion 
+
 s <- NULL
 texId <- NULL
 music <- NULL

@@ -52,7 +52,7 @@ devices (Video, Audio, User-Input) in a portable way.
 See \command{\link{dynport}} for details.  
 }
 \references{
-  Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
+  Adler, D., Philipp, T. (2008) \emph{DynCall Project}. 
   \url{http://dyncall.org}
 }
 \examples{

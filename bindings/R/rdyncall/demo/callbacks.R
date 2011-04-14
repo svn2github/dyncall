@@ -1,7 +1,6 @@
 # Package: rdyncall 
 # File: demo/callbacks.R
 # Description: Creating a callback and call it via .dyncall
-# Author: Daniel Adler
 
 # The function to wrap:
 f <- function(x,y) x+y

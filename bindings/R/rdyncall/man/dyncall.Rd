@@ -29,7 +29,7 @@ The interface has been ported to many processor architectures and operating syst
 }
 \arguments{
   \item{address}{external pointer to a foreign function, such as that returned by \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}.}
-  \item{signature}{character string specifying the \sQuote{\link{call signature}}.}
+  \item{signature}{character string specifying the \link{call signature}.}
   \item{callmode}{character string specifying the calling convention.}
   \item{...}{arguments to be passed to the foreign code, according to the signature specified in \code{signature}.}
 }
@@ -99,7 +99,7 @@ x <- .dynsym(mathlib,"sqrt")
 .dyncall(x, "d)d", 144L)
 }
 \references{
-  Adler, D., Philipp, T. (2008) \emph{DynCall Library}. 
+  Adler, D., Philipp, T. (2008) \emph{DynCall Project}. 
   \url{http://dyncall.org}
 }
 \seealso{

@@ -1,14 +1,13 @@
 \name{signature}
 \alias{signature}
 \alias{call signature}
-\alias{callback signature}
 \alias{function signature}
 \alias{type signature}
 \alias{library signature}
-\title{Type Signature Format}
-\description{The following Type Information notation is used to describe C functions and aggregate data types.}
+\title{Platform-portable Type Information Format to describe C types.}
+\description{A simple and compact plain text format to encode descriptors of C function- and data types that are valid across platforms.}
 \details{
-The \pkg{rdyncall} package makes extensive use of cross-platform type information encoded as text strings.
+The \pkg{rdyncall} package makes extensive use of type information encoded as text strings.
 The low-level facilities offered by the package such as foreign function calls, wrappers for callbacks and handling of
 foreign data types are data-driven by signatures - which makes the FFI very flexible and dynamic and does
 such that foreign function calls, callbacks and the handling of aggregate data types is data-driven and
@@ -56,19 +55,19 @@ The following table lists valid type signatures, corresponding C types, acceptab
 
 }
 \section{Call Signatures}{
-Call Signatures are used by \code{\link{.dyncall}} and \code{\link{callback}}s.
+Call Signatures are used by \code{\link{.dyncall}} and \code{\link{new.callback}} to describe foreign C function types.
 The general form of a call signature is as following:
 
 \tabular{rcl}{
-\emph{argument type signatures}.. \tab '\code{)}' \tab \emph{return type signature}\cr
+\emph{argument types signature}.. \tab '\code{)}' \tab \emph{return type signature}\cr
 }
 
-The argument type signatures are specified in \emph{left-to-right} order \bold{without} white spaces in accordance with the target C function type that will be called.
+The \bold{argument types signature} is specified in \emph{left-to-right} order \bold{without} white spaces in accordance with the target C function type that will be called.
 See the next section for details on the argument and return type signatures.
 Base type are specified using a one-character type code.  A closing bracket character '\code{)}' marks the end of argument types, followed by a
-single return type signature. 
+single \bold{return type signature}. 
 
-Here are some examples of some known C functions and corresponding call signatures:
+Here are some examples of C library functions and corresponding call signatures:
 
 \tabular{ll}{
 \code{double sqrt(double);}                    \tab "\code{d)d}"    \cr
@@ -87,17 +86,12 @@ by ';' (semicolon). Whitespaces are allowed to pre- and suffix the ';'.
 
 Here is an example of a Library Signature for some OpenGL functions:
 
-\preformatted{"glAccum(If)v;
-glClear(I)v;
-glClearColor(ffff)v;
-fopen(*c*c)*<__sFILE>;
-"
-}
+\preformatted{"glAccum(If)v ; glClear(I)v ;  glClearColor(ffff)v ;  fopen(*c*c)*<__sFILE>;"}
 
 }
 \section{Structure Type Signatures}{
-Structure Type Signatures describe the layout of aggregate \code{struct} C data type.
-Type signatures are used within the \emph{field-types}. \emph{field-names} consists of space separated identifier names and
+Structure Type Signatures describe the layout of aggregate \code{struct} C data types.
+Type Signatures are used within the \emph{field-types}. \emph{field-names} consists of space separated identifier names and
 should match the number of fields.
 
 \tabular{rcl}{
@@ -106,7 +100,7 @@ should match the number of fields.
 
 Example:
 
-The C \code{struct} type
+Here is an example of a C \code{struct} type:
 
 \preformatted{
 struct Rect \{ 
@@ -115,12 +109,14 @@ struct Rect \{
 \};
 }
 
-can be registered via:
+The corresponding Structure Type Signature is:
 
-\code{parseStructType("Rect{ssSS}x y w h;")}
+\preformatted{"Rect\{ssSS\}x y w h;"}
+
 }
 
 \section{Union Type Signatures}{
+
 Union Type Signatures describe the components of the \code{union} C data type.
 Type signatures are used within the \emph{field-types}. \emph{field-names} consists of space separated identifier names and
 should match the number of fields.
@@ -129,9 +125,7 @@ should match the number of fields.
 \emph{union-name} '|' \emph{field-types} \tab '\}' \emph{field-names} '\code{;}' \cr
 }
 
-Example:
-
-The C \code{union} type
+Here is an example of a C \code{union} type,
 
 \preformatted{
 union Value \{ 
@@ -141,9 +135,9 @@ union Value \{
 \};
 } 
 
-can be registered via:
+The corresponding Union Type Signature is:
 
-\code{parseUnionType("Value|if<LongValue>}anInt aFloat aStruct;")}
+\code{"Value|if<LongValue>\}anInt aFloat aStruct;"}
 
 }
 \seealso{

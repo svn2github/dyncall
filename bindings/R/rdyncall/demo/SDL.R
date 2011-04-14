@@ -1,7 +1,6 @@
 # Package: rdyncall 
 # File: demo/SDL.R
 # Description: 3D Rotating Cube Demo using SDL,OpenGL and GLU. (dynport demo)
-# Author: Daniel Adler
 
 dynport(SDL)
 dynport(GL)
