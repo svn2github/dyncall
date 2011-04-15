@@ -1,7 +1,6 @@
 # Package: rdyncall 
 # File: demo/randomfield.R
 # Description: Scientific Computations using OpenGL: Rendering 512x512 random field by blending 5000 point sprites (dynport demo)
-# Author: Daniel Adler
 
 dynport(SDL)
 dynport(GL)

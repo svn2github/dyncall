@@ -5,8 +5,6 @@
  ** R-Package: rdyncall
  ** File: rdyncall/src/rdyncall_signature.h
  ** Description: R additions to dyncall signatures
- **
- ** Copyright (C) 2007-2009 Daniel Adler
  **/
 
 #include "dyncall_signature.h"

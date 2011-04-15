@@ -334,7 +334,7 @@ print.struct <- function(x, indent=0, ...)
   { 
     cat( rep("  ", indent+1), fieldNames[[i]] , ":" )
     val <- unpack.struct(x, fieldNames[[i]])
-    if (typeof(val) == "externalptr") val <- .addrval(val)        
+    if (typeof(val) == "externalptr") val <- "ptr" # .extptr2str(val)        
     if (class(val) == "struct") { print.struct(val, indent=indent+1) }
     else cat( val, "\n" )
   }

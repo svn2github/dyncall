@@ -2,8 +2,6 @@
  ** R-Package: rdyncall
  ** File: src/rutils_float.c
  ** Description: Utility functions for handling C float data types.
- **
- ** Copyright (C) 2009-2010 Daniel Adler
  **/
 
 #define USE_RINTERNALS

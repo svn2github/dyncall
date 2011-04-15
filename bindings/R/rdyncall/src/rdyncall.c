@@ -2,8 +2,6 @@
  ** R-Package: rdyncall
  ** File: src/rdyncall.c
  ** Description: R bindings to dyncall
- **
- ** Copyright (C) 2009-2010 Daniel Adler
  **/
 
 #include <Rinternals.h>

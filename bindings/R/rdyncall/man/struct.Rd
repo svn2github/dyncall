@@ -4,62 +4,55 @@
 \alias{as.struct}
 \alias{parseStructInfos}
 \alias{parseUnionInfos}
-\alias{unpack.struct}
-\alias{pack.struct}
-\alias{makeStructInfo}
-\alias{makeUnionInfo}
 \alias{$.struct}
 \alias{print.struct}
 \alias{$<-.struct}
-\title{Handling of C structure and union types.}
-\description{Functions for parsing C type information and a struct S3 class to operate on C structure/union types in R.}
+\title{Allocation and access to foreign C data types.}
+\description{Functions for allocation, access and registration of foreign C \code{struct} and \code{union} data type.}
 \usage{
-new.struct(type)
-as.struct(x, type)
-unpack.struct(x, index)
-pack.struct(x, index, value)
 \S3method{$}{struct}(x, index)
 \S3method{$}{struct}(x, index) <- value
-% \S3method{[}{struct}(x, index)
-% \S3method{[}{struct}(x, index) <- value
 \S3method{print}{struct}(x, indent=0, \ldots)
+new.struct(type)
+as.struct(x, type)
 parseStructInfos(sigs, envir=parent.frame())
 parseUnionInfos(sigs, envir=parent.frame())
-makeStructInfo(name, signature, fieldNames, envir=parent.frame())
-makeUnionInfo(name, signature, fieldNames, envir=parent.frame())
 }
 \arguments{
   \item{x}{external pointer or atomic raw vector of S3 class 'struct'.}
-  \item{type}{S3 TypeInfo Object or character string naming the structure type.}
+  \item{type}{S3 TypeInfo Object or character string that names the structure type.}
   \item{sigs}{character string that specifies several C struct/union type \link{signature}s.}
-  \item{signature}{character string that specifies a field layout  \link{signature} for struct and union C types.}
-  \item{envir}{the environment to install the type information S3 object.} 
+  \item{envir}{the environment to install S3 type information object(s).} 
   \item{index}{character string specifying the field name.}
   \item{indent}{indentation level for pretty printing structures.}
   \item{value}{value to be converted according to struct/union field type given by field index.}
-  \item{fieldNames}{vector of character strings to label fields.}
-  \item{name}{character string specifying the struct/union type name.}
   \item{...}{additional arguments to be passed to \code{\link[base]{print}} method.}
 }
 \details{
-This framework handles foreign C data types and provides helper functions for registration, allocation and an S3 class for symbolic access to foreign C data types. 
-The framework uses platform-portable struct and union type \link{signature} strings for registration and platform-specific type information objects, derived and
-computed for run-time \link{type information} objects.
 
-\code{parseStructInfos} and \code{parseUnionInfos} use \link{signature}s to compute and install concrete Type Information objects that
-describe the concrete layout and size (including correct alignments) of the currently running host machine.
+References to foreign C \code{struct} and \code{union} data types can be 
+manipulated symbolically using S3 subsetting method \dQuote{[} overload
+for S3 objects tagged with class \code{struct}.
+Two different kinds of reference objects are supported: 
+\itemize{
+  \item \code{external pointer}s returned by \code{\link{.dyncall}} are
+of S3 class \code{struct} and point to a type of its signature, if the 
+return type signature contains a typed pointer signature (e.g. \code{"*<SomeStruct>"}).
+  \item new objects of a foreign C \code{type} can be allocated via \code{new.struct} function:
+A atomic \code{raw} object will be returned, initialized with length equal to the size of the
+C foreign \code{type}.
+}
 
-The framework supports memory-managed variables and external pointers to foreign C data types. Memory managed variables are supported via the \code{new.struct} function
-that returns an atomic \code{\link{raw}} vector tagged as an S3 'struct' object.
-External pointers returned by \code{\link{.dyncall}} and specified as \emph{typed} C pointers via return type signature notation \code{*<TypeName>}
-are also tagged as S3 'struct' objects.
+C data types need to be registered, before allocation or accessing objects
+of that type. Registration is done via functions \code{parseStructInfos} and  
+\code{parseUnionInfos} ; they parse \link[=Struct Signature]{Structure/Union Type} \code{signature}s
+and install \link[=typeinfo]{type information object}s.
 
-S3 objects of class 'struct' hold a reference to the type information objects. They support symbolic read/write access via overloaded subsetting operators.
-
-\code{as.struct} can be used to \emph{cast} a structure into a different type.
+\code{as.struct} can be used to \emph{cast} a structure into a different type,
+which is not type-safe at all and can lead to a \strong{fatal R process crash}.
 }
 \seealso{
-\code{\link{signature}} for signatures and \code{\link{.dyncall}} for foreign function calls and \code{\link{TypeInfo}} for details on type information S3 objects.
+\code{\link{signature}} for details on the Structure and Union Type Signatures and \code{\link{.dyncall}} for foreign function calls and \code{\link{TypeInfo}} for details on S3 run-time type information objects.
 }
 \examples{
 # Specify the following foreign type:

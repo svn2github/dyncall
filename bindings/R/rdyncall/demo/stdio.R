@@ -1,7 +1,6 @@
 # Package: rdyncall 
 # File: demo/stdio.R
 # Description: Direct I/O of R raw vectors using C stdio functions
-# Author: Daniel Adler
 
 dynport(stdio)
 

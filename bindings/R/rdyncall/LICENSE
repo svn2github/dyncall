@@ -18,11 +18,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -------------------------------------------------------------------------------
 License for DynCall libraries (dynload,dyncall,dyncallback)
 
-Copyright (c) 2007-2010 Daniel Adler <dadler@uni-goettingen.de>, 
+Copyright (c) 2007-2011 Daniel Adler <dadler@uni-goettingen.de>, 
                         Tassilo Philipp <tphilipp@potion-studios.com>
 
 in addition, dynload has improvements from
-Copyright (c) 2007-2010 Olivier Chafik <olivier.chafik@gmail.com>
+Copyright (c) 2007-2011 Olivier Chafik <olivier.chafik@gmail.com>
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above

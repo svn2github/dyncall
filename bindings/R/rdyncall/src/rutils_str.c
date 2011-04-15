@@ -2,8 +2,6 @@
  ** R-Package: rdyncall
  ** File: src/rutils_str.c
  ** Description: Support functions for handling C string data types.
- **
- ** Copyright (C) 2009-2010 Daniel Adler
  **/
 
 #define USE_RINTERNALS

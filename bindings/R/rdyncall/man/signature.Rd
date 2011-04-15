@@ -4,20 +4,15 @@
 \alias{function signature}
 \alias{type signature}
 \alias{library signature}
-\title{Platform-portable Type Information Format to describe C types.}
-\description{A simple and compact plain text format to encode descriptors of C function- and data types that are valid across platforms.}
+\title{Type Information Format for C Types.}
+\description{A Type Information Format comprising compact plain text \emph{signature} formats.
+Signatures are platform-portable descriptors for C function- and data types. The format was
+designed to be compact for performance reasons, but still human readable for rapid development purpose.}
 \details{
-The \pkg{rdyncall} package makes extensive use of type information encoded as text strings.
-The low-level facilities offered by the package such as foreign function calls, wrappers for callbacks and handling of
-foreign data types are data-driven by signatures - which makes the FFI very flexible and dynamic and does
-such that foreign function calls, callbacks and the handling of aggregate data types is data-driven and
-thus very flexible - developers can specify the signature dynamically at run-time without the need for
-extra compilation of C code for each and every variant of a functionc call or data type.
-
 The following list gives an overview of the formats and how they are related to each other.
 
 \itemize{
-\item Type Signatures describe fundamental C types. This notation is integrated into all signature formats below, because fundamental C typesh are contained in functions, callbacks as well as aggregate data types. 
+\item Type Signatures describes single C data types ; The format is embedded into all other formats below.
 \item Call Signatures describe C function calls and are used for foreign function calls and when wrapping R functions as callback C function pointers.
 \item Library Signatures describe a series of library functions using names and call signatures.
 \item Structure- and Union Type Signatures describe record-like C data types. 
@@ -25,13 +20,12 @@ The following list gives an overview of the formats and how they are related to 
 
 }
 \section{Type Signature}{
-Type signatures are used within Call Signatures (see above),(un)-\code{\link{packing}} functions
-to manipulate and extract C data types, and, to describe the field types within struct and union aggregate data types.
+Type signatures are used by allmost all  Signatures and the low-level (un)-\code{\link{packing}} functions.
 
-The following table lists valid type signatures, corresponding C types, acceptable R argument types and returned R types.
+The following table gives a list of valid type signatures for all supported C types. 
 
 \tabular{clll}{
-\strong{Type code} \tab \strong{C type}        \tab \strong{R input types}           \tab \strong{R output type}\cr
+\strong{Type Signature} \tab \strong{C type}        \tab \strong{valid R argument types}           \tab \strong{R return type}\cr
 '\code{B}'           \tab bool                   \tab raw,logical,integer,double         \tab logical\cr
 '\code{c}'           \tab char                   \tab raw,logical,integer,double         \tab integer\cr
 '\code{C}'           \tab unsigned char          \tab raw,logical,integer,double         \tab integer\cr
@@ -59,12 +53,12 @@ Call Signatures are used by \code{\link{.dyncall}} and \code{\link{new.callback}
 The general form of a call signature is as following:
 
 \tabular{rcl}{
-\emph{argument types signature}.. \tab '\code{)}' \tab \emph{return type signature}\cr
+\emph{argument-types} \tab '\code{)}' \tab \emph{return-type}\cr
 }
 
-The \bold{argument types signature} is specified in \emph{left-to-right} order \bold{without} white spaces in accordance with the target C function type that will be called.
-See the next section for details on the argument and return type signatures.
-Base type are specified using a one-character type code.  A closing bracket character '\code{)}' marks the end of argument types, followed by a
+The calling sequence given by the \bold{argument types signature} is specified in direct \emph{left-to-right} order of the formal argument types defined in C.
+The type signature characters and more complex building blocks (like typed pointers) are put in sequence without any white space.
+Base type are specified using a one-character character.  A closing bracket character '\code{)}' marks the end of argument types, followed by a
 single \bold{return type signature}. 
 
 Here are some examples of C library functions and corresponding call signatures:
@@ -76,18 +70,21 @@ Here are some examples of C library functions and corresponding call signatures:
 \code{void   revsort(double*,int*,int);}       \tab "\code{ppi)v}"  \cr
 }
 }
+
 \section{Library Signature}{
 The library signature is a text-based representation for a set of function bindings.
 It consists of function names and corresponding call signatures. Function bindings are separated 
-by ';' (semicolon). Whitespaces are allowed to pre- and suffix the ';'.
+by ';' (semicolon). White spaces are allowed to pre- and suffix the ';'.
 \tabular{c}{
 \emph{function-name} \samp{(} \emph{argument-types} \samp{)} \emph{return-type} \samp{;} \ldots \cr
 }
 
-Here is an example of a Library Signature for some OpenGL functions:
+Here is an example of a Library Signature:
 
-\preformatted{"glAccum(If)v ; glClear(I)v ;  glClearColor(ffff)v ;  fopen(*c*c)*<__sFILE>;"}
-
+\preformatted{"glAccum(If)v ; 
+glClear(I)v ;  
+glClearColor(ffff)v ;  
+fopen(*c*c)*<__sFILE>;"}
 }
 \section{Structure Type Signatures}{
 Structure Type Signatures describe the layout of aggregate \code{struct} C data types.
@@ -137,13 +134,13 @@ union Value \{
 
 The corresponding Union Type Signature is:
 
-\code{"Value|if<LongValue>\}anInt aFloat aStruct;"}
+\code{"Value|if<LongValue>}anInt aFloat aStruct;"}
 
 }
 \seealso{
-\code{\link{.dyncall}} for foreign function interface, \code{\link{dynbind}} for 
-batched dynamic bindings,\code{\link{new.callback}} for use in callbacks,
-\code{\link{.pack}} for (un-)packing interface and \code{\link{parseStructInfo}} for 
+\code{\link{.dyncall}} for calling foreign functions, \code{\link{dynbind}} for 
+binding functions in batch-mode, \code{\link{new.callback}} for use in callbacks,
+\code{\link{.pack}} for (un-)packing interfaces and \code{\link{parseStructInfos}} for 
 registration of aggregate types.
 
 }
