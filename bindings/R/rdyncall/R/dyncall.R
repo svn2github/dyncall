@@ -33,7 +33,7 @@ callvm.fastcall.msvc <- NULL
 # ----------------------------------------------------------------------------
 # public interface
 
-.dyncall <- function( address, signature, ... , callmode = "cdecl" )
+.dyncall <- function( address, signature, ... , callmode = "default" )
 {
   callvm <- switch(callmode, 
       default=callvm.default,
