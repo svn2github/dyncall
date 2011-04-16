@@ -13,7 +13,7 @@ system-level access to C libraries such as OpenGL, SDL and Expat
 cross-platform.
 With rdyncall, R borrows capabilities of a system-level programming language.
 
-'rdyncall' enables to R multimedia applications that run across platforms.
+'rdyncall' enables to develope R multimedia applications that run across platforms.
 
 For R core development, the package provides a new Foreign Function Interface
 that can be used to call foreign precompiled C code without the need for
