@@ -2,7 +2,7 @@
 \alias{dynport}
 \alias{dynports}
 \alias{loadDynportNamespace}
-\title{Dynamic binding of C APIs and shared libraries.}
+\title{Dynamic binding of C APIs and shared libraries}
 \description{Function to dynamically bind C APIs and shared libraries via dynamically
 created wrappers for foreign function calls, symbolic constants and data types.
 }

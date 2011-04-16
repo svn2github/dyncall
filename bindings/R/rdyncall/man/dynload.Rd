@@ -2,7 +2,7 @@
 \alias{.dynload}
 \alias{.dynunload}
 \alias{.dynsym}
-\title{Loading of shared libraries and resolving of symbols (Alternative Framework).}
+\title{Loading of shared libraries and resolving of symbols (Alternative Framework)}
 \description{Alternative framework for loading of shared libraries and resolving of symbols.
 The framework offers \emph{automatic unload management} of shared libraries and
 provides a direct interface to the dynamic linker of the OS.

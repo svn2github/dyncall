@@ -2,7 +2,7 @@
 \alias{new.callback}
 \alias{callback}
 \alias{dyncallback}
-\title{Dynamic wrapping of R functions into C callbacks.}
+\title{Dynamic wrapping of R functions into C callbacks}
 \description{  
 Dynamic wrapping of R functions as C callback function pointers.
 }

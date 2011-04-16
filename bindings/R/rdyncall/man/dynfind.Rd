@@ -1,7 +1,7 @@
 \name{dynfind}
 \alias{dynfind}
 \alias{pathsFromEnv}
-\title{Portable sarching and loading of shared libraries.}
+\title{Portable sarching and loading of shared libraries}
 \description{Searches for a shared library in standard locations by short names.}
 \usage{
 dynfind(libnames, auto.unload=TRUE)

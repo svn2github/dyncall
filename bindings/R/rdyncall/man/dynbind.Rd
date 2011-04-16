@@ -1,6 +1,6 @@
 \name{dynbind}
 \alias{dynbind}
-\title{Dynamic R bindings to shared library functions.}
+\title{Dynamic R bindings to shared library functions}
 \description{Function to create dynamic R bindings to shared library functions via installation of lightweight R wrapper functions.}
 \usage{
 dynbind(libnames, signature, envir=parent.frame(), callmode="default", 

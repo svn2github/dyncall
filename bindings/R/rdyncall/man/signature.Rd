@@ -4,7 +4,7 @@
 \alias{function signature}
 \alias{type signature}
 \alias{library signature}
-\title{Type Information Format for C Types.}
+\title{Type Information Format for C Types}
 \description{A Type Information Format comprising compact plain text \emph{signature} formats.
 Signatures are platform-portable descriptors for C function- and data types. The format was
 designed to be compact for performance reasons, but still human readable for rapid development purpose.}

@@ -8,7 +8,7 @@
 \alias{ptr2str}
 \alias{strarrayptr}
 \alias{strptr}
-\title{Low-level utility functions to work with C pointer and data types.}
+\title{Low-level utility functions to work with C pointer and data types}
 \description{Functions for low-level operations on C pointers as well as
 helper functions and object for working with C \code{float} arrays and strings.}
 \usage{

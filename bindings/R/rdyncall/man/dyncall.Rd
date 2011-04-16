@@ -9,7 +9,7 @@
 \alias{.dyncall.thiscall.gcc}
 \alias{.dyncall.fastcall.msvc}
 \alias{.dyncall.fastcall.gcc}
-\title{Flexible Foreign Function Interface (FFI) with support for most C types and multiple calling conventions.}
+\title{Flexible Foreign Function Interface (FFI) with support for most C types and multiple calling conventions}
 \description{  
 Functions to make calls to foreign functions.
 The FFI is very flexible and handles almost all possible C argument and return types so that arbitrary precompiled code can be called directly from the R interpreter without
