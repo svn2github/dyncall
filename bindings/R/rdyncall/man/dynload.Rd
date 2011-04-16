@@ -1,4 +1,5 @@
 \name{dynload}
+\alias{dynload}
 \alias{.dynload}
 \alias{.dynunload}
 \alias{.dynsym}
@@ -46,10 +47,6 @@ Similar functionality is available via \code{\link[base]{dyn.load}} and \code{ge
 except that path names are filtered and no automatic unloading of libraries is supported.
 }
 
-\section{Portability}{
-The implementation is based on the \emph{dynload} library (part of the DynCall project) which has been ported
-to all major R platforms (ELF (Linux,BSD,Solaris), Mach-O (Mac OS X) and Portable Executable (Win32/64)). 
-}
 \section{Shared library}{
 
 Shared libraries are single files that contain compiled code, data and meta-information.
@@ -133,6 +130,10 @@ The first directory searched is the one directory containing the image file used
 The search path can be altered using the \code{SetDllDirectory} function. This solution is recommended instead of using \code{SetCurrentDirectory} or hard-coding the full path to the DLL.
 
 If a path is specified and there is a redirection file for the application, the function searches for the module in the application's directory. If the module exists in the application's directory, the LoadLibrary function ignores the specified path and loads the module from the application's directory. If the module does not exist in the application's directory, LoadLibrary loads the module from the specified directory. For more information, see Dynamic Link Library Redirection from the Windows SDK Documentation.
+}
+\section{Portability}{
+The implementation is based on the \emph{dynload} library (part of the DynCall project) which has been ported
+to all major R platforms (ELF (Linux,BSD,Solaris), Mach-O (Mac OS X) and Portable Executable (Win32/64)). 
 }
 \seealso{
   This facility is used by \code{\link{dynfind}} and \code{\link{dynbind}}.

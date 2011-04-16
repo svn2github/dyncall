@@ -1,11 +1,12 @@
-\name{signature}
+\name{dyntype}
+\alias{dyntype}
 \alias{signature}
 \alias{call signature}
 \alias{function signature}
 \alias{type signature}
 \alias{library signature}
 \title{Type Information Format for C Types}
-\description{A Type Information Format comprising compact plain text \emph{signature} formats.
+\description{DynType is a Type Information Format comprising compact plain text \emph{signature} formats.
 Signatures are platform-portable descriptors for C function- and data types. The format was
 designed to be compact for performance reasons, but still human readable for rapid development purpose.}
 \details{
@@ -53,7 +54,7 @@ Call Signatures are used by \code{\link{.dyncall}} and \code{\link{new.callback}
 The general form of a call signature is as following:
 
 \tabular{rcl}{
-\emph{argument-types} \tab '\code{)}' \tab \emph{return-type}\cr
+\sQuote{argument-types} \tab '\code{)}' \tab \sQuote{return-type}\cr
 }
 
 The calling sequence given by the \bold{argument types signature} is specified in direct \emph{left-to-right} order of the formal argument types defined in C.
@@ -64,10 +65,10 @@ single \bold{return type signature}.
 Here are some examples of C library functions and corresponding call signatures:
 
 \tabular{ll}{
-\code{double sqrt(double);}                    \tab "\code{d)d}"    \cr
-\code{double dnorm(double,double,double,int);} \tab "\code{dddi)d}" \cr
-\code{void   R_isort(int*,int);}               \tab "\code{pi)v}"   \cr
-\code{void   revsort(double*,int*,int);}       \tab "\code{ppi)v}"  \cr
+\code{double sqrt(double);}                    \tab \code{"d)d"}    \cr
+\code{double dnorm(double,double,double,int);} \tab \code{"dddi)d"} \cr
+\code{void   R_isort(int*,int);}               \tab \code{"pi)v"}   \cr
+\code{void   revsort(double*,int*,int);}       \tab \code{"ppi)v"}  \cr
 }
 }
 
@@ -76,7 +77,7 @@ The library signature is a text-based representation for a set of function bindi
 It consists of function names and corresponding call signatures. Function bindings are separated 
 by ';' (semicolon). White spaces are allowed to pre- and suffix the ';'.
 \tabular{c}{
-\emph{function-name} \samp{(} \emph{argument-types} \samp{)} \emph{return-type} \samp{;} \ldots \cr
+\sQuote{function-name} \samp{(} \sQuote{argument-types} \samp{)} \sQuote{return-type} \samp{;} \ldots \cr
 }
 
 Here is an example of a Library Signature:
@@ -88,11 +89,11 @@ fopen(*c*c)*<__sFILE>;"}
 }
 \section{Structure Type Signatures}{
 Structure Type Signatures describe the layout of aggregate \code{struct} C data types.
-Type Signatures are used within the \emph{field-types}. \emph{field-names} consists of space separated identifier names and
+Type Signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
 should match the number of fields.
 
 \tabular{rcl}{
-\emph{struct-name} '\{' \emph{field-types} \tab '\}' \emph{field-names} '\code{;}' \cr
+\sQuote{struct-name} '\{' \sQuote{field-types} \tab '\}' \sQuote{field-names} '\code{;}' \cr
 }
 
 Example:
@@ -115,11 +116,11 @@ The corresponding Structure Type Signature is:
 \section{Union Type Signatures}{
 
 Union Type Signatures describe the components of the \code{union} C data type.
-Type signatures are used within the \emph{field-types}. \emph{field-names} consists of space separated identifier names and
+Type signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
 should match the number of fields.
 
 \tabular{rcl}{
-\emph{union-name} '|' \emph{field-types} \tab '\}' \emph{field-names} '\code{;}' \cr
+\sQuote{union-name} '|' \sQuote{field-types} \tab '\}' \sQuote{field-names} '\code{;}' \cr
 }
 
 Here is an example of a C \code{union} type,
@@ -140,9 +141,8 @@ The corresponding Union Type Signature is:
 \seealso{
 \code{\link{.dyncall}} for calling foreign functions, \code{\link{dynbind}} for 
 binding functions in batch-mode, \code{\link{new.callback}} for use in callbacks,
-\code{\link{.pack}} for (un-)packing interfaces and \code{\link{parseStructInfos}} for 
-registration of aggregate types.
-
+\code{\link{.pack}} for (un-)packing of foreign data objects and \code{\link{new.struct}} for 
+handling of foreign data types.
 }
 \keyword{programming}
 \keyword{interface}

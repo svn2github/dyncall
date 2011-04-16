@@ -1,14 +1,14 @@
 \name{dynbind}
 \alias{dynbind}
-\title{Dynamic R bindings to shared library functions}
-\description{Function to create dynamic R bindings to shared library functions via installation of lightweight R wrapper functions.}
+\title{Batch binding of foreign functions}
+\description{Function to create multiple wrappers to foreign functions.}
 \usage{
 dynbind(libnames, signature, envir=parent.frame(), callmode="default", 
         pat=NULL, replace=NULL, funcptr=FALSE)
 }
 \arguments{
-  \item{libnames}{vector of character strings specifying short library names of the shared library to be loaded.}
-  \item{signature}{character string specifying the \link{library signature} (the set of C function names and types).}
+  \item{libnames}{vector of character strings giving short library names of the shared library to load and resolve symbols. For details, see \code{\link{dynfind}}.}
+  \item{signature}{character string specifying the \link{library signature}. It is a compact signature that specifies multiple foreign function names and types. For details on the format, see section \sQuote{library signature} on \sQuote{\link{dyntype}}.}
   \item{envir}{the environment to assign wrappers into.}
   \item{callmode}{character string specifying the C calling convention.}
   \item{pat}{NULL or, if symbolic name mangling needed: character string specifying a regular expression to be matched against the name part of function signatures and replaced by \code{replace}}

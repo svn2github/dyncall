@@ -35,11 +35,10 @@ manipulated symbolically using S3 subsetting method \dQuote{[} overload
 for S3 objects tagged with class \code{struct}.
 Two different kinds of reference objects are supported: 
 \itemize{
-  \item \code{external pointer}s returned by \code{\link{.dyncall}} are
-of S3 class \code{struct} and point to a type of its signature, if the 
-return type signature contains a typed pointer signature (e.g. \code{"*<SomeStruct>"}).
+  \item external pointers returned by \code{\link{.dyncall}} are
+of S3 class \code{struct}, in case the return type signature contains a typed pointer signature (e.g. \code{"*<SomeStruct>"}).
   \item new objects of a foreign C \code{type} can be allocated via \code{new.struct} function:
-A atomic \code{raw} object will be returned, initialized with length equal to the size of the
+An atomic \code{raw} object will be returned, initialized with length equal to the size of the
 C foreign \code{type}.
 }
 
@@ -48,8 +47,8 @@ of that type. Registration is done via functions \code{parseStructInfos} and
 \code{parseUnionInfos} ; they parse \link[=Struct Signature]{Structure/Union Type} \code{signature}s
 and install \link[=typeinfo]{type information object}s.
 
-\code{as.struct} can be used to \emph{cast} a structure into a different type,
-which is not type-safe at all and can lead to a \strong{fatal R process crash}.
+\code{as.struct} can be used to \emph{cast} a structure into a different type. This is not type-safe and can lead to a \strong{fatal R process crash}
+if used on pointers.
 }
 \seealso{
 \code{\link{signature}} for details on the Structure and Union Type Signatures and \code{\link{.dyncall}} for foreign function calls and \code{\link{TypeInfo}} for details on S3 run-time type information objects.

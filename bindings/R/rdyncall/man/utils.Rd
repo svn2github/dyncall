@@ -10,7 +10,7 @@
 \alias{strptr}
 \title{Low-level utility functions to work with C pointer and data types}
 \description{Functions for low-level operations on C pointers as well as
-helper functions and object for working with C \code{float} arrays and strings.}
+helper functions and objects to handle C \code{float} arrays and strings.}
 \usage{
 is.nullptr(x)
 as.extptr(x)
@@ -28,7 +28,7 @@ strptr(x)
 }
 \details{
 
-\code{is.nullptr} tests if external pointers represent C \code{NULL} pointers.
+\code{is.nullptr} tests if the external pointer given by \code{x} represents a C \code{NULL} pointer.
 
 \code{as.extptr} returns an external pointer to the data area of atomic
 vector given by \code{x}. The external pointer holds an additional reference 
@@ -40,8 +40,8 @@ to the \code{x} R object to prevent it from garbage collection.
 The array is implemented via a \code{\link[base]{raw}} vector.
 
 \code{as.floatraw} coerces a numeric vector into a single-precision C \code{float} vector.
-Values given by \code{x} are converted to float and stored in the R raw vector via \code{.pack}. 
-This function is useful to pass R vectors via a C \code{float} pointer to C code via \code{.dyncall}.
+Values given by \code{x} are converted to C \code{float} values and stored in the R raw vector via \code{.pack}. 
+This function is useful when calling foreign functions  that expeect a C \code{float} pointer via \code{\link{.dyncall}}.
 
 \code{floatraw2numeric} coerces a C \code{float} (raw) vector to a numeric vector.
 

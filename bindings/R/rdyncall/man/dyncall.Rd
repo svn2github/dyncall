@@ -9,15 +9,12 @@
 \alias{.dyncall.thiscall.gcc}
 \alias{.dyncall.fastcall.msvc}
 \alias{.dyncall.fastcall.gcc}
-\title{Flexible Foreign Function Interface (FFI) with support for most C types and multiple calling conventions}
+\title{Flexible Foreign Function Interface with support for most C types}
 \description{  
-Functions to make calls to foreign functions.
-The FFI is very flexible and handles almost all possible C argument and return types so that arbitrary precompiled code can be called directly from the R interpreter without
-the need for  additional C wrapper code in most cases.
-The interface has been ported to many processor architectures and operating systems and has support for multiple calling conventions on Microsoft Windows 32-Bit platforms as well.
+Functions to call pre-compiled code with support for most C argument and return types. 
 }
 \usage{
-.dyncall( address, signature, ... , callmode = "cdecl" )
+.dyncall( address, signature, ... , callmode = "default" )
 .dyncall.default      ( address, signature, ... )
 .dyncall.cdecl        ( address, signature, ... )
 .dyncall.stdcall      ( address, signature, ... )
@@ -28,70 +25,79 @@ The interface has been ported to many processor architectures and operating syst
 .dyncall.fastcall.gcc ( address, signature, ... )
 }
 \arguments{
-  \item{address}{external pointer to a foreign function, such as that returned by \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}.}
-  \item{signature}{character string specifying the \link{call signature}.}
-  \item{callmode}{character string specifying the calling convention.}
-  \item{...}{arguments to be passed to the foreign code, according to the signature specified in \code{signature}.}
+  \item{address}{external pointer to foreign function, e.g. resolved via \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}.}
+  \item{signature}{character string specifying the foreign function type, see \sQuote{\link{call signature}} for details.}
+  \item{callmode}{character string specifying the calling convention. This argument has no effect on most platforms, but on Microsoft's Windows 32-Bit OSs. See section \sQuote{Calling Convention} below for discussion.}
+  \item{...}{arguments to be passed to the foreign function. Arguments are converted from R to C values according to the \link{call signature} specified in \code{signature}.}
 }
 \details{
-The foreign function to be called is given by \code{address} and is typically obtained from 
-functions such as \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}. 
+The foreign function to be called is specified by \code{address}.
+This is an external pointer which can be obtained from interface
+functions to the dynamic linker of the OS, 
+such as \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}. 
 
 The \code{signature} is a character string that specifies the formal argument-and-return types of the 
-foreign function encodied as a \link{call signature} string.
+foreign function using a signature string. 
+It is important, that this string
+matches the functional type of the foreign function. See \link{call signature} for details.
 
-The calling convention is specified \emph{explicitly} by the \code{callmode} argument 
-using \code{.dyncall}, or \emph{implicitly} by using \code{.dyncall.*} functions. 
+The calling convention is specified \emph{explicitly} via function \code{.dyncall}
+using the \code{callmode} argument or \emph{implicitly} by using \code{.dyncall.*} 
+functions. See details below.
 
 Arguments passed via \code{...} are converted to C according to \code{signature} as described in the manual page on \link{type signature}s. 
 
-Some fairly basic type-safety argument checks are performed before issueing the call: The arity of formals and actual arguments must match and they must be compatible as well.
+Several basic argument type-safety checks are done during preparation of the
+foreign function call: The arity of formals and actual arguments must match and they 
+must be compatible as well.
 Otherwise, the foreign function call is aborted with an error before risking a fatal system crash.
 
 }
 \value{  
-The \code{.dyncall} and \code{.dyncall.}\emph{*} functions return the C return type of the foreign function specified by the given \code{signature}, converted to a compatible R value as described in \link[=type signature]{return type signature}.
+The \code{.dyncall} and \code{.dyncall.}\emph{*} functions 
+The functions return the received C return value wrapped into an R value according to the \sQuote{return type signature} specified by \code{\link{signature}}.
 }
-\section{Argument and Return-Type Mapping}{
-For details on argument- and return-type mapping between R and C, and call- and type signatures - see \link{signature} manual page.
-}
-\section{Calling conventions}{
-Calling conventions specify how a function call is invoked at the machine-level.
-Conventions differ significantly among families of CPU Architectures as well as
-OS and compiler implementations.
+\section{Calling convention}{
+Calling Conventions specify \sQuote{how} sub-routine calls are performed
+on machine-level. They differ significantly among families of CPU Architectures 
+as well as OS and Compiler implementations.
 
-While on many processor architectures there is only one \code{"default"} C calling convention - 
-there are multiple calling conventions available on the Intel 32-bit X86 
-processor architecture and in particular when working on Microsoft Windows with
-the Microsoft System Libraries such as \code{KERNEL32.DLL} or \code{OPENGL32.DLL} which uses (\code{callmode=}) \code{"stdcall"}.
+On most platforms, a single \code{"default"} C Calling Convention is used.
+As an exception, the Windows 32-Bit Platform defines multiple standard calling
+conventions. Most of the C libraries still use a \code{"default"} C ( also known as \code{"cdecl"} )
+calling convention, but when working with Libraries that are considered Microsoft System APIs and DLLs, the \code{"stdcall"}
+calling convention must be choosen. 
 
-All platforms support a \code{"default"} C calling convention which works fine with most precompiled code.
 
-On Microsoft Windows/X86 Platform  several calling conventions are available at run-time:
+For practical reasons, the \code{callmode} argument does not have an effect on allmost
+platforms,  except that it tells to use a specific calling convention when running
+on a Windows 32-Bit platform. For example, when loading OpenGL across platforms, \code{"stdcall"} should be used instead of \code{"default"}, 
+because on Windows, it is a System DLL. This is very exceptional, as in most othercases, \code{"cdecl"} should be used.
+
+It follows a description of supported Win32 Calling Conventions:
 
 \describe{
 \item{\code{"cdecl"}}{Dummy alias to \emph{default}}
 \item{\code{"stdcall"}}{C functions with \emph{stdcall} calling convention. Useful for all Microsoft Windows System Libraries (e.g. KERNEL32.DLL, USER32.DLL, OPENGL32.DLL ...). Third-party libraries usually prefer the default C \emph{cdecl} calling convention. }
 \item{\code{"fastcall.msvc"}}{C functions with \emph{fastcall} calling convention compiled with Microsoft Visual C++ Compiler. Very rare usage.}
 \item{\code{"fastcall.gcc"}}{C functions with \emph{fastcall} calling convention compiled with GNU C Compiler. Very rare usage.}
-\item{\code{"thiscall.gcc"}}{ C++ member functions compiled with GNU C Compiler.}
+\item{\code{"thiscall"}}{C++ member functions.}
+\item{\code{"thiscall.gcc"}}{C++ member functions compiled with GNU C Compiler.}
 \item{\code{"thiscall.msvc"}}{C++ member functions compiled with Microsoft Visual C++ Compiler.}
 }
 
-In case, one of the above calling conventions are specified when running
-on a non-Windows 32-bit Operating-System, the callmode always falls back to 
-\code{"default"}.
-
+At this stage of development, support for C++ calls should be considered experimental.
+Support for Fortran is planed but not yet implemented in dyncall.
 }
 \section{Portability}{
-
-The implementation of the \code{.dyncall} FFI is based on the \emph{dyncall} C library (part of the \emph{DynCall Project}) which has been ported
-to the following Processor Architectures: X86, X64, ARM (including THUMB support), PowerPC 32-bit, MIPS 32-bit and MIPS 64-bit
-with tested support for several Operating-Systems such as Linux, Mac OS X, Windows, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris
-as well as embedded platforms such as Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit) and iOS (ARM - with armv6 working, armv7 unstable).
+The implementation is based on the \emph{dyncall} library (part of the DynCall project).
+It has support for the following processor architectures: X86, X64, ARM (including THUMB support), PowerPC 32-bit, MIPS 32-bit and MIPS 64-bit.
+The library has been ported to the following OSs: Linux, Mac OS X (no ppc64 support yet), Windows 32/64-bit, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris, Minix, Plan9
+as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
 }
 \note{
-The address, calling convention and call signature \strong{MUST} match the foreign function type, otherwise the invocation can lead to a \strong{fatal R process crash}.
+The target address, calling convention and call signature \strong{MUST} match foreign function type, otherwise the invocation could lead to a \strong{fatal R process crash}.
+
 }
 \examples{
 mathlib <- dynfind(c("msvcrt","m","c"))
@@ -106,7 +112,7 @@ x <- .dynsym(mathlib,"sqrt")
 \code{\link{signature}} for call signatures.
 \code{\link{dynbind}} for automatic binding of multiple functions from shared libraries.
 \code{\link[base]{getNativeSymbolInfo}} and \code{\link{.dynsym}}. 
-\code{\link[base]{.C}} for the original FFI of R.
+\code{\link[base]{.C}} for the base FFI of R.
 }
 \keyword{programming}
 \keyword{interface}
