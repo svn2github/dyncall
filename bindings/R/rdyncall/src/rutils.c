@@ -28,9 +28,9 @@ SEXP r_offsetPtr(SEXP x, SEXP offset)
   ptrdiff_t offsetval = INTEGER(offset)[0];
   unsigned char* ptr = 0;
   if (isVector(x)) {
-    ptr = DATAPTR(x);
+    ptr = (unsigned char*) DATAPTR(x);
   } else if (TYPEOF(x) == EXTPTRSXP ) {
-    ptr = R_ExternalPtrAddr(x);
+    ptr = (unsigned char*) R_ExternalPtrAddr(x);
   } else  {
     error("unsupported type");
   }
