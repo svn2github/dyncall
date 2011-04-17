@@ -23,7 +23,13 @@ cleanup <- function()
   SDL_Quit()
 }
 
-playTune <- function() Mix_PlayMusic(music, 1) 
+playTune <- function() {
+  Mix_PlayMusic(music, 1) 
+  cat("playing music... [to stop, call 'stopTune()']\n")
+}
 pauseTune <- function() Mix_PauseMusic()
 stopTune <- function() Mix_HaltMusic()  
+
+init()
+playTune()
 

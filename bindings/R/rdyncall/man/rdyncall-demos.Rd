@@ -121,9 +121,12 @@ Installation via pkgsrc:
 \preformatted{pkg_add <pkgname>..}
 
 \tabular{ll}{
-\strong{Lib} \tab \strong{pkgsrc name} \cr
-\code{SDL} \tab \code{SDL} \cr
-\code{expat} \tab \code{expat} \cr
+\strong{Lib}     \tab \strong{pkgsrc name} \cr
+\code{expat}     \tab \code{expat} \cr
+\code{SDL}       \tab \code{SDL} \cr
+\code{SDL_image} \tab \code{SDL_image} \cr
+\code{SDL_mixer} \tab \code{SDL_mixer} \cr
+\code{SDL_ttf}   \tab \code{SDL_ttf} \cr
 }
 }
 \section{OpenBSD Installation Notes}{
