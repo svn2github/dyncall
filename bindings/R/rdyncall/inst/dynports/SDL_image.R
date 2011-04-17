@@ -1,4 +1,4 @@
-dynbind("SDL_image", "
+dynbind(c("SDL_image","SDL_image-1.2","SDL_image-1.2.so.0"), "
 IMG_Init(i)i;
 IMG_InvertAlpha(i)i;
 IMG_Linked_Version()*<SDL_version>;

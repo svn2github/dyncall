@@ -1,4 +1,4 @@
-dynbind(c("OPENGL32","OpenGL","GL","libGL.so.1"),callmode="stdcall","
+dynbind(c("OPENGL32","OpenGL","GL","GL.so.1"),callmode="stdcall","
 glAccum(If)v;
 glAlphaFunc(If)v;
 glAreTexturesResident(i*I*C)C;

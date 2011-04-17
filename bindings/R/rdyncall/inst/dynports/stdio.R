@@ -1,6 +1,6 @@
 
 
-dynbind( c("c","msvcrt"), "
+dynbind( c("msvcrt","c","c.so.6"), "
 __sputc(i*<__sFILE>)i;
 __srget(*<__sFILE>)i;
 __svfscanf(*<__sFILE>*c*c)i;

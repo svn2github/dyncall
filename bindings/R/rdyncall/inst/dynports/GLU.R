@@ -1,4 +1,4 @@
-dynbind(c("GLU32","OpenGL","GLU","libGLU.so.1"),callmode="stdcall","
+dynbind(c("GLU32","OpenGL","GLU","GLU.so.1"),callmode="stdcall","
 gluBeginCurve(*<GLUnurbs>)v;
 gluBeginPolygon(*<GLUtesselator>)v;
 gluBeginSurface(*<GLUnurbs>)v;

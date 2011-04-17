@@ -1,6 +1,6 @@
 
 
-dynbind("SDL_mixer", "
+dynbind(c("SDL_mixer","SDL_mixer-1.2","SDL_mixer-1.2.so.0"), "
 Mix_AllocateChannels(i)i;
 Mix_ChannelFinished(*p)v;
 Mix_CloseAudio()v;
