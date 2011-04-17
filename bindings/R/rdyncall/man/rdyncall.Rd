@@ -86,7 +86,7 @@ Regarding the \link{dynport} mechanism, several demos that stress-test this mech
 # load dynports for OpenGL, Simple DirectMedia library
 # globals:
 surface <- NULL
-# init (up to) OpenGL 3.0 API:
+# init SDL and OpenGL
 init <- function()
 {
   dynport(SDL)
