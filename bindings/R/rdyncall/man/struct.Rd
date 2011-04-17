@@ -42,8 +42,53 @@ An atomic \code{raw} object will be returned, initialized with length equal to t
 C foreign \code{type}.
 }
 
-C data types need to be registered, before allocation or accessing objects
-of that type. Registration is done via functions \code{parseStructInfos} and  
+\strong{Structure type signatures} describe the layout of aggregate \code{struct} C data types.
+Type Signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
+should match the number of fields.
+
+\tabular{rcl}{
+\sQuote{struct-name} '\{' \sQuote{field-types} \tab '\}' \sQuote{field-names} '\code{;}' \cr
+}
+
+Example:
+
+Here is an example of a C \code{struct} type:
+
+\preformatted{
+struct Rect \{ 
+  signed short x, y; 
+  unsigned short w, h;
+\};
+}
+
+The corresponding Structure Type Signature is:
+
+\preformatted{"Rect\{ssSS\}x y w h;"}
+
+\strong{Union type signatures} describe the components of the \code{union} C data type.
+Type signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
+should match the number of fields.
+
+\tabular{rcl}{
+\sQuote{union-name} '|' \sQuote{field-types} \tab '\}' \sQuote{field-names} '\code{;}' \cr
+}
+
+Here is an example of a C \code{union} type,
+
+\preformatted{
+union Value \{ 
+  int anInt; 
+  float aFloat; 
+  struct LongValue aStruct
+\};
+} 
+
+The corresponding Union Type Signature is:
+
+\code{"Value|if<LongValue>}anInt aFloat aStruct;"}
+
+It is mandatory to register C data types before allocation or accessing objects
+of that type via functions \code{parseStructInfos} and  
 \code{parseUnionInfos} ; they parse \link[=Struct Signature]{Structure/Union Type} \code{signature}s
 and install \link[=typeinfo]{type information object}s.
 

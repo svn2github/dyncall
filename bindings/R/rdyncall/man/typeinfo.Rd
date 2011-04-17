@@ -5,10 +5,9 @@
 \title{Run-time Type Information for foreign data types}
 \description{Run-time Type Information S3 class for foreign C data types.}
 \usage{
-TypeInfo(
-   name, 
-   type = c("base","pointer","struct","union"), 
-   size = NA, align = NA, basetype = NA, fields = NA, signature = NA)
+TypeInfo(name, type = c("base","pointer","struct","union"), 
+  size = NA, align = NA, basetype = NA, fields = NA, 
+  signature = NA)
 getTypeInfo(name, envir = parent.frame())
 }
 \arguments{
