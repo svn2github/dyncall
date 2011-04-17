@@ -92,10 +92,8 @@ init <- function()
   dynport(SDL)
   dynport(GL)
   if ( SDL_Init(SDL_INIT_VIDEO) != 0 ) stop("SDL_Init failed")
-  surface <<- SDL_SetVideoMode(640,480,32,SDL_DOUBLEBUF+SDL_OPENGL)
+  surface <<- SDL_SetVideoMode(320,240,32,SDL_DOUBLEBUF+SDL_OPENGL)
   cat("surface dimension:", surface$w, "x",surface$h,sep="")
-  # Access OpenGL 3.0 API
-  dynport(glew)
 }
 # draw blue screen
 updateSurface <- function(t)
