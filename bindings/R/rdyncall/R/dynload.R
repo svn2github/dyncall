@@ -4,7 +4,10 @@
 
 .dynload <- function(libname, auto.unload=TRUE)
 {  
-  libh <- .Call("dynload", as.character(libname), PACKAGE="rdyncall")
+  libname <- as.character(libname)
+  stopifnot( is.character(libname) ) 
+
+  libh <- .Call("dynload", libname, PACKAGE="rdyncall")
   if (!is.null(libh)) {
     attr(libh, "path") <- libname
     attr(libh, "auto.unload") <- auto.unload
