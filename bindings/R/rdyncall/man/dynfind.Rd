@@ -32,10 +32,10 @@ For some libraries, multiple \sQuote{short library name} are needed to make this
 For example, to load the Standard C Library across major R platforms:
 
 \preformatted{
-lib <- dynfind(c("msvcrt","c"))
+lib <- dynfind(c("msvcrt","c","c.so.6"))
 }
 
-On Windows \code{MSVCRT.dll} would be loaded; \code{libc.dylib} on Mac OS X; \code{libc.so} on most ELF platforms.
+On Windows \code{MSVCRT.dll} would be loaded; \code{libc.dylib} on Mac OS X; \code{libc.so.6} on Linux and \code{libc.so} on BSD.
 
 Here is a sample list of values for the three other components:
 

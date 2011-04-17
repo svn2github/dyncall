@@ -64,7 +64,7 @@ cb <- new.callback("ii)i", f)
 r <- .dyncall(cb, "ii)i", 20, 3)
 
 # Sort vectors directly via 'qsort' C library function using an R callback:
-dynbind(c("c","msvcrt"), "qsort(piip)v;")
+dynbind(c("msvcrt","c","c.so.6"), "qsort(piip)v;")
 cb <- new.callback("pp)i",function(px,py){  
   x <- .unpack(px, 0, "d")
   y <- .unpack(py, 0, "d")

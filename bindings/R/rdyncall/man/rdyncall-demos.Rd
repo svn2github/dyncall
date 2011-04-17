@@ -91,6 +91,8 @@ Debian Package installation via aptitude
 \code{GL} \tab \code{libgl1-mesa-glx} and \code{libgl1-mesa-dri} \cr
 \code{GLU} \tab \code{libglu1-mesa} \cr
 \code{expat} \tab already installed (?) \cr
+\code{SDL_image} \tab \code{libsdl-image1.2} \cr
+\code{SDL_mixer} \tab \code{libsdl-mixer1.2} \cr
 }
 SOUNDSYS is one of the following: alsa,all,esd,arts,oss,nas or pulseaudio (depending on your sound system)
 Tested with Debian 5 and 6 (lenny and squeeze).
