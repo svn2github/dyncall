@@ -12,7 +12,7 @@ new.callback( signature, fun, envir = new.env() )
 \arguments{
   \item{signature}{character string specifying the \link[=signature]{call signature} of the C function callback type.}
   \item{fun}{R function to be wrapped as a C function pointer.}
-  \item{envir}{the environment for evaluating \emph{foreign callback} calls to \code{fun}. }
+  \item{envir}{the environment in which to evaluate the call to \code{fun}. }
 }
 \details{
 Callbacks are user-defined functions that are registered in a foreign library and that are executed at a later time from within that library.
@@ -32,14 +32,18 @@ If an error occurs during the evaluation, the callback will be disabled for furt
 
 \section{Portability}{
 The implementation is based on the \emph{dyncallback} library (part of the DynCall project).
-Currently, the library has support for the following processor architectures: X86, X64, PowerPC 32-bit and ARM; 
-It has been ported to the following OSs: Linux, Windows, Mac OS X and BSD derivates.
-The port to Linux/BSD on PowerPC is currently unstable. (MacOS X/Darwin on PowerPC 32-bit works fine!)
+It has support for the following processor architectures: X86, X64, ARM and PowerPC 32-bit; 
+The library has been ported to the following OSs: Linux, Mac OS X, Windows 32/64-bit, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris, Minix, Plan9
+as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
+Special notes to PowerPC 32-Bit users: Callbacks for System V-based Systems (Linux/BSD) are unstable in this release;
+The callbacks for MacOS X/Darwin works fine here!
+In the context of R, there is currently no support for callbacks on MIPS, SPARC and PowerPC 64-Bit.
 }
 \note{
 The call signature \strong{MUST} match the foreign C callback function type, otherwise an activated callback call from C can lead to a \strong{fatal R process crash}.
 
-A small amount of memory is allocated with each wrapper. A finalizer that cleans up the memory is registered with every external pointer returned by \code{new.callback}.
+A small amount of memory is allocated with each wrapper. 
+A finalizer function that frees the allocated memory is registered at the external pointer.
 If the external callback function pointer is registered in a C library, a reference should also be held in R as long as the callback might get activated from C, otherwise the garbage collector might call the
 finalizer and the next invocation of the callback could lead to a \strong{fatal R process crash} as well.
 }
@@ -49,7 +53,8 @@ finalizer and the next invocation of the callback could lead to a \strong{fatal 
   \url{http://dyncall.org}
 }
 \seealso{
-See \code{\link{signature}} for details on call signatures.
+See \code{\link{signature}} for details on call signatures,
+\code{\link{reg.finalizer}} for details on finalizers.
 }
 \examples{
 

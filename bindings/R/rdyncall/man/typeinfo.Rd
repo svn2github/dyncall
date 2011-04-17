@@ -2,8 +2,8 @@
 \alias{TypeInfo}
 \alias{getTypeInfo}
 \alias{type information}
-\title{Type Information S3 Class}
-\description{Type Information class that describes run-time properties of foreign data types such as aggregate field layout.}
+\title{Run-time Type Information for foreign data types}
+\description{Run-time Type Information S3 class for foreign C data types.}
 \usage{
 TypeInfo(
    name, 

@@ -7,7 +7,7 @@
 \alias{$.struct}
 \alias{print.struct}
 \alias{$<-.struct}
-\title{Allocation and access to foreign C data types}
+\title{Allocation and handling of foreign C aggregate data types}
 \description{Functions for allocation, access and registration of foreign C \code{struct} and \code{union} data type.}
 \usage{
 \S3method{$}{struct}(x, index)

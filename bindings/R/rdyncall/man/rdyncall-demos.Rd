@@ -1,6 +1,6 @@
 \name{rdyncall-demos}
 \alias{rdyncall-demos}
-\title{Installation of required C shared libraries to get the demos running}
+\title{rdyncall demos: Platform installation notes for required libraries}
 \description{
 The demos of the \pkg{rdyncall} package (see \code{demo(package="rdyncall")})
 use shared libraries such as SDL, OpenGL and Expat via \code{\link{dynport}}s -

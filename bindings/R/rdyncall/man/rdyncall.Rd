@@ -2,7 +2,7 @@
 \docType{package}
 \alias{rdyncall}
 \alias{rdyncall-package}
-\title{Dynamic C Library Binding Framework with a flexible Foreign Function Interface (FFI) (includes cross-platform bindings to OpenGL)}
+\title{Dynamic C Library Binding Framework using a flexible Foreign Function Interface}
 \description{A framework for flexible interoperability with precompiled code and binding of common C Libraries and APIs to R using dynamic wrappers. 
   The FFI supports all fundamental C types, multiple calling conventions, handling of struct/union C data types and wrapping of R functions into C callback function pointers. 
   The package comes with an initial repository of ready-to-use bindings to common libraries such as OpenGL, SDL, Expat, etc.. . 
@@ -51,6 +51,31 @@ OpenGL for 3D Graphics. The SDL library can be used for controlling multimedia
 devices (Video, Audio, User-Input) in a portable way. 
 See \command{\link{dynport}} for details.  
 }
+\section{Portability}{
+
+The package includes a fairly important amount of middleware low-level code,
+including Assembly for various processors. 
+The following architectures are considered to be stable: X86, X64, PowerPC, ARM, MIPS.
+Regarding \link{callback} support, the PowerPC on Darwin is stable, while on ELF platform (using System V), dyncallback support is experimental.
+
+Regarding the \link{dynport} mechanism, several demos that stress-test this mechanism have been tested. 
+
+\itemize{
+  \item FreeBSD 8.2/x86: ok.
+  \item Linux Distributions:
+    \itemize{
+      \item Debian {5,6}/x86: ok.
+      \item Fedora 14/x86: ok.
+    }
+  \item Mac OS X 10.4/ppc R-2.10.0: ok.
+  \item Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
+  \item NetBSD 5.0/x86, 5.1/x64: ok. 
+  \item OpenBSD 4.8/x64: SDL demos failed due to pthread (linked in SDL, but not in R in ports tree).
+  \item Windows XP/x86: R-2.12.2: ok.
+  \item Windows 7/{x86,x64}: ok (64-bit SDL demos: look for the right DLL)
+}
+}
+
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Project}. 
   \url{http://dyncall.org}

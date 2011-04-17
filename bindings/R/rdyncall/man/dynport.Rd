@@ -1,9 +1,9 @@
 \name{dynport}
 \alias{dynport}
 \alias{loadDynportNamespace}
-\title{Dynamic binding of C APIs and shared libraries}
-\description{Function to dynamically bind C APIs and shared libraries via dynamically
-created wrappers for foreign function calls, symbolic constants and data types.
+\title{Bindings of standard and common C libraries for R}
+\description{Function to bind APIs of standard and common C libraries to R via dynamically created interface packages
+comprising R wrappers for C functions, object-like macros, enums and data types.
 }
 \usage{
 dynport(portname, portfile=NULL,
@@ -18,28 +18,21 @@ loadDynportNamespace(name, portfile, do.attach=TRUE)
 \item{name}{character string specifying the name of a name space.}
 }
 \details{
-Many portable C libraries can be regarded as reusable software components ; applicable in universal contexts providing
-a generic service such as 3D graphics rendering, sound processing, abstraction to hardware and the like.
-A C compiler and R bindings written in R and C (!) is usually needed to make use of such a library within the R interpreter.
+The \code{dynport} function dynamically creates and attaches R interface packages populated with
+thin wrappers to C functions, object-like macros, enums and data types.
 
-A \emph{Dynport} is a binding specification for a particular C Libraries that serves as the description for 
-creating dynamic wrapper interfaces that work on multiple platforms, if the API does not switch fundamental C types e.g. a long remains a long etc..
+The \code{dynport} function dynamically creates and attaches an R interface package.
+The interface package is populated with wrapper R objects to entities of the C API (functions, type information,...).
+The aim is to have a familiar look and feel of the C API within R.
 
-\code{dynport} attempts to wrap the C API using a dynamic binding approach that works across multiple platforms:
+Dynports rely on pre-installed shared libraries on the host system. The installation 
+procedure for installation of shared libraries depends on the Operating System - for
+details on this see \link{rdyncall-demos}.
 
-To offer the services of a C library dynamically at run-time without compilation, it is not enought to load the shared library and
-resolve symbols ; additional meta-information is needed to create type-safe foreign function call wrappers, handle aggregate data types 
-and use symbolic constant values. This is usually defined in C header files, but carrying a complete C parser is often too heavy for a
-small and lean middleware solution. In this framework, text-based portable type information signatures are used (see \link{dyntype} for details).
-
-When loading a \emph{Dynport} via function \code{dynport}, a virtual R name space is installed and populated with lightweight R wrappers of C entities 
-(functions, object-like macro defines, constants...).
-
-An initial repository of \emph{Dynports} for a selection of common C libraries such as Expat, SDL and OpenGL is pre-installed with the package.
-The following dynports are available: 
+An initial repository of \emph{DynPorts} to the following C libraries is installed together with the package:
 
 \tabular{ll}{
-\strong{dynport} \tab \strong{Description}                    \cr
+\strong{C Library} \tab \strong{Description}                    \cr
 \code{SDL}       \tab Simple DirectMedia Layer library        \cr
 \code{SDL_image} \tab Loading of image files (png,jpeg..)     \cr
 \code{SDL_mixer} \tab Loading/Playing of ogg/mp3/mod music files.\cr
@@ -55,12 +48,26 @@ The following dynports are available:
 \code{stdio}     \tab C Standard Library I/O Functions        \cr
 }
 
-Dynports rely on pre-installed shared libraries on the host system. The installation 
-procedure for installation of shared libraries depends on the Operating System - for
-details on this see \link{rdyncall-demos}.
-
 \emph{Dynport} files contain a compressed text-based and portable representation of such information.
 This dynamic installation procedure is driven by R scripts located in \file{R_HOME/library/rdyncall/dynports}.
+
+
+% An initial repository of \emph{Dynports} for a selection of common C libraries such as Expat, SDL and OpenGL is pre-installed with the package.
+% \emph{DynPort} specifications, which consist of \link{signature} represent platform-portable type and data information about C APIs
+
+%  provides direct access to a selection of standard and common C APIs using a purely dynamic
+% binding approach. For each C API offered by so called \emph{Dynport} files stored in a repository that comes with the package,
+% \code{dynport} dynamically loads the particular C library and installs a virtual R interface package populated with
+% wrappers to the C library.
+
+%  Background: Many common and portable C libraries can be regarded as reusable software components ; applicable in universal contexts providing
+% a generic service such as 3D graphics rendering, sound playing, abstraction to hardware and the like.
+% C libraries are not accessible from within scripting languages out-of-the-box, and R bindings often require additional compiled code to
+% map a C interface into the R language completely.
+
+% Here kicks in the \emph{DynPort}: Imagine a portable type information format, that specifies the C API on a purely abstract level once,
+% and making the API available in several languages a like. This R function is the first prototyp of the idea. A second prototype written
+ %for lua is available on the net. Work is on the way for a third-revision of this format, so that almost all elements (including function types, bit-fields, enums etc..) will be available.
 
 At the current stage of development of the framework, the \emph{dynport} files are R scripts where a large portion consists of 
 \code{\link{signature}} information. A new revision (available for the Lua language), a language-neutral format has been defined
@@ -102,3 +109,11 @@ SDL_GL_SwapBuffers()
 \keyword{programming}
 \keyword{interface}
 
+%To offer the services of a C library dynamically at run-time without compilation, it is not enought to load the shared library and
+%resolve symbols ; additional meta-information is needed to create type-safe foreign function call wrappers, handle aggregate data types 
+%and use symbolic constant values. This is usually defined in C header files, but carrying a complete C parser is often too heavy for a
+%small and lean middleware solution. In this framework, text-based portable type information signatures are used (see \link{dyntype} for details).
+%
+%When loading a \emph{Dynport} via function \code{dynport}, a virtual R name space is installed and populated with lightweight R wrappers of C entities 
+%(functions, object-like macro defines, constants...).
+%

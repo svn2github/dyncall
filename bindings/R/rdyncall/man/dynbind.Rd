@@ -1,57 +1,66 @@
 \name{dynbind}
 \alias{dynbind}
-\title{Batch binding of foreign functions}
-\description{Function to create multiple wrappers to foreign functions.}
+\title{Binding C library functions via call wrappers}
+\description{Function to bind several foreign functions of a C library via thin R call wrappers.}
 \usage{
-dynbind(libnames, signature, envir=parent.frame(), callmode="default", 
+dynbind(libnames, signature, 
+        envir=parent.frame(), callmode="default", 
         pat=NULL, replace=NULL, funcptr=FALSE)
 }
 \arguments{
-  \item{libnames}{vector of character strings giving short library names of the shared library to load and resolve symbols. For details, see \code{\link{dynfind}}.}
-  \item{signature}{character string specifying the \link{library signature}. It is a compact signature that specifies multiple foreign function names and types. For details on the format, see section \sQuote{library signature} on \sQuote{\link{dyntype}}.}
-  \item{envir}{the environment to assign wrappers into.}
-  \item{callmode}{character string specifying the C calling convention.}
-  \item{pat}{NULL or, if symbolic name mangling needed: character string specifying a regular expression to be matched against the name part of function signatures and replaced by \code{replace}}
-  \item{replace}{NULL or, if symbolic name mangling needed: character string specifying the replacement of the regular expression pattern given by \code{pat}.}
-  \item{funcptr}{logical, indicates the type of the resolved addresses, if \code{TRUE} addresses represent the C function entries, else if \code{FALSE} addresses represent function pointer variables (rarely needed).}
+  \item{libnames}{vector of character strings giving short library names of the shared library to be load and used resolve symbols. See \code{\link{dynfind}} for details.}
+  \item{signature}{character string specifying the \emph{library signature} that determines the set of foreign function names and types. See details.}
+  \item{envir}{the environment to use for installation of call wrappers.}
+  \item{callmode}{character string specifying the calling convention, see details.}
+  \item{pat}{NULL or regular expression character string applied to symbolic names.}
+  \item{replace}{NULL or replacement character string.}
+  \item{funcptr}{logical ; indicates that symbols refer to functions (\code{FALSE}, default) or function poiner variables (\code{TRUE} rarely needed).}
 }
 \details{
-The function dynamically loads a shared library specified by short library names given by \code{libnames} using \code{\link{dynfind}}.
-According to the \link{library signature}, a set of front-end R wrapper functions are constructed that delegate calls to 
-functions of the shared library via \code{\link{.dyncall}}.
+\code{dynbind} makes a set of C functions available to R through thin call wrappers.
+The set of functions, including the symbolic name and function type, is specified by \code{signature} ; a character string that encodes a
+library signature:
 
-The \link{library signature} comprises a sequence of \link{function signature}s separated by \samp{;} semicolon symbols and optionally white-spaces before and after semicolons.
-
-\tabular{c}{
-\emph{symbol} \samp{(} \emph{argumentTypes} \samp{)} \emph{returnType} \samp{;} \ldots \cr 
-}
-
-For each \link{function signature}, a corresponding R wrapper is created with the following pattern:
+The \strong{library signature} is a compact plain-text format to specify a set of function bindings.
+It consists of function names and corresponding \link[=call signature]{call signatures}. Function bindings are separated 
+by \sQuote{;} (semicolon) ; white spaces (including tab and new line) are allowed before and after semicolon.
 
 \tabular{c}{
-\code{ function(...) .dyncall.CALLMODE ( target, signature, ... ) }
+\sQuote{function-name} \samp{(} \sQuote{call-signature} \samp{;} \ldots \cr
 }
 
-The suffix \emph{CALLMODE} is replaced by \code{callmode} to match a corresponding FFI calling convention (one of the \code{.dyncall.*} functions), 
-see \code{\link{.dyncall}} for details on calling conventions.
-If a regular expression \code{pat} and \code{replace} is given, the substitution is applied to the \emph{symbol} before installation in the environment \code{envir}.
+Here is an example that specifies three function bindings from the OpenGL library:
+\preformatted{"glAccum(If)v ; glClear(I)v ; glClearColor(ffff)v ;"}
 
-The \emph{target} is replaced by the exported pointer that refers to the resolved address of the \emph{symbol}.
-The \emph{signature} is replaced by the call signature string ' \emph{argumentTypes} \samp{)} \emph{returnType} '.
+Symbolic names are resolved using the library specified by \code{libnames} using \code{\link{dynfind}} for loading.
+For each function, a thin call wrapper function is created using the following template: 
 
-As a special case, \code{dynbind} supports binding of pointer-to-function variables via setting \code{funcptr} to \code{TRUE} that substitutes \code{target} 
-with the expression \code{.unpack(target,"p",0)} to dereference the address at run-time.
+\preformatted{ function(...) .dyncall.<MODE> ( <TARGET>, <SIGNATURE>, ... ) }
 
+\code{<MODE>} is replaced by \code{callmode} argument, see \code{\link{.dyncall}} for details on calling conventions.
+\code{<TARGET>} is replaced by the external pointer, resolved by the \sQuote{function-name}.
+\code{<SIGNATURE>} is replaced by the call signature string contained in \code{signature}.
 
+The call wrapper is installed in the environment given by \code{envir}.
+The assignment name is obtained from the function signature.
+If \code{pat} and \code{replace} is given, a text replacement is applied to the name before assignment, useful for basic C name space mangling such as exchanging the prefix.
+
+As a special case, \code{dynbind} supports binding of pointer-to-function variables via setting \code{funcptr} to \code{TRUE} that substitutes \code{<TARGET>} 
+with the expression \code{.unpack(target,"p",0)} to dereference the pointer-to-function variable at call-time.
 }
 
 \value{
-List object consisting of the follow fields:
-\item{libhandle}{External pointer returned by \code{\link{.dynload}}}
-\item{unresolved.symbols}{Character string vector containing the names of unresolved symbols}
+The function returns a list with two fields:
+\item{libhandle}{External pointer returned by \code{\link{.dynload}}.}
+\item{unresolved.symbols}{vector of character strings, the names of unresolved symbols.}
+
+As a side effect, \code{dynbind} assigns call wrapper functions in the environment given by \code{envir}.
+
+If no shared library is found, an error is reported.
 }
 \examples{
 \donttest{
+# Install two wrappers to functions of the R shared C library.
 info <- dynbind("R","
 R_ShowMessage(Z)v;
 R_rsort(pi)v;
@@ -60,9 +69,8 @@ R_ShowMessage("hello")
 }
 }
 \seealso{
-\code{\link{signature}} for details on signatures, 
-\code{\link{dynfind}} for details on short library names, 
 \code{\link{.dyncall}} for details on call signatures and calling conventions,
+\code{\link{dynfind}} for details on short library names, 
 \code{\link{.unpack}} for details on dereferencing of (function) pointer variables. 
 }
 \keyword{programming}
