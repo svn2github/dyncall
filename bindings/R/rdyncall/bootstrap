@@ -1,6 +1,6 @@
 download_zip()
 {
-  VERSION=0.5
+  VERSION=0.6
   NAME=dyncall-${VERSION}
   ZIP=${NAME}.zip
   wget http://dyncall.org/r${VERSION}/${ZIP}
@@ -12,6 +12,7 @@ download_zip()
 checkout_src()
 {
   svn co https://dyncall.org/svn/dyncall/trunk/dyncall src/dyncall
+  svnversion src/dyncall >src/dyncall/SVNVERSION
 }
 
 configure_dyncall()
