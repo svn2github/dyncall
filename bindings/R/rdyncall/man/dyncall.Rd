@@ -95,6 +95,10 @@ The following table gives a list of valid type signatures for all supported C ty
 "\code{*<}" \emph{typename} '\code{>}' \tab \emph{typename}* (pointer) \tab raw,externalptr \tab externalptr\cr
 }
 
+The last two rows of the table the above refer to \emph{typed pointer} signatures.
+If they appear as a return type signature, the external pointer returned is 
+tagged as S3 \code{struct} type. See \code{\link{new.struct}} for details.  
+
 }
 \section{Call Signatures}{
 Call Signatures are used by \code{\link{.dyncall}} and \code{\link{new.callback}} to describe foreign C function types.

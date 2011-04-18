@@ -20,8 +20,8 @@
 static char* r_dataptr(SEXP x, SEXP off, size_t element_size)
 {
   if ( LENGTH(off) == 0 ) error("missing offset");
-  char* p;
-  ptrdiff_t o = INTEGER(off)[0], s;
+  char* p = NULL;
+  ptrdiff_t o = INTEGER(off)[0], s = 0;
   
   switch(TYPEOF(x))
   {
@@ -274,7 +274,7 @@ SEXP r_pack(SEXP ptr_x, SEXP offset, SEXP sig_x, SEXP value_x)
  **/
 SEXP r_unpack(SEXP ptr_x, SEXP offset, SEXP sig_x)
 {
-  char* ptr;
+  char* ptr = NULL;
   const char* sig = CHAR(STRING_ELT(sig_x,0) );
   switch(sig[0])
   {

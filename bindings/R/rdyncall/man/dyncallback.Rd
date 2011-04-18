@@ -4,7 +4,7 @@
 \alias{dyncallback}
 \title{Dynamic wrapping of R functions into C callbacks}
 \description{  
-Dynamic wrapping of R functions as C callback function pointers.
+Function to wrap R functions as a C function pointer. 
 }
 \usage{
 new.callback( signature, fun, envir = new.env() )
@@ -23,7 +23,7 @@ The function \code{new.callback} wraps an R function \code{fun} as a C function 
 When the C function pointer is called, a callback handler is executed that dynamically creates a call expression to \code{fun}
 using the arguments passed from C and converted to R according to the argument types signature within the \link{call signature} specified.
 Finally, the handler evaluates the call expression within the environment given by \code{envir} and converts back any return values from R to C according to the return tyope specified in the \link{call signature}.
-If an error occurs during the evaluation, the callback will be disabled for further invocations (a behaviour that might change in future releases).
+If an R error occurs during the evaluation, the callback will be disabled for further invocations.
 
 }
 \value{
@@ -32,11 +32,14 @@ If an error occurs during the evaluation, the callback will be disabled for furt
 
 \section{Portability}{
 The implementation is based on the \emph{dyncallback} library (part of the DynCall project).
-It has support for the following processor architectures: X86, X64, ARM and PowerPC 32-bit; 
-The library has been ported to the following OSs: Linux, Mac OS X, Windows 32/64-bit, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris, Minix, Plan9
+
+The following processor architectures are supported: X86, X64, ARM and PowerPC 32-bit (particial); 
+
+Ports to the following OSs have been validated: Linux, Mac OS X, Windows 32/64-bit, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris, Minix, Plan9
 as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
-Special notes to PowerPC 32-Bit users: Callbacks for System V-based Systems (Linux/BSD) are unstable in this release;
-The callbacks for MacOS X/Darwin works fine here!
+
+Special notes for PowerPC 32-Bit: Callbacks for System V (Linux/BSD) are unstable in this release; MacOS X/Darwin works fine.
+
 In the context of R, there is currently no support for callbacks on MIPS, SPARC and PowerPC 64-Bit.
 }
 \note{

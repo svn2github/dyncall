@@ -1,7 +1,7 @@
 Package: rdyncall
 Version: 0.7
 Date: 2011-03-25
-Title: Dynamic Binding of C Libraries using a flexible Foreign Function Interface (FFI)
+Title: Dynamic Bindings to C Libraries based on an improved Foreign Function Interface (FFI)
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
 Depends: R (>= 2.7)

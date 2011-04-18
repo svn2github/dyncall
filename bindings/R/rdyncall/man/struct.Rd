@@ -20,7 +20,7 @@ parseUnionInfos(sigs, envir=parent.frame())
 }
 \arguments{
   \item{x}{external pointer or atomic raw vector of S3 class 'struct'.}
-  \item{type}{S3 TypeInfo Object or character string that names the structure type.}
+  \item{type}{S3 \link{TypeInfo} Object or character string that names the structure type.}
   \item{sigs}{character string that specifies several C struct/union type \link{signature}s.}
   \item{envir}{the environment to install S3 type information object(s).} 
   \item{index}{character string specifying the field name.}
@@ -30,17 +30,32 @@ parseUnionInfos(sigs, envir=parent.frame())
 }
 \details{
 
-References to foreign C \code{struct} and \code{union} data types can be 
-manipulated symbolically using S3 subsetting method \dQuote{[} overload
-for S3 objects tagged with class \code{struct}.
-Two different kinds of reference objects are supported: 
+Foreign C aggregate ( \code{struct} and \code{union} ) data and pointer-to-data 
+objects can be manipulated using the \dQuote{$} operator.
+This is handled by R objects of S3 class \code{struct}.
+
+Basically, two R objects are used to reference foreign C data. External pointers reference pointers to some foreign data.
+New objects of a foreign data type can be allocated via the \code{new.struct} function. In this case, the memory is managed
+by R using an atomic \code{raw} object that is of S3 class \code{struct}.
+
+Two types of foreign C objects are supported:
+
 \itemize{
-  \item external pointers returned by \code{\link{.dyncall}} are
-of S3 class \code{struct}, in case the return type signature contains a typed pointer signature (e.g. \code{"*<SomeStruct>"}).
-  \item new objects of a foreign C \code{type} can be allocated via \code{new.struct} function:
-An atomic \code{raw} object will be returned, initialized with length equal to the size of the
+  \item \emph{external pointers}, returned by \code{\link{.dyncall}} using a call signature with a typed pointer expression in the return type signature. 
+  \item \emph{new objects} of a foreign C data type are \code{new.struct} function:
+An atomic \code{raw} object is used for storage, initialized with length equal to the size of the
 C foreign \code{type}.
 }
+ 
+In order to access and manipulate the data fields of foreign C data types, the \dQuote{$} and \dQuote{$<-} S3 operator methods
+can be used.
+
+The type information is given by S3 objects of class \code{\link{typeinfo}}.
+
+Before using a foreign C data type in R, an S3 object of class \code{\link{typeinfo}} need
+to be installed. This is done via using \code{parseStructInfos} and  
+\code{parseUnionInfos}. Foreign C data types are described by a signature character string.
+The format for both types are described below:
 
 \strong{Structure type signatures} describe the layout of aggregate \code{struct} C data types.
 Type Signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
@@ -49,8 +64,6 @@ should match the number of fields.
 \tabular{rcl}{
 \sQuote{struct-name} '\{' \sQuote{field-types} \tab '\}' \sQuote{field-names} '\code{;}' \cr
 }
-
-Example:
 
 Here is an example of a C \code{struct} type:
 
@@ -61,7 +74,7 @@ struct Rect \{
 \};
 }
 
-The corresponding Structure Type Signature is:
+The corresponding Structure type signature is:
 
 \preformatted{"Rect\{ssSS\}x y w h;"}
 
@@ -83,14 +96,9 @@ union Value \{
 \};
 } 
 
-The corresponding Union Type Signature is:
+The corresponding Union type signature is:
 
 \code{"Value|if<LongValue>}anInt aFloat aStruct;"}
-
-It is mandatory to register C data types before allocation or accessing objects
-of that type via functions \code{parseStructInfos} and  
-\code{parseUnionInfos} ; they parse \link[=Struct Signature]{Structure/Union Type} \code{signature}s
-and install \link[=typeinfo]{type information object}s.
 
 \code{as.struct} can be used to \emph{cast} a structure into a different type. This is not type-safe and can lead to a \strong{fatal R process crash}
 if used on pointers.

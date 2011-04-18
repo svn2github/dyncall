@@ -2,12 +2,28 @@
 \docType{package}
 \alias{rdyncall}
 \alias{rdyncall-package}
-\title{Dynamic C Library Binding Framework using a flexible Foreign Function Interface}
-\description{A framework for flexible interoperability with precompiled code and binding of common C Libraries and APIs to R using dynamic wrappers. 
-  The FFI supports all fundamental C types, multiple calling conventions, handling of struct/union C data types and wrapping of R functions into C callback function pointers. 
-  The package comes with an initial repository of ready-to-use bindings to common libraries such as OpenGL, SDL, Expat, etc.. . 
-  Library bindings work across platform using a compact plain text specification format ; a tool is in development that automatically generates bindings from C header files.
-  The package enables developers to write cross-platform system-level software without additional wrapper C code by using C APIs such as OpenGL directly in R.
+\title{Dynamic Bindings to common C Libraries based on a flexible Foreign Function Interface}
+\description{
+This package gives direct access to common C Libraries and comes with
+a repository of cross-platform bindings to OpenGL, SDL, Expat, OpenCL, CUDA etc..
+The approach is radically new and experimental using abstract text-based
+type information specification per library and a new Foreign Function Interface.
+The FFI is usable stand-alone and offers several advantages that 
+A framework of low-level tools for dynamic interoperability with foreign C code and data types.
+For application developers, the package offers a dynamic method to bind 
+and access the Application Programming Interface (API) of C libraries.
+This method works cross-platform using a single compact plain-text
+specification per C Library.
+A new Foreign Function Interface is the work-horse of this binding approach
+and can be used stand-alone as well.
+Almost any C function can be called via the new FFI, supports all 
+fundamental C types, multiple calling conventions and 
+A framework for handling of foreign C fundamental and aggregate data types 
+is provided as well as wrapping of R functions into C callback function pointers. 
+The package comes with an initial repository of ready-to-use bindings to common libraries such as OpenGL, SDL and Expat and includes
+lots of demonstrations how to program with the R language using C libraries via this middleware technology.
+Library bindings work across platforms using a compact plain text specification format ; a tool is development that automatically generates these cross-platform binding specifications from C header files.
+The package enables developers to write cross-platform system-level software without additional wrapper C code by using C APIs such as OpenGL directly in R.
 }
 \details{
 \pkg{rdyncall} is a toolkit that aims to bind Application Programming Interfaces (API)
@@ -22,12 +38,6 @@ The package is based on libraries from the DynCall project which are ported acro
 The flexible Foreign Function Interface is an alternative FFI that has no limitations regarding arity, supports multiple calling conventions
 and almost all C types as argument and return-type.
 In addition, the package supports handling of C \code{struct} and \code{union} data types including managed allocation and symbolic access to field members.
-
-mainly based on the \emph{dyncall} C library ; a Foreign Function Interface library with support for multiple calling conventions
-with a state machine to prepare argument loading and small generic call kernels written in Assemly (around 64 bytes for x86) to invoke arbitrary code. 
-The library has been ported to X86, X64, ARM (including thumb), has been ported all major R platforms.
-It is very small in size (the core call kernel for x86 fits into 64 bytes), and provides the flexibility to call arbitrary functions with support for the full range of C types and multiple calling conventions.
-C Callbacks are wrapped via the \emph{dyncallback} C library.
 }
 \section{Overview}{
 \itemize{
