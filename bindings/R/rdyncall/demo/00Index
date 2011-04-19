@@ -11,6 +11,6 @@ Win32PlaySound  Win32 Demo, playing a wav file (dynbind demo)
 blink_gl3       Simple SDL,OpenGL 3 API demonstration.
 ttf             SDL true type font library example.
 intro           Texture-mapped scroller, playing XM music module.
-qsort           C standard library qsort C with a custom compare via callbacks.
+qsort           C standard library qsort C with a custom compare via callbacks (dyncallback demo).
 playtune        SDL audio-only and SDL_mixer demo: plays XM music module.
   

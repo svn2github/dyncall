@@ -5,10 +5,16 @@
 # ----------------------------------------------------------------------------
 # call vm alloc/free (internal)
 
-new.callvm <- function( callmode = c("cdecl","stdcall","thiscall","thiscall.gcc","thiscall.msvc","fastcall","fastcall.gcc","fastcall.msvc"), size = 4096L )
+new.callvm <- function( 
+  callmode = c(
+    "cdecl",
+    "stdcall",
+    "thiscall","thiscall.gcc","thiscall.msvc",
+    "fastcall","fastcall.gcc","fastcall.msvc")
+, size = 4096 )
 {
   callmode <- match.arg(callmode)
-  x <- .Call("new_callvm", callmode, size, PACKAGE="rdyncall")
+  x <- .Call("new_callvm", callmode, as.integer(size), PACKAGE="rdyncall")
   reg.finalizer(x, free.callvm)
   return(x)
 }

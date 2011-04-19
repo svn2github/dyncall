@@ -37,8 +37,8 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
   setNamespaceInfo(env, "imports", list(base = TRUE))
   setNamespaceInfo(env, "path", file.path(lib, name))
   setNamespaceInfo(env, "dynlibs", NULL)
-  setNamespaceInfo(env, "S3methods", matrix(NA_character_, 
-          0L, 3L))
+  setNamespaceInfo(env, "S3methods", matrix(as.character(NA), 
+          as.integer(0), as.integer(3) ))
   assign(".__S3MethodsTable__.", new.env(hash = TRUE, 
           parent = baseenv()), envir = env)
   # .Internal(registerNamespace(name, env))

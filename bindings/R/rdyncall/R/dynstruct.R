@@ -7,22 +7,22 @@
 
 .basetypeSizes <- c(
     B=.Machine$sizeof.long,
-    c=1L,
-    C=1L,
-    s=2L,
-    S=2L,
-    i=4L,
-    I=4L,
+    c=1,
+    C=1,
+    s=2,
+    S=2,
+    i=4,
+    I=4,
     j=.Machine$sizeof.long,
     J=.Machine$sizeof.long,
     l=.Machine$sizeof.longlong,
     L=.Machine$sizeof.longlong,
-    f=4L,
-    d=8L,
+    f=4,
+    d=8,
     p=.Machine$sizeof.pointer,
     x=.Machine$sizeof.pointer,
     Z=.Machine$sizeof.pointer,
-    v=0L
+    v=0
 )
 
 # ----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ getTypeInfoByName <- function(typeName, envir=parent.frame())
 
 align <- function(offset, alignment)
 {
-  as.integer( as.integer( (offset + alignment-1L) / alignment ) * alignment )
+  as.integer( as.integer( (offset + alignment-1) / alignment ) * alignment )
 }
 
 # ----------------------------------------------------------------------------
@@ -106,22 +106,22 @@ makeStructInfo <- function(name, signature, fieldNames, envir=parent.frame())
   # computations:
   types    <- character()
   offsets  <- integer()
-  offset   <- 0L
-  maxAlign <- 1L
+  offset   <- 0
+  maxAlign <- 1
   # scan variables:
   n        <- nchar(signature)
-  i        <- 1L
+  i        <- 1
   start    <- i
   while(i <= n)
   {
     char  <- substr(signature,i,i)
     if (char == "*") { 
-      i <- i + 1L ; next
+      i <- i + 1 ; next
     } else if (char == "<") {
-      i <- i + 1L
+      i <- i + 1
       while (i < n) {
         if ( substr(signature,i,i) == ">" ) break
-        i <- i + 1L
+        i <- i + 1
       }    
     } 
     typeName  <- substr(signature, start, i)
@@ -130,13 +130,14 @@ makeStructInfo <- function(name, signature, fieldNames, envir=parent.frame())
     alignment <- typeInfo$align
     maxAlign  <- max(maxAlign, alignment)
     offset    <- align( offset, alignment )
+    cat("TRACE:",offset,"\n")
     offsets   <- c(offsets, offset)
     
     # increment offset by size
     offset    <- offset + typeInfo$size
 
     # next token
-    i         <- i + 1L
+    i         <- i + 1
     start     <- i
   } 
   # align the structure size (compiler-specific?)
@@ -179,21 +180,21 @@ makeUnionInfo <- function(name, signature, fieldNames, envir=parent.frame())
 {
   # computations:
   types    <- character()
-  maxSize  <- 0L
-  maxAlign <- 1L 
+  maxSize  <- 0
+  maxAlign <- 1 
   # scan variables:
-  i       <- 1L
+  i       <- 1
   start   <- i
   n       <- nchar(signature)
   while(i <= n) {
     char  <- substr(signature,i,i)
     if (char == "*") {
-      i <- i + 1L ; next
+      i <- i + 1 ; next
     } else if (char == "<") {
-      i <- i + 1L
+      i <- i + 1
       while (i < n) {
         if ( substr(signature,i,i) == ">" ) break
-        i <- i + 1L
+        i <- i + 1
       }
     } 
     typeName <- substr(signature,start,i)
@@ -202,10 +203,10 @@ makeUnionInfo <- function(name, signature, fieldNames, envir=parent.frame())
     maxSize  <- max( maxSize, typeInfo$size )
     maxAlign <- max( maxAlign, typeInfo$align )
     # next token
-    i        <- i + 1L
+    i        <- i + 1
     start    <- i
   }
-  offsets <- rep(0L, length(types) )
+  offsets <- rep(0, length(types) )
   fields  <- makeFieldInfo(fieldNames, types, offsets)  
   TypeInfo(name=name, type="union", fields=fields, size=maxSize, align=maxAlign)
 }

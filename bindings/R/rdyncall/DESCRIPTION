@@ -4,7 +4,7 @@ Date: 2011-04-20
 Title: Improved Foreign Function Interface (FFI) and Dynamic Bindings to C Libraries (e.g. OpenGL) 
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
-Depends: R (>= 2.7)
+Depends: R (>= 2.4)
 Description: The package provides a cross-platform framework for dynamic binding of 
   C libraries using a flexible Foreign Function Interface (FFI).
   The FFI supports almost all fundamental C types, multiple calling conventions, 
