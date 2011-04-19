@@ -130,7 +130,6 @@ makeStructInfo <- function(name, signature, fieldNames, envir=parent.frame())
     alignment <- typeInfo$align
     maxAlign  <- max(maxAlign, alignment)
     offset    <- align( offset, alignment )
-    cat("TRACE:",offset,"\n")
     offsets   <- c(offsets, offset)
     
     # increment offset by size

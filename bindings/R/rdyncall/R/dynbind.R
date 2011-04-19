@@ -9,7 +9,8 @@ dynbind <- function(libnames, signature, envir=parent.frame(), callmode="default
   if ( is.null(libh) )
   {
     cat("dynbind error: Unable to find shared library '", libnames[[1]], "'.\n",sep="")
-    cat("Consult the projects page how to build and install the shared library for your operating-system.\n")
+    cat("For details how to install dynport shared libs, type: ?'rdyncall-demos' might help.\n")
+    cat("If there is no information about your OS, consult the projects page how to build and install the shared library for your operating-system.\n")
     cat("Make sure the shared library can be found at the default system places or adjust environment variables (e.g. %PATH% or $LD_LIBRARY_PATH).\n")
     stop("unable to find shared library '", libnames[[1]], "'.\n", call.=FALSE)
   }
