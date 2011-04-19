@@ -1,0 +1,10 @@
+PKG_CPPFLAGS=-Idyncall/dyncall -Idyncall/dynload -Idyncall/dyncallback
+PKG_LIBS=dyncall/dyncall/libdyncall_s.a dyncall/dynload/libdynload_s.a dyncall/dyncallback/libdyncallback_s.a
+
+.PHONY: all mylibs
+
+all: mylibs $(SHLIB)
+
+mylibs:
+	(cd dyncall ; MAKEFILE="Makefile.generic" CC="$(CC)" AR="$(AR)" CFLAGS="$(CFLAGS)" make -f Makefile.generic)
+
