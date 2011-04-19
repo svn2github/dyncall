@@ -9,6 +9,7 @@
 // #define USE_RINTERNALS
 #include <Rinternals.h>
 #include <string.h>
+#include <stddef.h>
 #include "rdyncall_signature.h"
 /** ---------------------------------------------------------------------------
  ** C-Function: r_dataptr

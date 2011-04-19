@@ -7,6 +7,7 @@
 // uses: DATAPTR macro
 #define USE_RINTERNALS
 #include <Rinternals.h>
+#include <stddef.h>
 
 SEXP r_isnullptr(SEXP x)
 {
