@@ -29,7 +29,7 @@ Otherwise, if \code{x} is an external pointer, there is only a C NULL pointer ch
 \code{.unpack} returns a read C data type coerced to an R value.
 }
 \seealso{
-\code{\link{.dyncall} for details on type signatures.
+\code{\link{.dyncall}} for details on type signatures.
 }
 \examples{
 # transfer double to array of floats and back, compare precision:

@@ -98,7 +98,7 @@ The corresponding union type signature is:
 When using an external pointer reference, this can lead quickly to a \strong{fatal R process crash} - like in C.
 }
 \seealso{
-\code{\link{.dyncall} for type signatures and \code{\link{TypeInfo}} for details on run-time type information S3 objects.
+\code{\link{.dyncall}} for type signatures and \code{\link{TypeInfo}} for details on run-time type information S3 objects.
 }
 \examples{
 # Specify the following foreign type:

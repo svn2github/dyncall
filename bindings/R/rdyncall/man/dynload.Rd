@@ -83,21 +83,21 @@ loaded by the dynamic linker using the same rules.
 
 The following text is taken from the Mac OS X dlopen manual page:
 
-dlopen() searches for a compatible Mach-O file in the directories specified by a set of environment
- variables and the process's current working directory.  When set, the environment variables must contain 
- a colon-separated list of directory paths, which can be absolute or relative to the current working
- directory. The environment variables are LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, and DYLD_FALLBACK_LIBRARY_PATH. 
- The first two variables have no default value. The default value of DYLD_FALLBACK_LIBRARY_PATH
-  is \$HOME/lib;/usr/local/lib;/usr/lib.  dlopen() searches the directories specified in
- the environment variables in the order they are listed.
+\code{dlopen()} searches for a compatible Mach-O file in the directories specified by a set of environment
+variables and the process's current working directory.  When set, the environment variables must contain 
+a colon-separated list of directory paths, which can be absolute or relative to the current working
+directory. The environment variables are $LD_LIBRARY_PATH, $DYLD_LIBRARY_PATH, and $DYLD_FALLBACK_LIBRARY_PATH. 
+The first two variables have no default value. The default value of $DYLD_FALLBACK_LIBRARY_PATH
+is $HOME/lib;/usr/local/lib;/usr/lib.  \code{dlopen()} searches the directories specified in
+the environment variables in the order they are listed.
 
-     When path doesn't contain a slash character (i.e. it is just a leaf name), dlopen() searches the fol-lowing following
-     lowing the following until it finds a compatible Mach-O file: \$LD_LIBRARY_PATH, \$DYLD_LIBRARY_PATH,
-     current working directory, \$DYLD_FALLBACK_LIBRARY_PATH.
+When path doesn't contain a slash character (i.e. it is just a leaf name), \code{dlopen()} searches the following 
+until it finds a compatible Mach-O file: $LD_LIBRARY_PATH, $DYLD_LIBRARY_PATH,
+current working directory, $DYLD_FALLBACK_LIBRARY_PATH.
 
-     When path contains a slash (i.e. a full path or a partial path) dlopen() searches the following the
-     following until it finds a compatible Mach-O file: \$DYLD_LIBRARY_PATH (with leaf name from path ), cur-rent current
-     rent working directory (for partial paths), \$DYLD_FALLBACK_LIBRARY_PATH (with leaf name from path ).
+When path contains a slash (i.e. a full path or a partial path) \code{dlopen()} searches the following the
+following until it finds a compatible Mach-O file: $DYLD_LIBRARY_PATH (with leaf name from path ), current
+working directory (for partial paths), $DYLD_FALLBACK_LIBRARY_PATH (with leaf name from path ).
 }
 \section{Library search on Microsoft Windows platforms}{
 
@@ -120,9 +120,9 @@ following sequence:
 \item The directories that are listed in the PATH environment variable. 
 }
 
-Windows Server 2003, Windows XP SP1:  The default value of \code{HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\SafeDllSearchMode} is 1 (current directory is searched after the system and Windows directories).
+Windows Server 2003, Windows XP SP1:  The default value of \preformatted{HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\SafeDllSearchMode} is 1 (current directory is searched after the system and Windows directories).
 
-Windows XP:  If \code{HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\SafeDllSearchMode} is 1, the current directory is searched after the system and Windows directories, but before the directories in the PATH environment variable. The default value is 0 (current directory is searched before the system and Windows directories).
+Windows XP:  If \preformatted{HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\SafeDllSearchMode} is 1, the current directory is searched after the system and Windows directories, but before the directories in the PATH environment variable. The default value is 0 (current directory is searched before the system and Windows directories).
 
 
 The first directory searched is the one directory containing the image file used to create the calling process. Doing this allows private dynamic-link library (DLL) files associated with a process to be found without adding the process's installed directory to the PATH environment variable.

@@ -23,7 +23,7 @@ R function is specified by \code{signature}, which is specified as a \link{call 
 
 When the C function pointer is called, a global callback handler (implemented in C) is executed first, that dynamically creates an R call expression to \code{fun}
 using the arguments, passed from C and converted to R, according to the \emph{argument types signature} within the \link{call signature} specified. See
-\link{\code{.dyncall}} for details on the format.
+\code{\link{.dyncall}} for details on the format.
 Finally, the handler evaluates the R call expression within the environment given by \code{envir}, coerces the R return value of \code{fun} to the C value, according to the return type signature specified in \code{signature}.
 If an error occurs during the evaluation, the callback will be disabled for further invocations. (This behaviour might change in the future.)
 
