@@ -1,5 +1,5 @@
 Package: rdyncall
-Version: 0.7
+Version: 0.7.0
 Date: 2011-04-20
 Title: Improved Foreign Function Interface (FFI) and Dynamic Bindings to C Libraries (e.g. OpenGL) 
 Author: Daniel Adler <dadler@uni-goettingen.de>

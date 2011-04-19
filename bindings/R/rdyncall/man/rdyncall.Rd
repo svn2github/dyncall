@@ -38,6 +38,8 @@ Please see the details on Portability for \link{dyncall}, \link{dyncallback} and
     \itemize{
       \item Debian {5,6}/{x86,x64}: ok.
       \item Fedora 14/x86: ok.
+      \item Debian {4}/{ppc32}: R-2.4.0: ok, but no support for callbacks yet.
+      \item Debian {4}/{arm}: R-2.7.0: testing, x11/sdl not tested.
     }
   \item Mac OS X 10.4/ppc R-2.10.0: ok.
   \item Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
