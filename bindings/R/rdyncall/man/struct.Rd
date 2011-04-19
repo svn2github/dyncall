@@ -44,7 +44,7 @@ foreign C data type.
 In order to access and manipulate the data fields of foreign C aggregate data objects, the \dQuote{$} and \dQuote{$<-} S3 operator methods
 can be used.
 
-S3 objects of class \code{struct} have an attribute \code{struct} set to the name of a \code{\link{typeinfo}} object, which provides the 
+S3 objects of class \code{struct} have an attribute \code{struct} set to the name of a \code{\link{TypeInfo}} object, which provides the 
 run-time type information of a particular foreign C type.
 
 The run-time type information for foreign C \code{struct} and \code{union} types need to be registered once via 
@@ -55,8 +55,8 @@ The C data types are specified by \code{sigs}, a signature character string. The
 Type Signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
 should match the number of fields.
 
-\tabular{rcl}{
-\sQuote{struct-name} '\{' \sQuote{field-types} \tab '\}' \sQuote{field-names} '\code{;}' \cr
+\tabular{c}{
+\sQuote{struct-name} '\{' \sQuote{field-types} '\}' \sQuote{field-names} '\code{;}' \cr
 }
 
 Here is an example of a C \code{struct} type:
@@ -76,8 +76,8 @@ The corresponding structure type signature is:
 Type signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
 should match the number of fields.
 
-\tabular{rcl}{
-\sQuote{union-name} '|' \sQuote{field-types} \tab '\}' \sQuote{field-names} '\code{;}' \cr
+\tabular{c}{
+\sQuote{union-name} '|' \sQuote{field-types} '\}' \sQuote{field-names} '\code{;}' \cr
 }
 
 Here is an example of a C \code{union} type,
