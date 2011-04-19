@@ -34,7 +34,8 @@ References to foreign C data objects are represented by objects of class 'struct
 Two reference types are supported:
 
 \itemize{
-  \item \emph{External pointers} returned by \code{\link{.dyncall}} using a call signature with a typed pointer expression in the return type signature. 
+  \item \emph{External pointers} returned by \code{\link{.dyncall}} using a call signature with a \emph{typed pointer} return type signature 
+  and pointers extracted as a result of \code{\link{.unpack}} and S3 \code{struct} \code{$}-operators.
   \item \emph{Internal objects}, memory-managed by R, are allocated by \code{new.struct}:
 An atomic \code{raw} storage object is returned, initialized with length equal to the byte size of the
 foreign C data type.
@@ -43,10 +44,10 @@ foreign C data type.
 In order to access and manipulate the data fields of foreign C aggregate data objects, the \dQuote{$} and \dQuote{$<-} S3 operator methods
 can be used.
 
-S3 objects of class \code{struct} have an attribute \code{struct} that specifies the name (as a character string) to a foreign C data type.
-The name should refer to an R object of type \code{\link{typeinfo}}, which provides the run-time type information of a particular foreign C type.
+S3 objects of class \code{struct} have an attribute \code{struct} set to the name of a \code{\link{typeinfo}} object, which provides the 
+run-time type information of a particular foreign C type.
 
-The run-time type information for several foreign C \code{struct} and \code{union} types need to be installed once via 
+The run-time type information for foreign C \code{struct} and \code{union} types need to be registered once via 
 \code{parseStructInfos} and \code{parseUnionInfos} functions.
 The C data types are specified by \code{sigs}, a signature character string. The formats for both types are described next:
 
@@ -67,7 +68,7 @@ struct Rect \{
 \};
 }
 
-The corresponding Structure type signature is:
+The corresponding structure type signature is:
 
 \preformatted{"Rect\{ssSS\}x y w h;"}
 
@@ -89,7 +90,7 @@ union Value \{
 \};
 } 
 
-The corresponding Union type signature is:
+The corresponding union type signature is:
 
 \code{"Value|if<LongValue>}anInt aFloat aStruct;"}
 
@@ -97,7 +98,7 @@ The corresponding Union type signature is:
 When using an external pointer reference, this can lead quickly to a \strong{fatal R process crash} - like in C.
 }
 \seealso{
-\code{\link{signature}} for details on the Structure and Union Type Signatures and \code{\link{.dyncall}} for foreign function calls and \code{\link{TypeInfo}} for details on S3 run-time type information objects.
+\code{\link{.dyncall} for type signatures and \code{\link{TypeInfo}} for details on run-time type information S3 objects.
 }
 \examples{
 # Specify the following foreign type:

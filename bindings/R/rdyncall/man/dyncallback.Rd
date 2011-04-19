@@ -4,7 +4,7 @@
 \alias{dyncallback}
 \title{Dynamic wrapping of R functions into C callbacks}
 \description{  
-Function to wrap R functions as a C function pointer. 
+Function to wrap R functions as C function pointers. 
 }
 \usage{
 new.callback( signature, fun, envir = new.env() )
@@ -16,14 +16,16 @@ new.callback( signature, fun, envir = new.env() )
 }
 \details{
 Callbacks are user-defined functions that are registered in a foreign library and that are executed at a later time from within that library.
-Examples include user-interface event handlers that are registered in GUI toolkits, and, comparision functions passed to generic sort algorithm when sorting a vector of a custom data type.
+Examples include user-interface event handlers that are registered in GUI toolkits, and, comparison functions for custom data types to be passed to generic sort algorithm.
 
-The function \code{new.callback} wraps an R function \code{fun} as a C function pointer with a function type \link{call signature} given by \code{signature}.
+The function \code{new.callback} wraps an R function \code{fun} as a C function pointer and returns an external pointer. The foreign C function type of the wrapped 
+R function is specified by \code{signature}, which is specified as a \link{call signature}.
 
-When the C function pointer is called, a callback handler is executed that dynamically creates a call expression to \code{fun}
-using the arguments passed from C and converted to R according to the argument types signature within the \link{call signature} specified.
-Finally, the handler evaluates the call expression within the environment given by \code{envir} and converts back any return values from R to C according to the return tyope specified in the \link{call signature}.
-If an R error occurs during the evaluation, the callback will be disabled for further invocations.
+When the C function pointer is called, a global callback handler (implemented in C) is executed first, that dynamically creates an R call expression to \code{fun}
+using the arguments, passed from C and converted to R, according to the \emph{argument types signature} within the \link{call signature} specified. See
+\link{\code{.dyncall}} for details on the format.
+Finally, the handler evaluates the R call expression within the environment given by \code{envir}, coerces the R return value of \code{fun} to the C value, according to the return type signature specified in \code{signature}.
+If an error occurs during the evaluation, the callback will be disabled for further invocations. (This behaviour might change in the future.)
 
 }
 \value{
@@ -33,22 +35,19 @@ If an R error occurs during the evaluation, the callback will be disabled for fu
 \section{Portability}{
 The implementation is based on the \emph{dyncallback} library (part of the DynCall project).
 
-The following processor architectures are supported: X86, X64, ARM and PowerPC 32-bit (particial); 
-
-Ports to the following OSs have been validated: Linux, Mac OS X, Windows 32/64-bit, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris, Minix, Plan9
+The following processor architectures are supported: X86, X64, ARM (including Thumb) and partial stable support for PowerPC 32-bit; The library
+has been built and tested to work on various OSs: Linux, Mac OS X, Windows 32/64-bit, BSDs, Haiku, Nexenta/Open Solaris, Minix and Plan9,
 as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
-
 Special notes for PowerPC 32-Bit: Callbacks for System V (Linux/BSD) are unstable in this release; MacOS X/Darwin works fine.
-
-In the context of R, there is currently no support for callbacks on MIPS, SPARC and PowerPC 64-Bit.
+In the context of R, dyncallback has currently no support for callbacks on MIPS, SPARC and PowerPC 64-Bit.
 }
 \note{
 The call signature \strong{MUST} match the foreign C callback function type, otherwise an activated callback call from C can lead to a \strong{fatal R process crash}.
 
 A small amount of memory is allocated with each wrapper. 
 A finalizer function that frees the allocated memory is registered at the external pointer.
-If the external callback function pointer is registered in a C library, a reference should also be held in R as long as the callback might get activated from C, otherwise the garbage collector might call the
-finalizer and the next invocation of the callback could lead to a \strong{fatal R process crash} as well.
+If the external callback function pointer is registered in a C library, a reference should also be held in R as long as the callback can be activated from a foreign C run-time context, 
+otherwise the garbage collector might call the finalizer and the next invocation of the callback could lead to a \strong{fatal R process crash} as well.
 }
 
 \references{

@@ -13,7 +13,7 @@ Description: The package provides a cross-platform framework for dynamic binding
   Dynamic bindings to shared C libraries are data-driven by cross-platform binding specification 
   using a compact plain text format ; an initial repository of bindings to a couple of 
   common C libraries (OpenGL, SDL, Expat, glew, CUDA, OpenCL, ODE, R) comes with the package.
-  Included are diverse technology demos and OS-specific installation notes for standard shared libraries.
+  The package includes a variety of technology demos and OS-specific notes for installation of shared libraries.
 License: BSD
 URL: http://dyncall.org
 LazyLoad: no

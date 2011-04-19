@@ -2,8 +2,8 @@
 \alias{TypeInfo}
 \alias{getTypeInfo}
 \alias{type information}
-\title{Run-time Type Information for foreign data types}
-\description{Run-time Type Information S3 class for foreign C data types.}
+\title{S3 class for run-time type information of foreign C data types}
+\description{S3 class for run-time type information of foreign C data types.}
 \usage{
 TypeInfo(name, type = c("base","pointer","struct","union"), 
   size = NA, align = NA, basetype = NA, fields = NA, 
@@ -24,8 +24,8 @@ getTypeInfo(name, envir = parent.frame())
 Type information objects are created at run-time to describe the concrete
 layout of foreign C data types on the host machine. While \link{type signature}s
 give an abstract information on e.g. the field types and names of 
-aggregate structure types, these objects store concrete layout information
-including offset, size and alignment computations.
+aggregate structure types, these objects store concrete memory size, alignment and layout information
+about C data types.
 }
 \value{
 List object tagged as S3 class 'TypeInfo' with the following named entries

@@ -23,8 +23,8 @@ required for some rdyncall demos:
 \tabular{lll}{
 \strong{Lib}     \tab \strong{Description} \tab \strong{URL} \cr
 \code{expat}     \tab XML Parser \tab \url{http://www.libexpat.org} \cr
-\code{GL}        \tab Open Graphics Library \tab \url{http://OpenGL.org}, \url{http://www.mesa3d.org} \cr
-\code{GLU}       \tab OpenGL Utility Library \tab \cr
+\code{GL}        \tab Open Graphics Library \tab \url{http://opengl.org}, \url{http://www.mesa3d.org} \cr
+\code{GLU}       \tab OpenGL Utility Library \tab see links above\cr
 \code{SDL}       \tab Multimedia Framework \tab \url{http://libsdl.org} \cr
 \code{SDL_mixer} \tab Music Format playing \tab \url{http://www.libsdl.org/projects/SDL_mixer} \cr
 \code{SDL_image} \tab Image Format loading \tab \url{http://www.libsdl.org/projects/SDL_image}  \cr
@@ -42,7 +42,7 @@ Detailed platform-specific installation instructions follow up.
 \section{Windows Installation Notes}{
 Download the \code{*.zip} files, unpack them and place the \code{*.DLL} files to a place within \code{PATH}.
 
-32-Bit Versions:
+32-Bit versions:
 
 \tabular{ll}{
 \strong{Lib}     \tab \strong{Download Link} \cr
@@ -55,7 +55,7 @@ Download the \code{*.zip} files, unpack them and place the \code{*.DLL} files to
 \code{SDL_ttf}   \tab \url{http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-2.0.10-win32.zip} \cr
 }
 
-64-Bit Version:
+64-Bit version:
 
 \tabular{ll}{
 \strong{Lib}     \tab \strong{Downdload Link} \cr
@@ -68,9 +68,8 @@ Download the \code{*.zip} files, unpack them and place the \code{*.DLL} files to
 \code{SDL_ttf}   \tab no prebuilt found (TODO: build) \cr
 }
 
-The prebuilt SDL from \url{http://www.drangon.org/mingw} did not work (exiting with OpenGL errors).
-If you know of other resources for prebuilt 64-bit packages
-for SDL and expat, please report.
+The prebuilt version of SDL from \url{http://www.drangon.org/mingw} did not work (exiting with OpenGL errors).
+If you know of other resources for prebuilt 64-bit packages for SDL and expat, please report.
 }
 \section{Mac OS X Installation Notes}{
 Download the \code{*.dmg} files, mount them (by double-click) and copy \code{*.framework} folders to \code{/Library/Frameworks}.
@@ -100,7 +99,7 @@ Debian Package installation via aptitude
 \code{SDL_image} \tab \code{libsdl-image1.2} \cr
 \code{SDL_mixer} \tab \code{libsdl-mixer1.2} \cr
 }
-SOUNDSYS is one of the following: alsa,all,esd,arts,oss,nas or pulseaudio (depending on your sound system)
+Depending on your sound system, \code{<SOUNDSYS>} should be explaced with one of the following: alsa, all, esd, arts, oss, nas or pulseaudio.
 Tested with Debian 5 and 6 (lenny and squeeze).
 }
 \section{Linux/Fedora Installation Notes}{
@@ -153,6 +152,5 @@ Using packages:
 \code{GL} \tab \code{xorg} \cr
 }
 
-.. to be continued ..
 }
 

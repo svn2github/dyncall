@@ -34,23 +34,23 @@ Functions to call pre-compiled code with support for most C argument and return 
   \item{...}{arguments to be passed to the foreign function. Arguments are converted from R to C values according to the \emph{call signature}. See details.}
 }
 \details{
-This foreign function interface (FFI) has no limitations regarding arity of functions and almost all C types are
-supported for argument- and return-types. In addition, on more obscure platforms such as Microsoft Windows 32-Bit on Intel/x86 platforms, it
-supports multiple calling conventions.
-The flexibility of the FFI raises from the fact, that simple text-based \emph{signature} strings describe the C function type. This method has several advantages:
+This Foreign Function Interface (FFI) has no limitations regarding support for arity of functions, and almost all C types are
+supported as argument- and return-types. In addition, on the Microsoft Windows 32-Bit Intel/x86 platform, it supports multiple calling conventions to
+interoperate with System DLLs.
+The flexibility of the FFI raises from the fact, that simple text-based \emph{signature} strings describe the foreign C function type. This method has several advantages:
 
 \itemize{
-\item This FFI gives direct access to precompiled C code without the need for additional C wrapper code as opposed to {\link{.C}} FFI which has strong limitations on the supported types and almost always need an additional layer written in 
-C when working with ordinary C shared libraries. 
-\item As the FFI \emph{knows} the target function, it checks for arity and compatible arguments at run-time. This makes the FFI suitable to be used
-directly from the console (given that the \emph{signatures} are set up correctly).
+\item This FFI gives direct access to precompiled C code without the need for additional C wrapper code as opposed to {\link{.C}} FFI which has strong limitations on the supported types and 
+almost always need an additional layer written in C when working with ordinary C shared libraries. 
+\item As the FFI \emph{knows} the target function, it can convert several possible R input variables and it can check for arity and compatibility of arguments at run-time. This
+increases type-safety for a certain amount and it makes the FFI suitable to be used directly from the console (given that the \emph{signatures} are set up correctly).
 }
 
 The foreign function to be called is specified by \code{address}, which is an external pointer that is obtained from \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}. 
 
 \code{signature} is a character string that specifies the formal argument-and-return types of the 
 foreign function using a \emph{call signature} string. It should match the function type of the foreign function given by \code{address},
-otherwise this can lead to a fatal R process crash.
+otherwise this can lead to a \strong{fatal R process crash}.
 
 The calling convention is specified \emph{explicitly} via function \code{.dyncall}
 using the \code{callmode} argument or \emph{implicitly} by using \code{.dyncall.*} 
@@ -87,7 +87,7 @@ The following table gives a list of valid type signatures for all supported C ty
 '\code{L}'           \tab unsigned long long     \tab raw,logical,integer,double         \tab double\cr
 '\code{f}'           \tab float                  \tab raw,logical,integer,double         \tab double\cr
 '\code{d}'           \tab double                 \tab raw,logical,integer,double         \tab double\cr
-'\code{p}'           \tab \emph{C type}* (pointer) \tab \emph{any vector},externalptr,NULL \tab externalptr\cr
+'\code{p}'           \tab \emph{C pointer}       \tab \emph{any vector},externalptr,NULL \tab externalptr\cr
 '\code{Z}'           \tab char*                  \tab character,NULL                     \tab character or NULL\cr
 '\code{x}'           \tab SEXP                   \tab \emph{any}                         \tab \emph{any}\cr
 '\code{v}'           \tab void                   \tab \emph{invalid}                     \tab NULL\cr
@@ -97,7 +97,7 @@ The following table gives a list of valid type signatures for all supported C ty
 
 The last two rows of the table the above refer to \emph{typed pointer} signatures.
 If they appear as a return type signature, the external pointer returned is 
-tagged as S3 \code{struct} type. See \code{\link{new.struct}} for details.  
+a S3 \code{struct} object. See \code{\link{new.struct}} for details.  
 
 }
 \section{Call Signatures}{
@@ -109,8 +109,8 @@ The general form of a call signature is as following:
 }
 
 The calling sequence given by the \bold{argument types signature} is specified in direct \emph{left-to-right} order of the formal argument types defined in C.
-The type signature characters and more complex building blocks (like type aliases and pointers) are put in sequence without any white space in between.
-Base type are specified using a one-character character.  A closing bracket character '\code{)}' marks the end of argument types, followed by a
+The type signatures are put in sequence without any white space in between.
+A closing bracket character '\code{)}' marks the end of argument types, followed by a
 single \bold{return type signature}. 
 
 Here are some examples of C library functions and corresponding call signatures:
@@ -128,7 +128,7 @@ on machine-level. They differ significantly among families of CPU Architectures
 as well as OS and Compiler implementations.
 
 On most platforms, a single \code{"default"} C Calling Convention is used.
-As an exception, on the Microsoft Windows 32-Bit Intel/x86 platform several calling conventions are very common.
+As an exception, on the Microsoft Windows 32-Bit Intel/x86 platform several calling conventions are common.
 Most of the C libraries still use a \code{"default"} C ( also known as \code{"cdecl"} )
 calling convention, but when working with Microsoft System APIs and DLLs, the \code{"stdcall"}
 calling convention must be used. 
@@ -151,18 +151,16 @@ For example, when loading OpenGL across platforms, \code{"stdcall"} should be us
 because on Windows, OpenGL is a System DLL. This is very exceptional, as in most other cases, \code{"default"} (or \code{"cdecl"}, the alias) need to be used
 for normal C shared libraries on Windows.
 
-Note, that the implementation based on dyncall library, allows to expose all calling conventions (e.g. OS-foreign function calls such as
-calling \code{stdcall} on Linux/x86).
-
 At this stage of development, support for C++ calls should be considered experimental.
 Support for Fortran is planed but not yet implemented in dyncall.
 }
 \section{Portability}{
 The implementation is based on the \emph{dyncall} library (part of the DynCall project).
-It has support for the following processor architectures: X86, X64, ARM (including THUMB support), PowerPC 32-bit, MIPS 32-bit and MIPS 64-bit.
-The library has been ported to the following OSs: Linux, Mac OS X, Windows 32/64-bit, (Open-,Free-,Net-,DragonFly-) BSD, Haiku, Nexenta/Open Solaris, Minix, Plan9
+
+The following processor architectures are supported: X86, X64, ARM (including Thumb), PowerPC 32-bit, MIPS 32-bit, MIPS 64-Bit; The library
+has been built and tested to work on various OSs: Linux, Mac OS X, Windows 32/64-bit, BSDs, Haiku, Nexenta/Open Solaris, Minix and Plan9,
 as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
-In the context of R, there is currently no support for SPARC and PowerPC 64-Bit.
+In the context of R, dyncall has currently no support for SPARC and PowerPC 64-Bit.
 }
 \note{
 The target address, calling convention and call signature \strong{MUST} match foreign function type, otherwise the invocation could lead to a \strong{fatal R process crash}.

@@ -10,11 +10,11 @@ dynfind(libnames, auto.unload=TRUE)
   \item{auto.unload}{logical: if \code{TRUE} then a finalizer is registered that closes the library on garbage collection. See \code{\link{.dynload}} for details.}
 }
 \details{
-\code{dynfind} offers a platform-portable interface for loading a particular shared library across multiple platforms.
+\code{dynfind} offers a platform-portable naming interface for loading a specific shared library.
 
 The naming scheme and standard locations of shared libraries are OS-specific.
-When loading a standard library dynamically at run-time across platforms via standard interfaces such as \code{\link{.dynload}} or \code{\link{dyn.load}}, 
-a platform-test is usually needed to specify the library file path.
+When loading a shared library dynamically at run-time across platforms via standard interfaces such as \code{\link{.dynload}} or \code{\link{dyn.load}}, 
+a platform-test is usually needed to specify the OS-dependant library file path.
 
 This \emph{library name problem} is encountered via breaking up the library file path into several abstract components:
 
@@ -55,7 +55,7 @@ The vector of \sQuote{locations} is initialized by environment variables such as
 
 The file extension depends on the OS: '\code{.dll}' (Windows), '\code{.dylib}' (Mac OS X), '\code{.so}' (all others).
 
-On Mac OS X, \sQuote{frameworks} are also taken into account. This happens before the normal library search procedure and uses a slightly different naming pattern
+On Mac OS X, the search for a library includes the \sQuote{Frameworks} folders as well. This happens before the normal library search procedure and uses a slightly different naming pattern
 in a separate search phase:
 
 \tabular{c}{

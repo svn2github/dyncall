@@ -3,26 +3,25 @@
 \alias{rdyncall}
 \alias{rdyncall-package}
 \title{Improved Foreign Function Interface (FFI) and Dynamic Bindings to C Libraries (e.g. OpenGL) }
-\description{The package provides a platform-portable framework for dynamic binding of 
+\description{The package provides a cross-platform framework for dynamic binding of 
   C libraries using a flexible Foreign Function Interface (FFI).
   The FFI supports almost all fundamental C types, multiple calling conventions, 
   symbolic access to foreign C struct/union data types and wrapping of R functions 
   as C callback function pointers. 
   Dynamic bindings to shared C libraries are data-driven by cross-platform binding specification 
   using a compact plain text format ; an initial repository of bindings to a couple of 
-  common C libraries (OpenGL,SDL,Expat,CUDA,OpenCL,ODE,R) comes with the package.
-  Detailed instructions for installation of third-party shared libraries for various OSs 
-  and several demos are included.
+  common C libraries (OpenGL, SDL, Expat, glew, CUDA, OpenCL, ODE, R) comes with the package.
+  The package includes a variety of technology demos and OS-specific notes for installation of shared libraries.
 }
 \section{Overview}{
 \itemize{
-\item Flexible FFI with support for most C types, type-safety checks and multiple calling conventions. See \code{\link{.dyncall}}.
-\item Searching for Shared Libraries across platforms by short names. See \code{\link{dynfind}}.
-\item Loading of shared libraries with automatic garbage-collector controlled unloading. See \code{\link{.dynload}}.
-\item Dynamic creation of call wrappers to foreign code. See \code{\link{dynbind}}.
-\item Handling of foreign C struct/union data types. See \code{\link{packing}} and \code{\link{struct}}.
+\item Flexible FFI with support for almost all C types, type-safety checks and multiple calling conventions. See \code{\link{.dyncall}}.
+\item Loading of shared libraries with \emph{automatic unload management} and using direct access to OS linker. See \code{\link{.dynload}}.
+\item Cross-platform naming and loading of shared libraries. See \code{\link{dynfind}}.
+\item Binding C library functions via thin call wrappers. See \code{\link{dynbind}}.
+\item Handling of foreign C pointer, array and struct/union data types. See \code{\link{packing}} and \code{\link{struct}}.
 \item Dynamic wrapping of R functions as C function pointers to be used in C callbacks. See \code{\link{new.callback}}. 
-\item Dynamic bindings to C Libraries and APIs (functions, variables, macro constants, enums, struct and union types). See \code{\link{dynport}}. 
+\item Dynamic bindings to standard and common C libraries and APIs (functions, variables, macro constants, enums, struct and union types). See \code{\link{dynport}}. 
 }
 }
 \section{Getting Started}{
@@ -31,29 +30,22 @@ See \code{demos(package="rdyncall")} for an overview.
 Some demos require shared C libraries to be installed in the system. Please read \link{rdyncall-demos} for details.
 }
 \section{Portability}{
-The package is based on libraries from the \emph{DynCall} project.
-The following architectures are considered to be stable: X86, X64, PowerPC, ARM, MIPS.
-Regarding \link{callback} support, the PowerPC on Darwin is stable, while on ELF platform (using System V), dyncallback support is experimental.
-
-Regarding the \link{dynport} mechanism, several demos that stress-test this mechanism have been tested. 
-
-The following Platforms have been reported to work using the demos for basic testing.
-Besides that, all platforms passed the \emph{DynCall} test suites within the C source tree. Please see the details on Portability for \link{dyncall}, 
-\link{dyncallback} and \link{dynload}.
+The following gives a list of comments on platforms about the status of this package.
+Please see the details on Portability for \link{dyncall}, \link{dyncallback} and \link{dynload}.
 
 \itemize{
-  \item FreeBSD 8.2/x86: ok.
   \item Linux Distributions:
     \itemize{
-      \item Debian {5,6}/x86: ok.
+      \item Debian {5,6}/{x86,x64}: ok.
       \item Fedora 14/x86: ok.
     }
   \item Mac OS X 10.4/ppc R-2.10.0: ok.
   \item Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
-  \item NetBSD 5.0/x86, 5.1/x64: ok. 
+  \item NetBSD 5/{x86,x64}: ok. 
   \item OpenBSD 4.8/x64: SDL demos failed due to pthread (linked in SDL, but not in R in ports tree).
   \item Windows XP/x86: R-2.12.2: ok.
   \item Windows 7/{x86,x64}: ok (64-bit SDL demos: look for the right DLL)
+  \item FreeBSD 8.2/x86: build ok, still testing.
 }
 }
 

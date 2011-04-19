@@ -8,20 +8,17 @@ comprising R wrappers for C functions, object-like macros, enums and data types.
 \usage{
 dynport(portname, portfile=NULL,
  repo=system.file("dynports",package="rdyncall") )
-loadDynportNamespace(name, portfile, do.attach=TRUE)
 }
 \arguments{
 \item{portname}{the name of a dynport, given as a literal or character string.}
-\item{portfile}{character string giving the path to a script file.}
+\item{portfile}{\code{NULL} or character string giving a script file to parse ; \code{portname} and \code{repo} are .}
 \item{repo}{character string giving the path to the root of the \emph{dynport} repository.}  
-\item{do.attach}{logical, if \code{TRUE} the created R name space should be attached as a package in the search path.}
-\item{name}{character string specifying the name of a name space.}
 }
 \details{
 \code{dynport} offers a dynamic method for binding common and standard C libraries to R.
 The method is data-driven using platform-portable specifications, named \emph{DynPort} files.
-In order to use C bindings via \code{dynport}, the pre-compiled shared C library need to be installed in the system.
-See \link{rdyncall-demos} for installation notes for several OSs.
+In order to use C bindings via \code{dynport}, some standard pre-compiled shared C libraries need to be installed to the system.
+See \link{rdyncall-demos} for OS-specific installation notes.
  
 \emph{DynPort} files are stored in a repository that is delivered and installed as part of the package installation.
 The following gives a list of currently available \emph{DynPorts}:
@@ -34,31 +31,32 @@ The following gives a list of currently available \emph{DynPorts}:
 \code{SDL_image}   \tab Loading of image files (png,jpeg..)         \cr
 \code{SDL_mixer}   \tab Loading/Playing of ogg/mp3/mod music files. \cr
 \code{SDL_ttf}     \tab Loading/Rendering of True Type Fonts.       \cr
-\code{glew}        \tab OpenGL Extension Wrangler (OpenGL 3.0)      \cr
+\code{glew}        \tab OpenGL Extension Wrangler (includes OpenGL 3.0) \cr
+\code{gl3}         \tab strict OpenGL 3 (untested)                  \cr
 \code{R}           \tab R shared library                            \cr
-\code{ode}         \tab Open Dynamics (Physics-) Engine             \cr
-\code{cuda}        \tab NVIDIA Cuda                                 \cr
-\code{opencl}      \tab OpenCL                                      \cr
+\code{ode}         \tab Open Dynamics (Physics-) Engine (untested)  \cr
+\code{cuda}        \tab NVIDIA Cuda (untested)                      \cr
+\code{opencl}      \tab OpenCL (untested)                           \cr
 \code{stdio}       \tab C Standard Library I/O Functions            \cr
 }
 
+A dynport is mainly driven by text-files with a lot of string data and minor R commands inbetween.
 When processing a \emph{DynPort} file given by \code{portname}, an R name space object is created 
 and populated with R wrapper and helper objects. 
-When \code{do.attach} is \code{TRUE} (default behaviour), the name space is attached to the search path
-and the C API becomes accessible.
 
-In the current implementation, \emph{DynPort} files are R scripts with a large
-amount of \link{signature} text data.
-Up to three different operations are usually performed here:
+The script file name is determined as following:
+If \code{portfile} is \code{NULL}, then the script file is usually loaded from \code{<repo>/<portname>.R} where \code{repo} is usually \code{<R_HOME>/library/rdyncall/dynports},
+otherwise the script to evaluate is taken from \code{portfile} directly.
 
+\emph{DynPort} basically do up to three things:
 \itemize{
 \item Functions are mapped via \code{dynbind} and a description of the C library using a \emph{library signatures}.
 \item Symbolic constants are mapped via R \code{assign} expressions.
-\item Aggregate Data Types are registred via via \code{parseStructInfos} and \code{parseUnionInfos}.
+\item Run-time type-information objects for aggregate data type are registered via \code{parseStructInfos} and \code{parseUnionInfos}.
 }
 
-A tool suite, comprising of boost wave, GCC-XML, and XSLT, was used to generate the \emph{DynPort} files automatically
-by extracting type information from original C header files. 
+A tool suite, comprising boost wave, GCC-XML, and XSLT, was used to generate the available \emph{DynPort} files automatically
+by extracting type information from C library header files. 
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Project}. \cr 

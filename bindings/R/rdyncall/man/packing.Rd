@@ -11,14 +11,14 @@
 \arguments{
 \item{x}{atomic vector (logical, raw, integer or double) or external pointer.}
 \item{offset}{integer specifying \emph{byte offset} starting at 0.} 
-\item{sigchar}{character string specifying the C data type by a \code{\link{signature}} string.}
+\item{sigchar}{character string specifying the C data type by a \link{type signature}.}
 \item{value}{R object value to be coerced and packed to a foreign C data type.} 
 }
 \details{
 The function \code{.pack} converts an R \code{value} into a C data type specified by the \link{signature} \code{sigchar} 
 and it writes the raw C foreign data value at byte position \code{offset} into the object \code{x}.
 The function \code{.unpack} extracts a C data type according to the \link{signature} \code{sigchar} 
-at byte position \code{offset} from the object \code{x} and converts the value to an R value and returns it.
+at byte position \code{offset} from the object \code{x} and converts the C value to an R value and returns it.
 
 Byte \code{offset} calculations start at 0 relative to the first byte in an atomic vectors data area.
 
@@ -29,7 +29,7 @@ Otherwise, if \code{x} is an external pointer, there is only a C NULL pointer ch
 \code{.unpack} returns a read C data type coerced to an R value.
 }
 \seealso{
-Details on the text string encoding for \code{\link{signature}}.
+\code{\link{.dyncall} for details on type signatures.
 }
 \examples{
 # transfer double to array of floats and back, compare precision:
