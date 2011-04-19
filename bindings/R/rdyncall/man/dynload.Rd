@@ -35,7 +35,7 @@ If \code{auto.unload} is \code{TRUE}, a finalizer function is registered that wi
 Otherwise \code{NULL} is returned. 
 If \code{protect.lib} is \code{TRUE}, the library handle is \emph{protected} by resolved address external pointers from unloading.
 
-\code{.dynunload} explicitly unreferences the loaded library referenced by \code{libhandle}.
+\code{.dynunload} explicitly unreferences the loaded library specified by \code{libhandle}.
 
 Setting both \code{auto.unload} and \code{protect.lib} to \code{TRUE}, libraries remain loaded as long as resolved symbols are in use, and they get automatic unloaded 
 when no resolved symbols remain.

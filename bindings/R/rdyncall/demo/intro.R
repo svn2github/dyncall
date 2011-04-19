@@ -2,7 +2,7 @@
 # File: demo/intro.R
 # Description: Texture-mapped scroll-text, playing music 'Hybrid Song' composed in jan. -96 by Quazar of Sanxion 
 
-s <- NULL
+s     <- NULL
 texId <- NULL
 music <- NULL
 
@@ -18,6 +18,7 @@ checkGL <- function()
 
 init <- function()
 {
+  require(rdyncall)
   dynport(SDL)
   SDL_Init(SDL_INIT_VIDEO+SDL_INIT_AUDIO)
   dynport(GL)
@@ -56,8 +57,6 @@ loadTexture <- function(name)
 
 drawScroller <- function(text,time)
 {
-  glClearColor(1,0,0,0)
-  glClear(GL_COLOR_BUFFER_BIT)
   glBindTexture(GL_TEXTURE_2D, texId)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
@@ -68,8 +67,12 @@ drawScroller <- function(text,time)
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
 
+  glMatrixMode(GL_MODELVIEW)
+  glLoadIdentity()  
+  glMatrixMode(GL_PROJECTION)
+  glLoadIdentity()
 
-  x <- 1-time*0.1
+  x <- 1-time*0.5
   y <- 0
   w <- 0.2
   h <- 0.2
@@ -87,10 +90,9 @@ drawScroller <- function(text,time)
     glEnd()
     x <- x + w
   } 
-  SDL_GL_SwapBuffers()
 }
   
-codes <- utf8ToInt("HELLO DUDEZ") - 32
+codes <- utf8ToInt("DO YOU SOMETIMES WANT FOR YOUR OLD HOME COMPUTER?! - I DO") - 32
 
 mainloop <- function()
 {
@@ -102,21 +104,23 @@ mainloop <- function()
   while(!quit)
   {
     tnow <- SDL_GetTicks()
+    tdemo <- ( tnow - tbase ) / 1000
     glClearColor(0,0,blink,0)
     glClear(GL_COLOR_BUFFER_BIT+GL_DEPTH_BUFFER_BIT)
     blink <- blink + 0.01
-    tdemo <- ( tnow - tbase ) / 1000
     drawScroller(codes,tdemo)
+    SDL_GL_SwapBuffers()
     while( SDL_PollEvent(evt) != 0 )
     {
-      if ( evt$type == SDL_QUIT ) quit <- TRUE
-      else if (evt$type == SDL_MOUSEBUTTONDOWN )
-      {
-        button <- evt$button
-        cat("button ",button$button," at ",button$x,",",button$y,"\n") 
+      type <- evt$type
+      if ( 
+           type == SDL_QUIT 
+      || ( type == SDL_KEYDOWN && evt$key$keysym$sym == SDLK_ESCAPE )
+      ) {
+        quit <- TRUE
       }
     }
-    SDL_Delay(30)
+    SDL_Delay(20)
   }
 }
 

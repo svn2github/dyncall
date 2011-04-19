@@ -1,15 +1,20 @@
 Package: rdyncall
 Version: 0.7
-Date: 2011-03-25
-Title: Dynamic Bindings to C Libraries based on an improved Foreign Function Interface (FFI)
+Date: 2011-04-20
+Title: Improved Foreign Function Interface (FFI) and Dynamic Bindings to C Libraries (e.g. OpenGL) 
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
 Depends: R (>= 2.7)
-Description: Dynamic C Library Binding and wrapping of APIs Foreign Library Interface framework for binding C Libraries and APIs to R via dynamically created R name space wrappers using a portable binding specification format.
-  The FFI supports all fundamental C types, multiple calling conventions, handling of struct/union C data types and wrapping of R functions into C callback function pointers. 
-  Bindings for a particular C Library and API can be extracted from C header files which are usually valid across platforms and stored in a compact plain text file format.
-  An initial repository of portable bindings to common libraries such as OpenGL, SDL, Expat, etc.. is delivered with the package.
-  This package enables developers to write system-level software by working with mapped C APIs to R name spaces. 
+Description: The package provides a cross-platform framework for dynamic binding of 
+  C libraries using a flexible Foreign Function Interface (FFI).
+  The FFI supports almost all fundamental C types, multiple calling conventions, 
+  symbolic access to foreign C struct/union data types and wrapping of R functions 
+  as C callback function pointers. 
+  Dynamic bindings to shared C libraries are data-driven by cross-platform binding specification 
+  using a compact plain text format ; an initial repository of bindings to a couple of 
+  common C libraries (OpenGL, SDL, Expat, glew, CUDA, OpenCL, ODE, R) comes with the package.
+  Included are diverse technology demos and OS-specific installation notes for standard shared libraries.
 License: BSD
 URL: http://dyncall.org
 LazyLoad: no
+

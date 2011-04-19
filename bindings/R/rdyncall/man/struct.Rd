@@ -10,13 +10,13 @@
 \title{Allocation and handling of foreign C aggregate data types}
 \description{Functions for allocation, access and registration of foreign C \code{struct} and \code{union} data type.}
 \usage{
-\S3method{$}{struct}(x, index)
-\S3method{$}{struct}(x, index) <- value
-\S3method{print}{struct}(x, indent=0, \ldots)
 new.struct(type)
 as.struct(x, type)
 parseStructInfos(sigs, envir=parent.frame())
 parseUnionInfos(sigs, envir=parent.frame())
+\S3method{$}{struct}(x, index)
+\S3method{$}{struct}(x, index) <- value
+\S3method{print}{struct}(x, indent=0, \ldots)
 }
 \arguments{
   \item{x}{external pointer or atomic raw vector of S3 class 'struct'.}
@@ -29,33 +29,26 @@ parseUnionInfos(sigs, envir=parent.frame())
   \item{...}{additional arguments to be passed to \code{\link[base]{print}} method.}
 }
 \details{
+References to foreign C data objects are represented by objects of class 'struct'.
 
-Foreign C aggregate ( \code{struct} and \code{union} ) data and pointer-to-data 
-objects can be manipulated using the \dQuote{$} operator.
-This is handled by R objects of S3 class \code{struct}.
-
-Basically, two R objects are used to reference foreign C data. External pointers reference pointers to some foreign data.
-New objects of a foreign data type can be allocated via the \code{new.struct} function. In this case, the memory is managed
-by R using an atomic \code{raw} object that is of S3 class \code{struct}.
-
-Two types of foreign C objects are supported:
+Two reference types are supported:
 
 \itemize{
-  \item \emph{external pointers}, returned by \code{\link{.dyncall}} using a call signature with a typed pointer expression in the return type signature. 
-  \item \emph{new objects} of a foreign C data type are \code{new.struct} function:
-An atomic \code{raw} object is used for storage, initialized with length equal to the size of the
-C foreign \code{type}.
+  \item \emph{External pointers} returned by \code{\link{.dyncall}} using a call signature with a typed pointer expression in the return type signature. 
+  \item \emph{Internal objects}, memory-managed by R, are allocated by \code{new.struct}:
+An atomic \code{raw} storage object is returned, initialized with length equal to the byte size of the
+foreign C data type.
 }
  
-In order to access and manipulate the data fields of foreign C data types, the \dQuote{$} and \dQuote{$<-} S3 operator methods
+In order to access and manipulate the data fields of foreign C aggregate data objects, the \dQuote{$} and \dQuote{$<-} S3 operator methods
 can be used.
 
-The type information is given by S3 objects of class \code{\link{typeinfo}}.
+S3 objects of class \code{struct} have an attribute \code{struct} that specifies the name (as a character string) to a foreign C data type.
+The name should refer to an R object of type \code{\link{typeinfo}}, which provides the run-time type information of a particular foreign C type.
 
-Before using a foreign C data type in R, an S3 object of class \code{\link{typeinfo}} need
-to be installed. This is done via using \code{parseStructInfos} and  
-\code{parseUnionInfos}. Foreign C data types are described by a signature character string.
-The format for both types are described below:
+The run-time type information for several foreign C \code{struct} and \code{union} types need to be installed once via 
+\code{parseStructInfos} and \code{parseUnionInfos} functions.
+The C data types are specified by \code{sigs}, a signature character string. The formats for both types are described next:
 
 \strong{Structure type signatures} describe the layout of aggregate \code{struct} C data types.
 Type Signatures are used within the \sQuote{field-types}. \sQuote{field-names} consists of space separated identifier names and
@@ -100,8 +93,8 @@ The corresponding Union type signature is:
 
 \code{"Value|if<LongValue>}anInt aFloat aStruct;"}
 
-\code{as.struct} can be used to \emph{cast} a structure into a different type. This is not type-safe and can lead to a \strong{fatal R process crash}
-if used on pointers.
+\code{as.struct} can be used to \emph{cast} a foreign C data reference to a different type. 
+When using an external pointer reference, this can lead quickly to a \strong{fatal R process crash} - like in C.
 }
 \seealso{
 \code{\link{signature}} for details on the Structure and Union Type Signatures and \code{\link{.dyncall}} for foreign function calls and \code{\link{TypeInfo}} for details on S3 run-time type information objects.
