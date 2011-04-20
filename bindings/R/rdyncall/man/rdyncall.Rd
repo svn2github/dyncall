@@ -13,6 +13,32 @@
   common C libraries (OpenGL, SDL, Expat, glew, CUDA, OpenCL, ODE, R) comes with the package.
   The package includes a variety of technology demos and OS-specific notes for installation of shared libraries.
 }
+\details{
+\pkg{rdyncall} offers a stack of interoperability technologies for working
+with foreign compiled languages using cross-platform portable abstraction
+methods. 
+
+For R application development, the package facilitates direct access from R
+to the C Application Programming Interface (API) of common libraries.
+This enables a new style of development: R applications can use
+low-level services of portable C libraries. 
+System-level code can be implemented in R without leaving the language.
+C APIs can be explored from within the R interpreter.
+Moving the R code from one platform to the other does not involve
+recompilation.
+Ofcourse, the run-time libraries need to be installed using a standard
+procedure of the target Operating-System Distribution. 
+See \link{rdyncall-demos} for details on this.
+
+For R core development and research, the package provides an improved Foreign 
+Function Interface (FFI) that can be used to call foreign precompiled C code 
+without the need for additional compilation of wrapper code.
+The interface has basic mechanisms included for type-safety checks for
+argument types and supports working with pointers, arrays, structs and unions.
+R functions can be wrapped into first-level C callback function pointers.
+
+
+}
 \section{Overview}{
 \itemize{
 \item Flexible FFI with support for almost all C types, type-safety checks and multiple calling conventions. See \code{\link{.dyncall}}.
@@ -31,26 +57,26 @@ Some demos require shared C libraries to be installed in the system. Please read
 }
 \section{Portability}{
 The following gives a list of comments on platforms about the status of this package.
-Please see the details on Portability for \link{dyncall}, \link{dyncallback} and \link{dynload}.
+Please see the details on portability for \link{dyncall}, \link{dyncallback} and \link{dynload}.
 
-\itemize{
-  \item Linux Distributions:
-    \itemize{
-      \item Debian {5,6}/{x86,x64}: ok.
-      \item Fedora 14/x86: ok.
-      \item Debian {4}/{ppc32}: R-2.4.0: ok, but no support for callbacks yet.
-      \item Debian {4}/{arm}: R-2.7.0: testing, x11/sdl not tested.
-    }
-  \item Mac OS X 10.4/ppc R-2.10.0: ok.
-  \item Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
-  \item NetBSD 5/{x86,x64}: ok. 
-  \item OpenBSD 4.8/x64: SDL demos failed due to pthread (linked in SDL, but not in R in ports tree).
-  \item Windows XP/x86: R-2.12.2: ok.
-  \item Windows 7/{x86,x64}: ok (64-bit SDL demos: look for the right DLL)
-  \item FreeBSD 8.2/x86: build ok, still testing.
+\preformatted{
+Linux Debian 4/ppc32, R-2.4.0 : ok, but no callbacks.
+Linux Debian 5/arm  , R-2.7.0 : ok, SDL not tested.
+Linux Debian 6/x86  , R-2.12.2: ok.
+Linux Debian 6/x64  , R-2.12.2: ok.
+Fedora 14/x86: ok.
+Mac OS X 10.4/ppc, R-2.10.0: ok.
+Mac OS X 10.6/x86, R-2.12.2: ok.
+Mac OS X 10.6/x64, R-2.12.2: ok.
+NetBSD 5.0/x86: ok. 
+NetBSD 5.1/x64: ok. 
+OpenBSD 4.8/x64, R-2.7.0: SDL failed.
+Windows XP/x86, R-2.12.2: ok.
+Windows  7/x86, R-2.12.2: ok.
+Windows  7/x64, R-2.12.2: ok, use correct 64-bit SDL DLL, SDL extension not tested - see \link{rdyncall-demos})
+FreeBSD 8.2/x86: build ok, no tests made for X11.
 }
 }
-
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Project}. 
   \url{http://dyncall.org}

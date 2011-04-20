@@ -29,6 +29,7 @@ export(
 # --- dynport.R --------------------------------------------------------------
   dynport
 )
+# --- dynstruct.R ------------------------------------------------------------
 S3method("$<-", struct)
 S3method("$", struct)
 S3method(print,struct)

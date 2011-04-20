@@ -1,6 +1,4 @@
-rdyncall R package - Dynamic Bridge to Foreign C Libraries for R 
-(C) 2007-2011, Daniel Adler <dadler@uni-goettingen.de>
-
+rdyncall R package - Improved Foreign Function Interface (FFI) and Dynamic Bindings to C Libraries (e.g. OpenGL) 
 
 What is this?
 -------------
@@ -22,18 +20,6 @@ R's built-ins.
 
 'rdyncall' provides an improved foreign function interface for R as
 an alternative to .C, .Call, .External.
-
- middleware interoperability services for R 
-that enables direct invocation to C library functions without
-the need for additional C wrapper code.
-
-At the core of the package, an improved FFI (foreign function interface) for
-R is implemented, that enables direct and flexible interaction with 
-precompiled code. See "? .dyncall" for details.
-
-At a high-level the package implements a Foreign Library Interface for R 
-designed to access whole C libraries as virtual R namespaces.
-See "? dynport" for details.
 
 
 Supported Platforms:
@@ -73,26 +59,3 @@ Building R package from subversion source tree
     $ cd rdyncall/src && svn co http://dyncall.org/svn/dyncall/trunk/dyncall
   - or, download dyncall sources from net 
     (e.g. http://dyncall.org/r0.7/dyncall-0.7.tar.gz (to-be-released)
-
-
-Run some Demos
---------------
-
-See README-Demo.txt for details.
-
-
-Tested Platforms:
------------------
-
-FreeBSD 8.2/x86: ok.
-Linux/Debian 5.0/x86: ok.
-Linux/Debian 6.0/x64: ok.
-Linux/Fedora 14/x86: ok.
-Mac OS X 10.4/ppc R-2.10.0: ok.
-Mac OS X 10.6/{i386,x64} R-2.12.2: ok.
-NetBSD 5.0/x86: ok.
-NetBSD 5.1/x64: ok, do pkg_add -v SDL expat.
-OpenBSD 4.8/x64: SDL demos fail (SDL to pthread dependency fails).
-Windows XP/x86 R-2.12.2: ok.
-Windows XP/x64 R-2.12.2: ok, but beware of wrong pre-compiled SDL 64-bit pitfall - see README-Demo.txt).
-FreeBSD 8.1/x86: ?
