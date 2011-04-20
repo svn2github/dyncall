@@ -15,12 +15,19 @@ dynport(portname, portfile=NULL,
 \item{repo}{character string giving the path to the root of the \emph{dynport} repository.}  
 }
 \details{
-\code{dynport} offers a dynamic method for binding common and standard C libraries to R.
-The method is data-driven using platform-portable specifications, named \emph{DynPort} files.
-In order to use C bindings via \code{dynport}, some standard pre-compiled shared C libraries need to be installed to the system.
+\code{dynport} offers a convenient method for binding entire C libraries to R.
+This mechanism runs cross-platform and uses dynamic linkage. This means,
+the run-time library of a choosen binding need to be installed in the system.
+Depending on the OS, some libraries, supported by \code{dynport}, are 
+already installed, but others might need manual intervention. 
 See \link{rdyncall-demos} for OS-specific installation notes.
- 
+
+The binding method is data-driven using platform-portable specifications, named \emph{DynPort} files.
 \emph{DynPort} files are stored in a repository that is delivered and installed as part of the package installation.
+When \code{dynport} processes a \emph{DynPort} file given by \code{portname}, 
+an R name space object is created and populated with R wrapper and helper objects
+that implement the interface between R and C. 
+
 The following gives a list of currently available \emph{DynPorts}:
 \tabular{ll}{
 \strong{DynPort name/C Library} \tab \strong{Description}                        \cr
@@ -40,23 +47,31 @@ The following gives a list of currently available \emph{DynPorts}:
 \code{stdio}       \tab C Standard Library I/O Functions            \cr
 }
 
-A dynport is mainly driven by text-files with a lot of string data and minor R commands inbetween.
-When processing a \emph{DynPort} file given by \code{portname}, an R name space object is created 
-and populated with R wrapper and helper objects. 
+As of the current implement, \emph{DynPort} files are actually R scripts
+that perform basically three things:
 
-The script file name is determined as following:
-If \code{portfile} is \code{NULL}, then the script file is usually loaded from \code{<repo>/<portname>.R} where \code{repo} is usually \code{<R_HOME>/library/rdyncall/dynports},
-otherwise the script to evaluate is taken from \code{portfile} directly.
-
-\emph{DynPort} basically do up to three things:
 \itemize{
-\item Functions are mapped via \code{dynbind} and a description of the C library using a \emph{library signatures}.
-\item Symbolic constants are mapped via R \code{assign} expressions.
-\item Run-time type-information objects for aggregate data type are registered via \code{parseStructInfos} and \code{parseUnionInfos}.
+\item Functions (and pointer-to-function variables) are mapped via \code{\link{dynbind}} and a description of the C library using a \emph{library signatures}.
+\item Symbolic names are assigned to its values for object-like macro defines and C enum types.
+\item Run-time type-information objects for aggregate C data types (struct and union) are registered via \code{\link{parseStructInfos}} and \code{\link{parseUnionInfos}}.
 }
+
+The file path to the \emph{DynPort} file is derived from
+\code{portname} per default. This would refer to \code{"<repo>/<portname>.R"} 
+where  \code{repo} usually refers to the initial \emph{DynPort} repository
+located at the sub-folder \code{"dynports/"} of the package.
+If \code{portfile} is given, then this value is taken as file path (usually
+for testing purpose).
 
 A tool suite, comprising boost wave, GCC-XML, and XSLT, was used to generate the available \emph{DynPort} files automatically
 by extracting type information from C library header files. 
+
+In a future release, the DynPort format will be changed to
+a language-neutral document. For the interested reader: 
+A first prototyp is currently available in an FFI extension to the Lua 
+programming language (see \code{luadyncall} subversion sub-tree).
+A third revision (including function types in call signatures, bitfields, arrays, etc..)
+is currently in development.
 }
 \references{
   Adler, D., Philipp, T. (2008) \emph{DynCall Project}. \cr 

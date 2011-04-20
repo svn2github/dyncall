@@ -31,13 +31,16 @@ procedure of the target Operating-System Distribution.
 See \link{rdyncall-demos} for details on this.
 
 For R core development and research, the package provides an improved Foreign 
-Function Interface (FFI) that can be used to call foreign precompiled C code 
-without the need for additional compilation of wrapper code.
-The interface has basic mechanisms included for type-safety checks for
-argument types and supports working with pointers, arrays, structs and unions.
-R functions can be wrapped into first-level C callback function pointers.
-
-
+Function Interface (FFI) that can be used to call arbirary 
+foreign precompiled C code without the need for additional 
+compilation of wrapper code. The back-end library is extendable with new
+calling conventions (such as Fortran,Pascal,COM,etc.. - which has not been 
+the focus as of this release, but might be supported officially in the near 
+futurue).
+Basic type-safety checks for argument passing and framework support for
+working with foreign C data types such as pointers, arrays, structs and 
+wrapping of R functions into first-level C callback function pointers
+round up this framework.
 }
 \section{Overview}{
 \itemize{
@@ -55,26 +58,49 @@ Several demos ranging from simple FFI calls to the C standard math library up to
 See \code{demos(package="rdyncall")} for an overview.
 Some demos require shared C libraries to be installed in the system. Please read \link{rdyncall-demos} for details.
 }
-\section{Portability}{
-The following gives a list of comments on platforms about the status of this package.
-Please see the details on portability for \link{dyncall}, \link{dyncallback} and \link{dynload}.
+\section{Supported Platforms}{
+The low-level implementation is mainly based on libraries from the DynCall 
+Project (\url{http://dyncall.org}). The library suite is distributed
+as part of the package source tree.
 
-\preformatted{
-Linux Debian 4/ppc32, R-2.4.0 : ok, but no callbacks.
-Linux Debian 5/arm  , R-2.7.0 : ok, SDL not tested.
-Linux Debian 6/x86  , R-2.12.2: ok.
-Linux Debian 6/x64  , R-2.12.2: ok.
-Fedora 14/x86: ok.
-Mac OS X 10.4/ppc, R-2.10.0: ok.
-Mac OS X 10.6/x86, R-2.12.2: ok.
-Mac OS X 10.6/x64, R-2.12.2: ok.
-NetBSD 5.0/x86: ok. 
-NetBSD 5.1/x64: ok. 
-OpenBSD 4.8/x64, R-2.7.0: SDL failed.
-Windows XP/x86, R-2.12.2: ok.
-Windows  7/x86, R-2.12.2: ok.
-Windows  7/x64, R-2.12.2: ok, use correct 64-bit SDL DLL, SDL extension not tested - see \link{rdyncall-demos})
-FreeBSD 8.2/x86: build ok, no tests made for X11.
+The dyncall and dyncallback libraries implement generic low-level services
+with the help of a small amount of hand-written assembly code and
+careful modeling of the target machine's calling sequence
+for each platform to support.
+
+As of version 0.6, the following processor architectures are supported:
+
+\itemize{
+\item Intel i386 32-bit and AMD 64-bit Platforms
+\item ARM 32-bit (with support for Thumb)
+\item PowerPC 32-bit (support for callbacks not implemented for Linux/BSD)
+\item MIPS 32- and 64-bit (support for callbacks not yet implemented)
+}
+
+The DynCall libraries are tested on Linux, Mac OS X, Windows, BSD derivates
+and more exotic platforms such as game consoles and Plan9.
+Please see the details on portability for \link{dyncall}, \link{dyncallback} and \link{dynload}
+and the official DynCall manual for full details of the back-end.
+The R Package has been tested on several major R platforms.
+The following gives a list of comments on platforms about the status of this package.
+
+\tabular{l}{
+\cr
+Linux Debian 4/ppc32, R-2.4.0 : ok, but no callbacks. \cr
+Linux Debian 5/arm  , R-2.7.0 : ok, SDL not tested. \cr
+Linux Debian 6/x86  , R-2.12.2: ok. \cr
+Linux Debian 6/x64  , R-2.12.2: ok. \cr
+Fedora 14/x86: ok. \cr
+Mac OS X 10.4/ppc, R-2.10.0: ok. \cr
+Mac OS X 10.6/x86, R-2.12.2: ok. \cr
+Mac OS X 10.6/x64, R-2.12.2: ok. \cr
+NetBSD 5.0/x86: ok.  \cr
+NetBSD 5.1/x64: ok.  \cr
+OpenBSD 4.8/x64, R-2.7.0: SDL failed. \cr
+Windows XP/x86, R-2.12.2: ok. \cr
+Windows  7/x86, R-2.12.2: ok. \cr
+Windows  7/x64, R-2.12.2: ok, use correct 64-bit SDL DLL, SDL extension not tested - see \link{rdyncall-demos}) \cr
+FreeBSD 8.2/x86: build ok, no tests made for X11. \cr
 }
 }
 \references{

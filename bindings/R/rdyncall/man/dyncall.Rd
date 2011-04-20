@@ -34,17 +34,23 @@ Functions to call pre-compiled code with support for most C argument and return 
   \item{...}{arguments to be passed to the foreign function. Arguments are converted from R to C values according to the \emph{call signature}. See details.}
 }
 \details{
-This Foreign Function Interface (FFI) has no limitations regarding support for arity of functions, and almost all C types are
-supported as argument- and return-types. In addition, on the Microsoft Windows 32-Bit Intel/x86 platform, it supports multiple calling conventions to
+\code{.dyncall} offers a flexible Foreign Function Interface (FFI) for
+the C language with support for calls to arbitrary pre-compiled 
+C function types at run-time. Almost all C fundamental 
+argument- and return types are supported including  extended support for
+pointers. No limitations is given for arity as well.
+In addition, on the Microsoft Windows 32-Bit Intel/x86 platform, it supports multiple calling conventions to
 interoperate with System DLLs.
-The flexibility of the FFI raises from the fact, that simple text-based \emph{signature} strings describe the foreign C function type. This method has several advantages:
-
-\itemize{
-\item This FFI gives direct access to precompiled C code without the need for additional C wrapper code as opposed to {\link{.C}} FFI which has strong limitations on the supported types and 
-almost always need an additional layer written in C when working with ordinary C shared libraries. 
-\item As the FFI \emph{knows} the target function, it can convert several possible R input variables and it can check for arity and compatibility of arguments at run-time. This
-increases type-safety for a certain amount and it makes the FFI suitable to be used directly from the console (given that the \emph{signatures} are set up correctly).
-}
+Foreign C function types are specified via plain text \emph{type signatures}. 
+The foreign C function type of the target function is known to the FFI
+in advance, before preparation of the foreign call via plain text
+\emph{type signature} information.
+This has several advantages: R arguments do not need to match exactly. 
+Although R lacks some fundamental C value types, they are supported via
+coercion at this interface (e.g. C \code{float} and 64-bit integer).
+Arity and argument type checks help make this interface type-safe
+to a certain degree and encourage end-users to use interface from
+the interpreter prompt for rapid application development.
 
 The foreign function to be called is specified by \code{address}, which is an external pointer that is obtained from \code{\link{.dynsym}} or \code{\link{getNativeSymbolInfo}}. 
 

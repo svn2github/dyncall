@@ -3,23 +3,28 @@ rdyncall R package - Improved Foreign Function Interface (FFI) and Dynamic Bindi
 What is this?
 -------------
 
-'rdyncall' is a toolkit that provides R developers a stack of 
-interoperability technologies to low-level machine code.
+rdyncall offers a stack of interoperability technologies for working
+with foreign compiled languages using cross-platform portable abstraction
+methods. 
 
-For R application development, the package provides type-safe 
-system-level access to C libraries such as OpenGL, SDL and Expat 
-cross-platform.
-With rdyncall, R borrows capabilities of a system-level programming language.
+For R application development, the package facilitates direct access from R
+to the C Application Programming Interface (API) of common libraries.
+This enables a new style of development: R applications can use
+low-level services of portable C libraries. 
+System-level code can be implemented in R without leaving the language.
+C APIs can be explored from within the R interpreter.
+Moving the R code from one platform to the other does not involve
+recompilation.
+Ofcourse, the run-time libraries need to be installed using a standard
+procedure of the target Operating-System Distribution. 
+See ?'rdyncall-demos' (in R) for details on this.
 
-'rdyncall' enables to develope R multimedia applications that run across platforms.
-
-For R core development, the package provides a new Foreign Function Interface
-that can be used to call foreign precompiled C code without the need for
-additional compilation of wrapper code but which are more type-safe than
-R's built-ins.
-
-'rdyncall' provides an improved foreign function interface for R as
-an alternative to .C, .Call, .External.
+For R core development and research, the package provides an improved Foreign 
+Function Interface (FFI) that can be used to call foreign precompiled C code 
+without the need for additional compilation of wrapper code.
+The interface has basic mechanisms included for type-safety checks for
+argument types and supports working with pointers, arrays, structs and unions.
+R functions can be wrapped into first-level C callback function pointers.
 
 
 Supported Platforms:
@@ -50,12 +55,16 @@ Building R package from subversion source tree
 ----------------------------------------------
 
 1. install R package source from subversion
+
   $ svn co http://dyncall.org/svn/dyncall/trunk/bindings/R/rdyncall
 
+
 2. install dyncall sources under rdyncall/src
-  - run bootstrap 
-    $ sh ./bootstrap 
-  - or, check out dyncall sources from subversion
-    $ cd rdyncall/src && svn co http://dyncall.org/svn/dyncall/trunk/dyncall
-  - or, download dyncall sources from net 
-    (e.g. http://dyncall.org/r0.7/dyncall-0.7.tar.gz (to-be-released)
+
+  $ ( cd rdyncall ; sh ./bootstrap )
+
+
+3. build & install it
+
+  $ R CMD INSTALL rdyncall
+
