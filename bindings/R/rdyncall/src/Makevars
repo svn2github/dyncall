@@ -6,5 +6,5 @@ PKG_LIBS=dyncall/dyncall/libdyncall_s.a dyncall/dynload/libdynload_s.a dyncall/d
 all: mylibs $(SHLIB)
 
 mylibs:
-	(cd dyncall ; MAKEFILE="Makefile.generic" CC="$(CC)" AR="$(AR)" CFLAGS="-fPIC $(CFLAGS)" make -f Makefile.generic)
+	(cd dyncall ; CC="$(CC)" AR="$(AR)" CFLAGS="-fPIC $(CFLAGS)" make -f Makefile.embedded)
 

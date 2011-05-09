@@ -1,7 +1,7 @@
 TODO:
-- check win32 expat binary installation
-- demo(ttf) failed on Mac OS X 10.6
-- callbacks should fail with "not yet implemented" on platforms
+- test R build on solaris and sparc(64).
+- document win32 expat binary installation
+- callbacks should fail with "not yet implemented" on unsupported platforms
 - use raw vectors for 1-to-1 bit encoding of values e.g. raw(8) for (u)int64 values
 - handling of Csingle attribute on double vectors
 - character encoding support, R supports UTF-8.
@@ -13,8 +13,7 @@ TODO:
 - as.struct -> as.ctype
 - new.struct -> cdata
 - new.callback -> cfunction
-- planed ports:glut, curl, openal    
-- C++ proxies
+- planed dynports:glut, curl, openal    
 
 BUGS:
 - OpenBSD 4.8/amd64: SDL failed due to pthread.
@@ -22,4 +21,5 @@ BUGS:
   the symbols are not resolvable.
   Additional Test for resolving self:
   While .dynsym(as.extptr(NULL), "R_ShowMessage") works on Mac OS X, it fails on OpenBSD.
+- demo(ttf) failed on Mac OS X 10.6
 

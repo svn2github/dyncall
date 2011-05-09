@@ -1,0 +1,17 @@
+ChangeLog for R Package rdyncall
+-------------------------------------------------------------------------------
+
+0.7.3: [2011-05-??] Bugfix for Fedora/x64, Solaris and Sparc.
+ o dynfind: added search for 'lib64' folder (fix for fedora/x64).
+ o added support for solaris make, dyncall uses Makefile.embedded.
+ o added sparc and sparc64 support.
+
+0.7.2: [2011-04-27] Minor fixes [2011-04-27]
+ o added win64/mingw64 support
+
+0.7.1: [2011-04-26] Minor fixes      [2011-04-26]
+ o minor Makevars fix for parallel builds
+
+0.7.0: [2011-04-20] Initial Release  [2011-04-20]
+ o first upload to CRAN
+
