@@ -9,7 +9,8 @@ pathsFromEnv <- function(name)
   unlist( strsplit( unname( Sys.getenv(name) ), .Platform$path.sep ) )
 
 
-.libLocations <- c("/lib","/usr/lib", "/usr/local/lib", "/opt/local/lib")
+.libLocations <- c("/lib","/lib64", "/usr/lib", "/usr/lib64", "/usr/local/lib",
+"/usr/local/lib64", "/opt/local/lib")
 
 .sysname <- Sys.info()[["sysname"]]
 
@@ -38,7 +39,7 @@ dynfind <- function(libnames, auto.unload=TRUE)
     try.locations <- pathsFromEnv("PATH")
     filesep <- "\\"
   } else { # unix
-    try.locations <- c("/lib","/usr/lib","/usr/local/lib","/opt/local/lib", pathsFromEnv("LD_LIBRARY_PATH") )
+    try.locations <- c("/lib","/lib64", "/usr/lib","/usr/lib64", "/usr/local/lib","/usr/local/lib64", "/opt/local/lib", pathsFromEnv("LD_LIBRARY_PATH") )
     filesep <- "/"
   }
   try.prefixes <- c("","lib")
