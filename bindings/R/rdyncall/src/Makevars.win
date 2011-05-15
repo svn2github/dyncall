@@ -3,7 +3,8 @@ PKG_LIBS=dyncall/dyncall/libdyncall_s.a dyncall/dynload/libdynload_s.a dyncall/d
 
 .PHONY: all mylibs
 
-all: mylibs $(SHLIB)
+all: $(SHLIB)
+$(SHLIB): mylibs
 
 mylibs:
 	(cd dyncall ; CC="$(CC)" AR="$(AR)" CFLAGS="$(CFLAGS)" make -f Makefile.embedded)
