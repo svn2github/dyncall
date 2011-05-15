@@ -172,7 +172,7 @@ In the context of R, dyncall has currently no support for SPARC and PowerPC 64-B
 The target address, calling convention and call signature \strong{MUST} match foreign function type, otherwise the invocation could lead to a \strong{fatal R process crash}.
 }
 \examples{
-mathlib <- dynfind(c("msvcrt","m","c","c.so.6"))
+mathlib <- dynfind(c("msvcrt","m","c"))
 x <- .dynsym(mathlib,"sqrt")
 .dyncall(x, "d)d", 144L)
 }
