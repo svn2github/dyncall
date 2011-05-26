@@ -61,7 +61,7 @@ See \code{\link{signature}} for details on call signatures,
 \code{\link{reg.finalizer}} for details on finalizers.
 }
 \examples{
-
+\donttest{
 # Create a function, wrap it to a callback and call it via .dyncall:
 f <- function(x,y) x+y
 cb <- new.callback("ii)i", f)
@@ -76,7 +76,7 @@ cb <- new.callback("pp)i",function(px,py){
 })
 x <- rnorm(100)
 qsort(x,length(x),8,cb)
-
+}
 }
 \keyword{programming}
 \keyword{interface}
