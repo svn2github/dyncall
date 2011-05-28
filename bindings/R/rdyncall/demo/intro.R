@@ -25,7 +25,8 @@ init <- function()
   dynport(SDL_image)
   s <<- SDL_SetVideoMode(640,480,32,SDL_OPENGL+SDL_DOUBLEBUF)
   stopifnot( IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG )
-  texId <<- loadTexture("nuskool_krome_64x64.png")
+  texId <<- loadTexture("chromefont.png")
+  # texId <<- loadTexture("nuskool_krome_64x64.png")
   dynport(SDL_mixer)
   # stopifnot( Mix_Init(MIX_INIT_MOD) == MIX_INIT_MOD )
   Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096)
@@ -55,14 +56,13 @@ loadTexture <- function(name)
   return(texid)
 }
 
-drawScroller <- function(text,time)
+drawScroller <- function(codes,time)
 {
   glBindTexture(GL_TEXTURE_2D, texId)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-  t <- 72-32
   glEnable(GL_BLEND)
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
@@ -74,19 +74,25 @@ drawScroller <- function(text,time)
 
   x <- 1-time*0.5
   y <- 0
-  w <- 0.2
+  w <- 0.3+0.1*sin(6.24*time)
   h <- 0.2
   for (i in 1:length(codes)) {
-    t <- codes[i]
+    t  <- codes[i] 
+    s0 <- (t%%8)/8
+    t0 <- as.integer(t/8)/8
+    s1 <- s0+1/8
+    t1 <- t0+1/8
+
+    # s0 <- 0
+    # s1 <- 1
+    # t0 <- 0
+    # t1 <- 1
+    
     glBegin(GL_QUADS)
-    glTexCoord2f(t/64,1)
-    glVertex3f(x,y,0)
-    glTexCoord2f((t+1)/64,1)
-    glVertex3f(x+w,y,0)
-    glTexCoord2f((t+1)/64,0)
-    glVertex3f(x+w,y+h,0)
-    glTexCoord2f(t/64,0)
-    glVertex3f(x,y+h,0)
+    glTexCoord2f(s0,t1) ; glVertex3f(x  ,y  ,0)
+    glTexCoord2f(s1,t1) ; glVertex3f(x+w,y  ,0)
+    glTexCoord2f(s1,t0) ; glVertex3f(x+w,y+h,0)
+    glTexCoord2f(s0,t0) ; glVertex3f(x  ,y+h,0)
     glEnd()
     x <- x + w
   } 
