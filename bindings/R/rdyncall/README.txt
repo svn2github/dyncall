@@ -68,3 +68,9 @@ Building R package from subversion source tree
 
   $ R CMD INSTALL rdyncall
 
+
+Known Bugs
+----------
+
+PowerPC/Mac OS X 10.4: Universal Binaries are broken.. in particular the as for i386.
+Workaround for PowerPC users: install with "--no-multiarch"
