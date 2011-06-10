@@ -20,13 +20,11 @@
 \newenvironment{example}{\begin{alltt}}{\end{alltt}}
 \newenvironment{smallexample}{\begin{alltt}\small}{\end{alltt}}
 
-%% load any required packages here
-
 \begin{document}
 
-%\VignetteIndexEntry{Foreign Library Interface}
 
 \title{Foreign Library Interface}
+%\VignetteIndexEntry{Foreign Library Interface}
 \author{by Daniel Adler}
 \maketitle
 \abstract{
