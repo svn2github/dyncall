@@ -39,7 +39,7 @@ dynfind <- function(libnames, auto.unload=TRUE)
     try.locations <- pathsFromEnv("PATH")
     filesep <- "\\"
   } else { # unix
-    try.locations <- c("/lib","/lib64", "/usr/lib","/usr/lib64", "/usr/local/lib","/usr/local/lib64", "/opt/local/lib", pathsFromEnv("LD_LIBRARY_PATH") )
+    try.locations <- c("/lib","/lib64", "/lib/amd64", "/lib/sparcv9", "/usr/lib", "/usr/lib64", "/usr/local/lib","/usr/local/lib64", "/opt/local/lib", pathsFromEnv("LD_LIBRARY_PATH") )
     filesep <- "/"
   }
   try.prefixes <- c("","lib")
