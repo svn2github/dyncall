@@ -104,14 +104,16 @@ Tested with Debian 5 and 6 (lenny and squeeze).
 }
 \section{Linux/Fedora Installation Notes}{
 \preformatted{pkcon install <pkgname>..}
-\tabular{lll}{
-\strong{Lib} \tab \strong{RPM Package name} \tab \strong{Version} \cr  
-\code{expat} \tab \code{expat}              \tab 1.5.2 \cr
-\code{GL}    \tab \code{mesa-libGL}         \tab 7.9-2 \cr
-\code{GLU}   \tab \code{mesa-libGLU}        \tab 7.9-2 \cr
-\code{SDL}   \tab \code{SDL}                \tab 1.2 \cr  
+\tabular{ll}{
+\strong{Lib} \tab \strong{RPM Package name} \cr  
+\code{expat} \tab \code{expat}              \cr
+\code{GL}    \tab \code{mesa-libGL}         \cr
+\code{GLU}   \tab \code{mesa-libGLU}        \cr
+\code{SDL}   \tab \code{SDL}                \cr  
+\code{SDL_image} \tab \code{SDL_image}      \cr
+\code{SDL_mixer} \tab \code{SDL_mixer}      \cr
 }
-Tested with Fedora 13.
+Tested with Fedora 13 and 14 on x86 and x86_64.
 }
 \section{NetBSD Installation Notes}{
 
