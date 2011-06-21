@@ -1,0 +1,4 @@
+$ ./a.out /usr/lib/libm.so sqrt "d)d" 3
+1.73205
+$ ./a.out /usr/lib/libm.so powf "ff)f" 3 2.5
+15.5885
