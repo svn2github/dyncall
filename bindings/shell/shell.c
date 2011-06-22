@@ -82,7 +82,15 @@ int main(int argc, char* argv[])
 
 	while(*i != '\0' && *i != DC_SIGCHAR_ENDARG) {
 		switch(*i) {
-			/* @@@ set mode */
+			case DC_SIGCHAR_CC_PREFIX:
+				switch(*++i) {
+					case DC_SIGCHAR_CC_STDCALL:      dcMode(vm, DC_CALL_C_X86_WIN32_STD);      break;
+					case DC_SIGCHAR_CC_FASTCALL_GNU: dcMode(vm, DC_CALL_C_X86_WIN32_FAST_GNU); break;
+					case DC_SIGCHAR_CC_FASTCALL_MS:  dcMode(vm, DC_CALL_C_X86_WIN32_FAST_MS);  break;
+					case DC_SIGCHAR_CC_THISCALL_MS:  dcMode(vm, DC_CALL_C_X86_WIN32_THIS_MS);  break;
+					/* @@@ extend with other modes when they become available */
+				} break;
+
 			case DC_SIGCHAR_BOOL:      dcArgBool    (vm, (DCbool)           atoi    (argv[4+i-sig]        )); break;
 			case DC_SIGCHAR_CHAR:      dcArgChar    (vm, (DCchar)           atoi    (argv[4+i-sig]        )); break;
 			case DC_SIGCHAR_UCHAR:     dcArgChar    (vm, (DCchar)(DCuchar)  atoi    (argv[4+i-sig]        )); break;
