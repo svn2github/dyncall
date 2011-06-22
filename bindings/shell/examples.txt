@@ -2,3 +2,5 @@ $ ./a.out /usr/lib/libm.so sqrt "d)d" 3
 1.73205
 $ ./a.out /usr/lib/libm.so powf "ff)f" 3 2.5
 15.5885
+$ ./a.out /usr/lib/libc.so printf "_eZZi)v" "Hi! Say hi to %s, l%ier!" "Daniel" 8
+Hi! Say hi to Daniel, l8er!
