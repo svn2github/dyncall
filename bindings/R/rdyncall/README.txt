@@ -34,21 +34,22 @@ This package implements fundamental low-level services such as foreign
 function interfaces, foreign callbacks and handling of foreign data structures.
 It relies on libraries from the DynCall Project (http://dyncall.org) which
 implement a certain amount of code in Assembly for each supported platform.
-As of version 0.6, the following processor architectures are supported:
+As of version 0.7, the following processor architectures are supported:
 
 - Intel i386 32-bit and AMD 64-bit Platforms
 - PowerPC 32-bit 
 - ARM 32-bit (with support for Thumb)
 - MIPS 32- and 64-bit (support for callbacks not yet implemented)
+- Sparc 32-bit and 64-bit (support for callbacks not yet implemented)
 
-The DynCall libraries are tested on Linux, Mac OS X, Windows, BSD derivates
-and more exotic platforms such as game consoles and Plan9.
+The DynCall libraries are tested on Linux, Mac OS X, Windows, BSD derivates,
+Solaris and more exotic platforms such as game consoles and Plan9.
 
 The R Package has been tested on several major R platforms.
 
-As of this release, no support for callbacks is available on MIPS.
-Callbacks on PowerPC 32-bit are considered unstable.
-Currently there is no support for SPARC platforms so far.
+As of this release, no support for callbacks is available on MIPS or SPARC.
+Callbacks on PowerPC 32-bit for System V are considered unstable,
+but are tested successfully for Mac OS X PowerPC 32-bit calling-convention.
 
 
 Building R package from subversion source tree

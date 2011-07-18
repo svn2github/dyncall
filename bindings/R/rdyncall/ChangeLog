@@ -1,12 +1,13 @@
 ChangeLog for R Package rdyncall
 -------------------------------------------------------------------------------
 
-0.7.3: [2011-06-??] Bug fixes, new ports and new vignette.
+0.7.3: [2011-07-18] Added vignette, new ports, new tool-chain an fixes for bugs
  o bugfix for Fedora/x64: added search path 'lib64' folder for 'dynfind'.
  o added support for Sun make, DynCall uses Makefile.embedded.
  o added sparc and sparc64 support using gcc tool-chain.
  o added support for amd64 using solaris tool-chain.
  o added vignette "foreign library interface".
+ o bugfix for solaris/x64: added search path 'amd64' folder for 'dynfind'.
 
 0.7.2: [2011-04-27] Minor fixes 
  o added win64/mingw64 support.
