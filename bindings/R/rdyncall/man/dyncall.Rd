@@ -163,10 +163,10 @@ Support for Fortran is planed but not yet implemented in dyncall.
 \section{Portability}{
 The implementation is based on the \emph{dyncall} library (part of the DynCall project).
 
-The following processor architectures are supported: X86, X64, ARM (including Thumb), PowerPC 32-bit, MIPS 32-bit, MIPS 64-Bit; The library
+The following processor architectures are supported: X86, X64, ARM (including Thumb), PowerPC 32-bit, MIPS 32- and 64-Bit, SPARC 32- and 64-bit; The library
 has been built and tested to work on various OSs: Linux, Mac OS X, Windows 32/64-bit, BSDs, Haiku, Nexenta/Open Solaris, Minix and Plan9,
 as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
-In the context of R, dyncall has currently no support for SPARC and PowerPC 64-Bit.
+In the context of R, dyncall has currently no support for PowerPC 64-Bit.
 }
 \note{
 The target address, calling convention and call signature \strong{MUST} match foreign function type, otherwise the invocation could lead to a \strong{fatal R process crash}.
