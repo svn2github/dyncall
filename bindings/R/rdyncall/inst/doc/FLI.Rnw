@@ -1142,7 +1142,7 @@ dynports and libraries in a structured and coordinated way.
 
 \section{Summary and Outlook}
 
-This paper introduces the \pkg{rdyncall} package (Version 0.7.2 on CRAN as of this writing) that contributes an improved Foreign Function Interface for R.
+This paper introduces the \pkg{rdyncall} package (Version 0.7.3 on CRAN as of this writing) that contributes an improved Foreign Function Interface for R.
 The FFI facilitates \emph{direct} invocation of foreign functions \emph{without} the need to compile additional wrapper in C.
 Based on the FFI, a dynamic cross-platform linkage framework to wrap and access \emph{whole} C interfaces of native libraries from R
 is discussed.
