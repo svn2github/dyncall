@@ -11,5 +11,5 @@ Description: The package provides a cross-platform framework for dynamic binding
   The package includes a variety of technology demos and OS-specific notes for installation of shared libraries.
 License: BSD
 URL: http://dyncall.org
-LazyLoad: no
+LazyLoad: yes
 

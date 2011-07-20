@@ -463,8 +463,8 @@ The \emph{portable} loading of shared libraries across platforms is not
 trivial because the file path is different in Operating-Systems (OS).
 Referring back to the previous example, to load a particular library 
 in a portable fashion, one would have to check the platform to 
-locate the C library.\footnote{Possible C math library names are \file{libm.so} and \file{MSVCRT.DLL} 
-in locations such as \file{/lib}, \file{/usr/lib}, \file{/lib64}, \file{/usr/lib64}, \file{C:\textbackslash WINDOWS\textbackslash SYSTEM32} etc..}
+locate the C library.\footnote{Possible C math library names are \file{libm.so}, \file{libm.so.6} and \file{MSVCRT.DLL} 
+in locations such as \file{/lib}, \file{/usr/lib}, \file{/lib64}, \file{/lib/sparcv9}, \file{/usr/lib64}, \file{C:\textbackslash WINDOWS\textbackslash SYSTEM32} etc..}
 
 Although there is variation among the OSs, library file paths and 
 search patterns have common structures.
@@ -477,10 +477,10 @@ The function \code{dynfind} takes a list of short library names to
 locate a library using common search heuristics.
 For example, to load the Standard C Math library, one would either use
 the Microsoft Visual C Run-Time library labeled \file{msvcrt} on Windows
-or the C Math library labeled \file{m} otherwise.
+or the C Math library labeled \file{m} or \file{m.so.6} otherwise.
 
 \begin{example}
-> mLib <- dynfind(c("msvcrt","m"))
+> mLib <- dynfind(c("msvcrt","m","m.so.6"))
 \end{example}
 
 \code{dynfind} also supports more exotic schemes, such as the Mac OS X Framework folders. 
@@ -528,7 +528,7 @@ For example, to install wrappers to the C functions
 could use:
 
 \begin{example}
-> dynbind( c("m","c","msvcrt"), 
+> dynbind( c("msvcrt","m","m.so.6"),  
 + "sqrt(d)d;sin(d)d);cos(d)d;" )
 \end{example}
 

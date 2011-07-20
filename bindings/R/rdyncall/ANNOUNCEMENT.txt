@@ -145,7 +145,7 @@ wrapping of R functions to first-level C function pointers is also available.
 -- snip
 
 # load C math library across major platforms (Windows,Mac OS X,Linux)
-mathlib <- dynfind(c("msvcrt","m"))
+mathlib <- dynfind(c("msvcrt","m","m.so.6"))
 
 # resolve symbol 'sqrt'
 x <- .dynsym(mathlib,"sqrt")

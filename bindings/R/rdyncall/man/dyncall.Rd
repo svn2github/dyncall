@@ -172,7 +172,7 @@ In the context of R, dyncall has currently no support for PowerPC 64-Bit.
 The target address, calling convention and call signature \strong{MUST} match foreign function type, otherwise the invocation could lead to a \strong{fatal R process crash}.
 }
 \examples{
-mathlib <- dynfind(c("msvcrt","m","c"))
+mathlib <- dynfind(c("msvcrt","m","m.so.6"))
 x <- .dynsym(mathlib,"sqrt")
 .dyncall(x, "d)d", 144L)
 }
