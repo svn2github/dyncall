@@ -8,6 +8,8 @@ ChangeLog for R Package rdyncall
  o added support for amd64 using solaris tool-chain.
  o added vignette "foreign library interface".
  o bugfix for solaris/x64: added search path 'amd64' folder for 'dynfind'.
+ o bugfix in examples for libm using 'm.so.6' besides 'm' on unix 
+   (needed by debian 6 sid unstable)
 
 0.7.2: [2011-04-27] Minor fixes 
  o added win64/mingw64 support.

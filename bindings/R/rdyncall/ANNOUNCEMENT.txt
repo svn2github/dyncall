@@ -2,22 +2,18 @@ Initial Announcement: Package rdyncall released on CRAN. (Version 0.7.3)
 
 Short Introduction
 ------------------
-The package enables developers to use R bindings to C interfaces of shared 
-libraries that are established at run-time dynamically. It comprises a flexible 
-Foreign Function Interface for the interoperability between R and C that 
-supports working closely with the type systems of both languages.
+The package facilities dynamic R bindings to the C interface of some common 
+shared libraries and a flexible Foreign Function Interface for the 
+interoperability between R and C. 
 
 Since the initial presentation of the package at Use!R 2009, a number of
-improvements have been done to dyncall, the R package and the build system
-for an official release on CRAN.
-The package has been tested for stability and portability on many R platforms 
-and prebuilt packages are available for all major platforms.
+improvements have been done to rdyncall, the low-level DynCall libraries
+and the build system for an official release on CRAN.
 
 Overview
 --------
-The package comprises a complete toolkit for working with the C interface and 
-native code in a dynamic from the R interpreter without the need for extra 
-wrapper code compilation:
+The package comprises a toolkit to work with C interfaces to native code from 
+within the dynamic R interpreter without the need for C wrapper compilation:
 
   - Dynamic R bindings to some common C shared libraries, across platforms.
   - Foreign Function Interface that supports almost all C arg/return types
@@ -165,16 +161,17 @@ Implementation Details
 This package contains low-level services related to the generic invocation
 of machine-code functions using official calling convention specifications 
 as the binary interface. A similar service exists for the oppositve direction 
-in order to register and process C callbacks by functions of a dynamic language.
+in order to write R functions and wrap them as first-level C function callback 
+pointers.
 
 The implementation is based on libraries from the DynCall Project that
 implement a small amount of code in Assembly and have to play closely 
 together with the calling conventions of various processor-architectures and 
 platforms.
-The implementation can be tricky but also legitimate the expenses due to a 
+The implementation can be tricky has to be done on a calling-convention
+basis. The efforts legitimate this non-portsble approach due to a 
 very small code size and a generic machine-call solution designed for
-dynamic interpreters.
-The total size of the native code in the R package is approx. around 60kb.
+dynamic interpreters. (total size of shared lib object in rdyncall is ~60kb )
 
 
 Portability and Platforms
@@ -216,42 +213,47 @@ Known Bugs
 More Information
 ----------------
 
-Some demos are included is available (see 'demos()').
-
+More demos and examples are in the package.
 A 20-page vignette with the title "Foreign Library Interface" is available via
-
   > vignette("FLI")
 
-A cross-platform audio/visual OpenGL-based demo-scene production written in
-100% pure R is available here (with a Video on the website):
+A cross-platform audio/visual OpenGL-based demo-scene production 
+written in 100% pure R is available here:
 
   http://dyncall.org/demos/soulsalicious/
 
+A video of demo is also at the website.
 
-Information on the DynCall Project is available at http://dyncall.org.
+
+The website of the DynCall Project is at
+
+  http://dyncall.org/
 
 
 Help and Feedback
 -----------------
-The package needs to be tested on large set of processor/OS combinations.
-It is also very helpful to run tests on different distributions of OSs because
-the package contains an abstraction for locating shared librarys by a short
-name across operating-systems.
+The package contains new methods for dynamic binding of native code to R
+that were designed to work cross-platform. Thus the package required intensive 
+testing on a large range of processor/OS/tool-chain combinations.
+It was (and still is!) also very helpful to run tests on different 
+'distributions' of the same OS for checking e.g. the search algorithm for
+locating shared libraries by a short name across operating-systems 
+(see '?dynfind' for details on this).
 
-So if you want to help, please send bug-reports, feedback and success/failure 
-stories to me.
-
-If you feel that an important architecture, platform or build-tool is 
-missing here please contact me too.
+I am very thankful for any feedback including bug-reports, success and 
+failure stories or ideas of improvements. If you feel that an important 
+architecture, platform or build-tool is missing here please let me know too.
 
 The DynCall authors appreciate any support for porting the DynCall libraries 
-and the R package. (e.g. remote development accounts, qemu/gxemul images, 
-hardware)
-In particular we are currently looking for the following arch/plaf/compilers:
+and the R package e.g. remote development accounts, qemu/gxemul images, 
+hardware. In particular we are currently looking for the following 
+arch/os/compilers environment for porting the DynCall libraries and rdyncall:
 
   - Sparc/Solaris/SunPro
   - PowerPC/AIX/XL C 
   - MIPS/IRIX/MIPSpro
+
+If you can help us out, please get in contact us.
 
 
 ChangeLog
@@ -264,6 +266,8 @@ ChangeLog
  o added support for amd64 using solaris tool-chain.
  o added vignette "foreign library interface".
  o bugfix for solaris/x64: added search path 'amd64' folder for 'dynfind'.
+ o bugfix in examples for libm using 'm.so.6' besides 'm' on unix 
+   (needed by debian 6 sid unstable)
 
 0.7.2: [2011-04-27] Minor fixes 
  o added win64/mingw64 support.
