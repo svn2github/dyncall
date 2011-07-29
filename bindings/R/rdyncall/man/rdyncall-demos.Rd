@@ -46,7 +46,7 @@ Download the \code{*.zip} files, unpack them and place the \code{*.DLL} files to
 
 \tabular{ll}{
 \strong{Lib}     \tab \strong{Download Link} \cr
-\code{expat}     \tab \url{http://expat.sourceforge.org} (TODO:test installer) \cr
+\code{expat}     \tab \url{http://expat.sourceforge.net} (TODO:test installer) \cr
 \code{GL}        \tab pre-installed \cr
 \code{GLU}       \tab pre-installed \cr
 \code{SDL}       \tab \url{http://www.libsdl.org/release/SDL-1.2.14-win32.zip} \cr
