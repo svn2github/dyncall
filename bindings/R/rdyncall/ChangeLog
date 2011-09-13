@@ -1,6 +1,10 @@
 ChangeLog for R Package rdyncall
 -------------------------------------------------------------------------------
 
+0.7.4:
+ o added: SDL_net dynport
+ o added to public interface: offsetPtr
+
 0.7.3: [2011-07-18] Added vignette, new ports, new tool-chain an fixes for bugs
  o bugfix for Fedora/x64: added search path 'lib64' folder for 'dynfind'.
  o added support for Sun make, DynCall uses Makefile.embedded.
