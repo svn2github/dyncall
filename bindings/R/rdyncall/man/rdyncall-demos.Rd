@@ -155,4 +155,25 @@ Using packages:
 }
 
 }
+\section{Solaris Installation Notes}{
 
+OpenCSW offers prebuilt binaries for Solaris.
+The installation of OpenCSW packages is done via \code{pkgutil}.
+
+\preformatted{pkgutil -i <pkgname>..}
+
+See \url{http://www.opencsw.org} for details on the OpenCSW project.
+
+\tabular{ll}{
+\strong{Lib} \tab \strong{pkgname} \cr
+\code{SDL} \tab \code{libsdl} \cr
+\code{SDL_image} \tab \code{sdlimage} \cr
+\code{SDL_mixer} \tab \code{sdlmixer} \cr
+\code{SDL_net}   \tab \code{sdlnet} \cr
+\code{SDL_ttf}   \tab \code{sdlttf} \cr
+\code{expat}     \tab \code{expat} \cr
+\code{glew}      \tab \code{glew} \cr
+\code{GL}        \tab \code{mesalibs} \cr
+}
+
+}
