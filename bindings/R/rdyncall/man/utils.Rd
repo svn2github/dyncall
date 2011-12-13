@@ -8,6 +8,7 @@
 \alias{ptr2str}
 \alias{strarrayptr}
 \alias{strptr}
+\alias{offsetPtr}
 \title{Utility functions for working with foreign C data types}
 \description{Functions for low-level operations on C pointers as well as
 helper functions and objects to handle C \code{float} arrays and strings.}
@@ -21,10 +22,12 @@ floatraw2numeric(x)
 ptr2str(x)
 strarrayptr(x)
 strptr(x)
+offsetPtr(x, offset)
 }
 \arguments{
 \item{x}{an R object.}
 \item{n}{number of elements to allocate.}
+\item{offset}{a offset given in bytes.}
 }
 \details{
 
@@ -47,6 +50,11 @@ This function is useful when calling foreign functions  that expeect a C \code{f
 
 \code{ptr2str}, \code{strarrayptr}, \code{strptr} are currently experimental.
 
+\code{offsetPtr} creates a new external pointer pointing to \code{x} plus the byte \code{offset}.
+If \code{x} is given as an external pointer, the address is increased by the \code{offset},
+or, if \code{x} is given as a atomic vector, the address of the data (pointing to offset zero) is taken as basis
+and increased by the \code{offset}.
+The returned external pointer is protected (as offered by the C function \code{R_MakeExternalPtr}) by the external pointer \code{x}.
 }
 \value{
 A logical value is returned by \code{is.nullptr} and \code{is.externalptr}.

@@ -1,6 +1,6 @@
 Package: rdyncall
 Version: 0.7.4
-Date: 2011-09-13
+Date: 2011-12-13
 Title: Improved Foreign Function Interface (FFI) and Dynamic Bindings to C Libraries (e.g. OpenGL) 
 Author: Daniel Adler <dadler@uni-goettingen.de>
 Maintainer: Daniel Adler <dadler@uni-goettingen.de>
@@ -11,5 +11,4 @@ Description: The package provides a cross-platform framework for dynamic binding
   The package includes a variety of technology demos and OS-specific notes for installation of shared libraries.
 License: BSD
 URL: http://dyncall.org
-LazyLoad: yes
 
