@@ -11,6 +11,7 @@ Building R package from subversion source tree
   $ ( cd rdyncall ; sh ./bootstrap )
 
 3. build & install it
-  $ R CMD INSTALL rdyncall
+  $ R CMD build rdyncall
+  $ R CMD INSTALL rdyncall_<VERSION>.tar.gz
 
 
