@@ -37,8 +37,14 @@ makeNamespace <- function(name, version = NULL, lib = NULL) {
     setNamespaceInfo(env, "lazydata", dimpenv)
     setNamespaceInfo(env, "imports", list("base" = TRUE))
     ## this should be an absolute path
+    minor <- as.numeric(R.version$minor)
+    if (minor >= 13) {
     setNamespaceInfo(env, "path",
                      normalizePath(file.path(lib, name), "/", TRUE))
+    } else {
+    setNamespaceInfo(env, "path",
+                     normalizePath(file.path(lib, name)))
+    }
     setNamespaceInfo(env, "dynlibs", NULL)
     setNamespaceInfo(env, "S3methods", matrix(NA_character_, 0L, 3L))
     assign(".__S3MethodsTable__.",
