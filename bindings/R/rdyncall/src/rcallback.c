@@ -10,11 +10,11 @@
 
 typedef struct
 {
-	int         disabled;
-	SEXP        fun;
-	SEXP        rho;
-	int         nargs;
-	const char* signature; /* argument signature without call mode prefix */
+  int         disabled;
+  SEXP        fun;
+  SEXP        rho;
+  int         nargs;
+  const char* signature; /* argument signature without call mode prefix */
 } R_Callback;
 
 char dcCallbackHandler_R( DCCallback* pcb, DCArgs* args, DCValue* result, void* userdata )
@@ -176,37 +176,47 @@ char dcCallbackHandler_R( DCCallback* pcb, DCArgs* args, DCValue* result, void* 
 	return ch;
 }
 
+void R_callback_finalizer(SEXP x);
+
 SEXP r_new_callback(SEXP sig_x, SEXP fun_x, SEXP rho_x)
 {
-	const char* signature;
-	R_Callback* rdata;
-	const char* ptr;
-	char ch;
-	signature  = CHAR( STRING_ELT( sig_x, 0 ) );
-	rdata = Calloc(1, R_Callback);
-	rdata->disabled = 0;
-	rdata->fun = fun_x;
-	rdata->rho = rho_x;
-	ptr = signature;
-	// skip call mode signature
-	if ( (ch=*ptr) == '_') {
-		ptr += 2;
-		ch=*ptr;
-	}
-	rdata->signature = ptr++;
-	int nargs = 0;
-	while( ch != ')')
-	{
-		nargs ++;
-		ch = *ptr++;
-	}
-	rdata->nargs = nargs;
-	DCCallback* cb = dcbNewCallback( signature, dcCallbackHandler_R, rdata);
-	return R_MakeExternalPtr( cb, R_NilValue, R_NilValue );
+  const char* signature;
+  R_Callback* rdata;
+  const char* ptr;
+  char ch;
+  signature  = CHAR( STRING_ELT( sig_x, 0 ) );
+  rdata = Calloc(1, R_Callback);
+  rdata->disabled = 0;
+  rdata->fun = fun_x;
+  rdata->rho = rho_x;
+  R_PreserveObject(rdata->fun);
+  R_PreserveObject(rdata->rho);
+  ptr = signature;
+  // skip call mode signature
+  if ( (ch=*ptr) == '_') {
+    ptr += 2;
+    ch=*ptr;
+  }
+  rdata->signature = ptr++;
+  int nargs = 0;
+  while( ch != ')') {
+    nargs ++;
+    ch = *ptr++;
+  }
+  rdata->nargs = nargs;
+  DCCallback* cb = dcbNewCallback( signature, dcCallbackHandler_R, rdata);
+  SEXP ans = R_MakeExternalPtr( cb, R_NilValue, R_NilValue );
+  R_RegisterCFinalizerEx(ans, R_callback_finalizer, TRUE);
+  return ans;
 }
 
-SEXP r_free_callback(SEXP x)
+void R_callback_finalizer(SEXP x)
 {
-	dcbFreeCallback( R_ExternalPtrAddr(x) );
-	return R_NilValue;
+  DCCallback* cb = R_ExternalPtrAddr(x);
+  R_Callback* rdata = dcbGetUserData(cb);
+  R_ReleaseObject(rdata->fun);
+  R_ReleaseObject(rdata->rho);
+  Free(rdata);
+  dcbFreeCallback(cb);
 }
+

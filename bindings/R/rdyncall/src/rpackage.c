@@ -27,7 +27,6 @@ SEXP r_unpack(SEXP ptr, SEXP offset, SEXP sig);
 
 /* rcallback.c */
 SEXP r_new_callback(SEXP sig, SEXP fun, SEXP rho, SEXP mode);
-SEXP r_free_callback(SEXP ptr_cb);
 
 /* rutils.c */
 SEXP r_asextptr(SEXP v);
@@ -70,7 +69,6 @@ R_CallMethodDef callMethods[] =
   {"dynunload"                  , (DL_FUNC) &r_dynunload        , 1},
   /* --- rcallback.c ------------------------------------------------------- */
   {"new_callback"               , (DL_FUNC) &r_new_callback     , 3},
-  {"free_callback"              , (DL_FUNC) &r_free_callback    , 1},
   /* --- rpack.c ----------------------------------------------------------- */
   {"pack"                       , (DL_FUNC) &r_pack             , 4},
   {"unpack"                     , (DL_FUNC) &r_unpack           , 3},
