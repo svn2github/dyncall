@@ -1,4 +1,7 @@
 TODO:
+- bugfix for using callconv prefixes via .dyncall and not .dyncall.*.
+  using a different callvm for .dyncall that may be setup via prefixes and
+  resets to default always.
 - test R build on solaris and sparc(64).
 - document win32 expat binary installation
 - callbacks should fail with "not yet implemented" on unsupported platforms
