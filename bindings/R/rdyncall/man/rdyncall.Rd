@@ -86,21 +86,22 @@ The following gives a list of comments on platforms about the status of this pac
 
 \tabular{l}{
 \cr
-Linux Debian 4/ppc32, R-2.4.0 : ok, but no callbacks. \cr
-Linux Debian 5/arm  , R-2.7.0 : ok, SDL not tested. \cr
-Linux Debian 6/x86  , R-2.12.2: ok. \cr
-Linux Debian 6/x64  , R-2.12.2: ok. \cr
-Fedora 14/x86: ok. \cr
-Mac OS X 10.4/ppc, R-2.10.0: ok. \cr
-Mac OS X 10.6/x86, R-2.12.2: ok. \cr
-Mac OS X 10.6/x64, R-2.12.2: ok. \cr
-NetBSD 5.0/x86: ok.  \cr
-NetBSD 5.1/x64: ok.  \cr
-OpenBSD 4.8/x64, R-2.7.0: SDL failed. \cr
-Windows XP/x86, R-2.12.2: ok. \cr
-Windows  7/x86, R-2.12.2: ok. \cr
-Windows  7/x64, R-2.12.2: ok, use correct 64-bit SDL DLL, SDL extension not tested - see \link{rdyncall-demos}) \cr
-FreeBSD 8.2/x86: build ok, no tests made for X11. \cr
+Linux Debian 4/ppc32 , R-2.4.0 : ok, but no callbacks. \cr
+Linux Debian 5/arm   , R-2.7.0 : ok, SDL not tested. \cr
+Linux Debian 6/x86   , R-2.12.2: ok. \cr
+Linux Debian 6/x64   , R-2.12.2: ok. \cr
+Linux Ubuntu 10/armv7, R-2.14  : ok. \cr
+Linux Fedora 14/x86            : ok. \cr
+Mac OS X 10.4/ppc    , R-2.10.0: ok. \cr
+Mac OS X 10.6/x86    , R-2.12.2: ok. \cr
+Mac OS X 10.6/x64    , R-2.12.2: ok. \cr
+NetBSD 5.0/x86                 : ok.  \cr
+NetBSD 5.1/x64                 : ok.  \cr
+OpenBSD 4.8/x64      , R-2.7.0 : SDL failed. \cr
+Windows XP/x86       , R-2.12.2: ok. \cr
+Windows  7/x86       , R-2.12.2: ok. \cr
+Windows  7/x64       , R-2.12.2: ok, use correct 64-bit SDL DLL, SDL extension not tested - see \link{rdyncall-demos}) \cr
+FreeBSD 8.2/x86                : build ok, no tests made for X11. \cr
 }
 }
 \references{

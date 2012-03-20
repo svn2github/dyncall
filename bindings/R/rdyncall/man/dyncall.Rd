@@ -110,8 +110,8 @@ a S3 \code{struct} object. See \code{\link{new.struct}} for details.
 Call Signatures are used by \code{\link{.dyncall}} and \code{\link{new.callback}} to describe foreign C function types.
 The general form of a call signature is as following:
 
-\tabular{rcl}{
-\sQuote{argument-types} \tab '\code{)}' \tab \sQuote{return-type}\cr
+\tabular{lll}{
+(\emph{argument-type})* \tab \code{')'} \tab \emph{return-type} \cr
 }
 
 The calling sequence given by the \bold{argument types signature} is specified in direct \emph{left-to-right} order of the formal argument types defined in C.
@@ -119,15 +119,30 @@ The type signatures are put in sequence without any white space in between.
 A closing bracket character '\code{)}' marks the end of argument types, followed by a
 single \bold{return type signature}. 
 
-Here are some examples of C library functions and corresponding call signatures:
+Derived pointer types can be specified as untyped pointers via \code{'p'}
+or via prefix \code{'*'} following the underlying base type (e.g. \code{'*d'} for \code{double *})
+which is more type-safe. For example, this can prevent users from passing a \code{numeric} R atomic as \code{int*} if using \code{'*i'} instead of \code{'p'}.
 
-\tabular{ll}{
-\code{double sqrt(double);}                    \tab \code{"d)d"}    \cr
-\code{double dnorm(double,double,double,int);} \tab \code{"dddi)d"} \cr
-\code{void   R_isort(int*,int);}               \tab \code{"pi)v"}   \cr
-\code{void   revsort(double*,int*,int);}       \tab \code{"ppi)v"}  \cr
+Dervied pointer types to aggregate \code{union} or \code{struct} types are
+supported in combination with the framework for handling foreign data types. 
+See \code{\link{new.struct}} for details. Once a C type is registered,
+the signature \code{*<}\emph{typename}\code{>} can be used to refer to a pointer to an aggregate C object \emph{type}\code{*}.
+If typed pointers to aggregate objects are used as a return type and the corresponding type information exists, the returned value can be printed and accessed symbolically.
+
+Here are some examples of C function prototypes and corresponding call signatures:
+
+\tabular{rll}{
+                    \tab  \emph{C Function Prototype}                         \tab \emph{Call Signature} \cr
+\code{double}       \tab  \code{sqrt(double);}                                \tab \code{"d)d"}    \cr
+\code{double}       \tab  \code{dnorm(double,double,double,int);}             \tab \code{"dddi)d"} \cr
+\code{void}         \tab  \code{R_isort(int*,int);}                           \tab \code{"pi)v"}   or \code{"*ii)v"} \cr
+\code{void}         \tab  \code{revsort(double*,int*,int);}                   \tab \code{"ppi)v"}  or \code{"*d*ii)v"}\cr
+\code{int}          \tab  \code{SDL_PollEvents(SDL_Event *);}                 \tab \code{"p)i"}    or \code{"*<SDL_Event>)i"} \cr
+\code{SDL_Surface*} \tab  \code{SDL_SetVideoMode(int,int,int,int);}           \tab \code{"iiii)p"} or \code{"iiii)*<SDL_Surface>"} \cr
 }
+
 }
+
 \section{Calling convention}{
 Calling Conventions specify \sQuote{how} sub-routine calls are performed, and, \sQuote{how} arguments and results are passed, 
 on machine-level. They differ significantly among families of CPU Architectures 

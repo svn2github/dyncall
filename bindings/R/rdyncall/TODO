@@ -1,4 +1,7 @@
 TODO:
+- feature: support for function pointers arguments,
+    if R closure is passed, auto wrap function a callback object 
+    the callback object is appended in a global list 
 - bugfix for using callconv prefixes via .dyncall and not .dyncall.*.
   using a different callvm for .dyncall that may be setup via prefixes and
   resets to default always.

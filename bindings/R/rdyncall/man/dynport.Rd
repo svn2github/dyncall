@@ -34,15 +34,19 @@ The following gives a list of currently available \emph{DynPorts}:
 \code{expat}       \tab Expat XML Parser Library                    \cr
 \code{GL}          \tab OpenGL 1.1 API                              \cr
 \code{GLU}         \tab OpenGL Utility Library                      \cr
+\code{GLUT}        \tab OpenGL Utility Toolkit Library              \cr
 \code{SDL}         \tab Simple DirectMedia Layer library            \cr
 \code{SDL_image}   \tab Loading of image files (png,jpeg..)         \cr
 \code{SDL_mixer}   \tab Loading/Playing of ogg/mp3/mod music files. \cr
 \code{SDL_ttf}     \tab Loading/Rendering of True Type Fonts.       \cr
+\code{SDL_net}     \tab Networking library.                         \cr
 \code{glew}        \tab OpenGL Extension Wrangler (includes OpenGL 3.0) \cr
+\code{glfw}        \tab OpenGL Windowing/Setup Library              \cr
 \code{gl3}         \tab strict OpenGL 3 (untested)                  \cr
 \code{R}           \tab R shared library                            \cr
 \code{ode}         \tab Open Dynamics (Physics-) Engine (untested)  \cr
 \code{cuda}        \tab NVIDIA Cuda (untested)                      \cr
+\code{csound}      \tab Sound programming language and library      \cr
 \code{opencl}      \tab OpenCL (untested)                           \cr
 \code{stdio}       \tab C Standard Library I/O Functions            \cr
 }
