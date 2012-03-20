@@ -1,6 +1,10 @@
 ChangeLog for R Package rdyncall
 -------------------------------------------------------------------------------
 
+0.7.5 [upcoming]:
+ o clean: finalizers
+ o new dynports: csound, GLUT, glfw
+
 0.7.4: [2011-12-13] Minor bugfix and improvements
  o update: dyncall support for SPARC 32/64 and SunPro with fixes for SPARC 64-bit
  o added: dynport SDL_net 

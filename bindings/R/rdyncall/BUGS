@@ -3,8 +3,5 @@
   Workaround for PowerPC users: install with "--no-multiarch" or use prebuilt 
   binaries built on OS X >= 10.5.
 
-* SPARC Assembly sources are currently implemented for GNU assembler and do 
-  not assemble using the 'fbe' Assembler tool on Solaris. 
-
 
 
