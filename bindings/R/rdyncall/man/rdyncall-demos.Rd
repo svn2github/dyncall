@@ -129,6 +129,19 @@ Tested with Debian 5 and 6 (lenny and squeeze).
 }
 Tested with Fedora 13 and 14 on x86 and x86_64.
 }
+\section{Linux/openSUSE Installation Notes}{
+\preformatted{zypper in <pkgname>..}
+\tabular{ll}{
+\strong{Lib}     \tab \strong{Package Name} \cr
+\code{SDL}       \tab \code{libSDL}         \cr 
+\code{SDL_image} \tab \code{libSDL_image}   \cr
+\code{SDL_mixer} \tab \code{libSDL_mixer}   \cr
+\code{SDL_net}   \tab \code{libSDL_net}     \cr
+\code{SDL_ttf}   \tab \code{libSDL_ttf}     \cr 
+\code{glew}      \tab \code{libGLEW1_6}     \cr
+}
+openSUSE installation notes have not been confirmed.
+}
 \section{NetBSD Installation Notes}{
 
 Installation via pkgsrc:
