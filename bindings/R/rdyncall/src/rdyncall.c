@@ -442,8 +442,23 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
             switch(type_id)
             {
               case NILSXP:    ptrValue = (DCpointer) 0; break;
-              case STRSXP:    ptrValue = (DCpointer) CHAR( STRING_ELT(arg,0) ); break;
-              default:        error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); 
+              case STRSXP:    
+                if (ptrcnt == 1) {
+                  ptrValue = (DCpointer) CHAR( STRING_ELT(arg,0) ); 
+                } else {
+                  error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); 
+                }
+                break;
+              case RAWSXP:
+                if (ptrcnt == 1) {
+                  ptrValue = RAW(arg);
+                } else {
+                  error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); 
+                }
+                break;
+              case EXTPTRSXP: ptrValue = R_ExternalPtrAddr(arg); break;
+              default:        
+                error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); 
                 return R_NilValue; /* dummy */
             }
             break;
@@ -475,8 +490,11 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
               case NILSXP:  ptrValue = (DCpointer) 0; break;
               case RAWSXP:
                 if ( strcmp( CHAR(STRING_ELT(getAttrib(arg, install("class")),0)),"floatraw") == 0 ) {
-                  ptrValue = (DCpointer) REAL(arg);
+                  ptrValue = (DCpointer) RAW(arg);
+                } else {
+                  error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); 
                 }
+                break;
               default:      error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); 
                 return R_NilValue; /* dummy */
             }
