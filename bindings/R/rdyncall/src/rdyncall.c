@@ -580,7 +580,10 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         case 'c': {
           PROTECT(ans = mkString( dcCallPointer(pvm, addr) ) );
         } break;
-        default: error("Unsupported returnt type signature"); return R_NilValue;
+	case 'v': {
+	  PROTECT(ans = R_MakeExternalPtr( dcCallPointer(pvm, addr), R_NilValue, R_NilValue ) );
+	} break;
+        default: error("Unsupported return type signature"); return R_NilValue;
       }
       UNPROTECT(1);
       return(ans);
