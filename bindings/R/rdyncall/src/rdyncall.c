@@ -399,17 +399,19 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
         }
         sig++;
         /* check pointer type */
-        SEXP structName = getAttrib(arg, install("struct"));
-        if (structName == R_NilValue) {
-          error("typed pointer needed here");
-          return R_NilValue; /* Dummy */
-        }
-        e = sig-1;
-        l = e - b;
-        n = CHAR(STRING_ELT(structName,0));
-        if ( (strlen(n) != l) || (strncmp(b,n,l) != 0) ) {
-          error("incompatible pointer types");
-          return R_NilValue; /* Dummy */
+        if (type_id != NILSXP) {
+          SEXP structName = getAttrib(arg, install("struct"));
+          if (structName == R_NilValue) {
+            error("typed pointer needed here");
+            return R_NilValue; /* Dummy */
+          }
+          e = sig-1;
+          l = e - b;
+          n = CHAR(STRING_ELT(structName,0));
+          if ( (strlen(n) != l) || (strncmp(b,n,l) != 0) ) {
+            error("incompatible pointer types");
+            return R_NilValue; /* Dummy */
+          }
         }
         switch(type_id) {
           case NILSXP:    ptrValue = (DCpointer) 0; break;
