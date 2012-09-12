@@ -141,7 +141,10 @@ Table \ref{tab:libs} gives a sample list of available bindings that come with th
 
 Users gain access to C libraries from R using the front-end function \code{dynport(}\emph{portname}\code{)},
 which processes a \emph{DynPort} file to load the C library\footnote{Pre-compiled libraries need to be installed, OS-specific installation notes are given in the documentation of the package.},
-and wrap the C interface as a newly attached R name space that uses the same symbolic names of the C API.
+and wrap the C interface as a newly attached R environment 
+\footnote{Note \pkg{rdyncall} version 0.7.4 and below uses R name space objects \citep{RNameSpace} as dynport containers. This has changed starting with version 0.7.5 due to restrictions for packages hosted on CRAN not to use internal functions. Since there is no public interface for the creation of name space objects currently in R, \pkg{rdyncall} uses ordinary environment objects for now. 
+This disables the use of the double colon operator (\code{::}) to refer to dynport objects; unloading is done using \code{detach(dynport:<PORTNAME>)}.} 
+that uses the same symbolic names of the C API.
 R code that uses C interfaces via \emph{DynPort}s might look very familiar to C user code.
  
 This article motivates the topic with a comparison of the built-in and
@@ -726,7 +729,7 @@ At the highest level, \pkg{rdyncall} provides the front-end function
 \code{dynport} to dynamically setup an interface to a C Application
 Programming Interface. This includes loading of the corresponding
 shared C library and resolving of symbols. During the binding process,
-a new R name space \citep{RNameSpace} will be populated with thin R wrapper
+a new R environment (this was a name space \citep{RNameSpace} till version 0.7.4) will be populated with thin R wrapper
 objects that represent abstractions to C counter-parts such as
 functions, pointer-to-functions, type-information objects for C struct and union
 types and symbolic constant equivalents of C enums and macro defines.

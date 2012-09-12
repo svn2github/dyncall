@@ -15,3 +15,5 @@ intro           Texture-mapped scroller, playing XM music module.
 qsort           C standard library qsort C with a custom compare via callbacks (dyncallback demo).
 playtune        SDL audio-only and SDL_mixer demo: plays XM music module.
 sdlnet          SDL_net + OpenGL Demo, listens on socket for world country names and rotates map in OpenGL.
+gles            OpenGL ES Example.
+glpk            GLPK Example.

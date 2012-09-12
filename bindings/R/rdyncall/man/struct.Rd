@@ -56,7 +56,7 @@ Type Signatures are used within the \sQuote{field-types}. \sQuote{field-names} c
 should match the number of fields.
 
 \tabular{c}{
-\sQuote{struct-name} '\{' \sQuote{field-types} '\}' \sQuote{field-names} '\code{;}' \cr
+\emph{struct-name} '\code{\{}' \emph{field-types} '\code{\}}' \emph{field-names} '\code{;}' \cr
 }
 
 Here is an example of a C \code{struct} type:
@@ -77,7 +77,7 @@ Type signatures are used within the \sQuote{field-types}. \sQuote{field-names} c
 should match the number of fields.
 
 \tabular{c}{
-\sQuote{union-name} '|' \sQuote{field-types} '\}' \sQuote{field-names} '\code{;}' \cr
+\emph{union-name} '\code{|}' \emph{field-types} '\code{\}}' \emph{field-names} '\code{;}' \cr
 }
 
 Here is an example of a C \code{union} type,

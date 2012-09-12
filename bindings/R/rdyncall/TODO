@@ -1,4 +1,10 @@
 TODO:
+- update manual
+  - document new dynports
+  - check signature format markup (.dyncall)
+
+- updates from dyncall (compare svn 1284 -> 1381)
+- name mangling R <-> C ... exchange the first '_' in C -> '.' in R.
 - feature: support for function pointers arguments,
     if R closure is passed, auto wrap function a callback object 
     the callback object is appended in a global list 

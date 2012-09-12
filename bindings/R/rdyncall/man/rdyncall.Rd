@@ -31,7 +31,7 @@ procedure of the target Operating-System Distribution.
 See \link{rdyncall-demos} for details on this.
 
 For R core development and research, the package provides an improved Foreign 
-Function Interface (FFI) that can be used to call arbirary 
+Function Interface (FFI) that can be used to call arbitrary 
 foreign precompiled C code without the need for additional 
 compilation of wrapper code. The back-end library is extendable with new
 calling conventions (such as Fortran,Pascal,COM,etc.. - which has not been 
@@ -72,9 +72,10 @@ As of version 0.6, the following processor architectures are supported:
 
 \itemize{
 \item Intel i386 32-bit and AMD 64-bit Platforms
-\item ARM 32-bit (with support for Thumb)
+\item ARM 32-bit (OABI, EABI and ARMHF ABI with support for Thumb)
 \item PowerPC 32-bit (support for callbacks not implemented for Linux/BSD)
 \item MIPS 32- and 64-bit (support for callbacks not yet implemented)
+\item SPARC 32- and 64-bit (support for callbacks not yet implemented)
 }
 
 The DynCall libraries are tested on Linux, Mac OS X, Windows, BSD derivates
@@ -92,9 +93,11 @@ Linux Debian 6/x86   , R-2.12.2: ok. \cr
 Linux Debian 6/x64   , R-2.12.2: ok. \cr
 Linux Ubuntu 10/armv7, R-2.14  : ok. \cr
 Linux Fedora 14/x86            : ok. \cr
+Linux Ubuntu 12/i386 , R-2.15.1: ok. \cr
 Mac OS X 10.4/ppc    , R-2.10.0: ok. \cr
 Mac OS X 10.6/x86    , R-2.12.2: ok. \cr
 Mac OS X 10.6/x64    , R-2.12.2: ok. \cr
+Mac OS X 10.7/x64    , R-2.15.1: ok. \cr
 NetBSD 5.0/x86                 : ok.  \cr
 NetBSD 5.1/x64                 : ok.  \cr
 OpenBSD 4.8/x64      , R-2.7.0 : SDL failed. \cr
@@ -105,6 +108,9 @@ FreeBSD 8.2/x86                : build ok, no tests made for X11. \cr
 }
 }
 \references{
+  Adler, D. (2012) \dQuote{Foreign Library Interface}, \emph{The R Journal}, \bold{4(1)}, 30--40, June 2012.
+  \url{http://journal.r-project.org/archive/2012-1/RJournal_2012-1_Adler.pdf}
+  
   Adler, D., Philipp, T. (2008) \emph{DynCall Project}. 
   \url{http://dyncall.org}
 }

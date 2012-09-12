@@ -1,9 +1,21 @@
 ChangeLog for R Package rdyncall
 -------------------------------------------------------------------------------
 
-0.7.5 [upcoming]:
- o clean: finalizers
- o new dynports: csound, GLUT, glfw
+0.7.5 [2012-09-12]:
+
+ o added: support for new ARM ABI 'armhf' (ARM hardfloat).
+   Tested on Raspberry Pi (armv6), Efika MX Smartbook (armv7)
+ o added: NULL is accepted for typed pointer arguments.
+ o added: support for '*v' (void*) return type signature in .dyncall
+ o added: support for '**c' and externalptr (to support strptrarray()).
+ o update: changed 'dynport' containers from R name spaces to environment objects
+   to get rid of .Internal calls; this removes usage of '::' operators on
+   dynports - dynports are unloaded via detach(dynport:<PORTNAME>).
+ o improved finalizer management of callbacks
+ o added backward compatibility with R 2.10 for leagacy Mac OS X 10.4/PowerPC
+   R port.
+ o new dynports: csound, GLUT, glfw, EGL, glpk
+ o new demos: glpk, gles (partial work)
 
 0.7.4: [2011-12-13] Minor bugfix and improvements
  o update: dyncall support for SPARC 32/64 and SunPro with fixes for SPARC 64-bit

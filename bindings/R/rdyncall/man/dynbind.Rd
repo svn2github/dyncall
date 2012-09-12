@@ -26,7 +26,7 @@ It consists of function names and corresponding \link[=call signature]{call sign
 by \sQuote{;} (semicolon) ; white spaces (including tab and new line) are allowed before and after semicolon.
 
 \tabular{c}{
-\sQuote{function-name} \samp{(} \sQuote{call-signature} \samp{;} \ldots \cr
+\emph{function-name} \code{(} \emph{call-signature} \code{;} \ldots \cr
 }
 
 Here is an example that specifies three function bindings to the OpenGL library:

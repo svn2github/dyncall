@@ -76,7 +76,8 @@ dynfind <- function(libnames, auto.unload=TRUE)
   # try directly
   for(libname in try.names) 
   {
-    .dynload(libname, auto.unload=auto.unload)
+    x <- .dynload(libname, auto.unload=auto.unload)
+    if (!is.null(x)) return(x)
   }  
 }
 

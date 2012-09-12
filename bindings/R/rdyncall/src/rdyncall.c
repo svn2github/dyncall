@@ -449,6 +449,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
                   ptrValue = (DCpointer) CHAR( STRING_ELT(arg,0) ); 
                 } else {
                   error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); 
+                  return R_NilValue; /* dummy */
                 }
                 break;
               case RAWSXP:
@@ -456,6 +457,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
                   ptrValue = RAW(arg);
                 } else {
                   error("Argument type mismatch at position %d: expected 'C string' convertable value", argpos); 
+                  return R_NilValue; /* dummy */
                 }
                 break;
               case EXTPTRSXP: ptrValue = R_ExternalPtrAddr(arg); break;
@@ -495,6 +497,7 @@ SEXP r_dyncall(SEXP args) /* callvm, address, signature, args ... */
                   ptrValue = (DCpointer) RAW(arg);
                 } else {
                   error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); 
+                  return R_NilValue; /* dummy */
                 }
                 break;
               default:      error("Argument type mismatch at position %d: expected 'pointer to C double' convertable value", argpos); 

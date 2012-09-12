@@ -38,7 +38,7 @@ The implementation is based on the \emph{dyncallback} library (part of the DynCa
 
 The following processor architectures are supported: X86, X64, ARM (including Thumb) and partial stable support for PowerPC 32-bit; The library
 has been built and tested to work on various OSs: Linux, Mac OS X, Windows 32/64-bit, BSDs, Haiku, Nexenta/Open Solaris, Minix and Plan9,
-as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
+as well as embedded platforms such as Linux/ARM (OpenMoko, Beagleboard, Gumstix, Efika MX, Raspberry Pi), Nintendo DS (ARM), Sony Playstation Portable (MIPS 32-bit/eabi) and iOS (ARM - armv6 mode ok, armv7 unstable).
 Special notes for PowerPC 32-Bit: Callbacks for System V (Linux/BSD) are unstable in this release; MacOS X/Darwin works fine.
 In the context of R, dyncallback has currently no support for callbacks on MIPS, SPARC and PowerPC 64-Bit.
 Using dyncallback to implement non-default calling conventions is not supported yet. (e.g. Window Procedures on Win32/X86).
@@ -53,6 +53,9 @@ otherwise the garbage collector might call the finalizer and the next invocation
 }
 
 \references{
+  Adler, D. (2012) \dQuote{Foreign Library Interface}, \emph{The R Journal}, \bold{4(1)}, 30--40, June 2012.
+  \url{http://journal.r-project.org/archive/2012-1/RJournal_2012-1_Adler.pdf}
+  
   Adler, D., Philipp, T. (2008) \emph{DynCall Project}. 
   \url{http://dyncall.org}
 }

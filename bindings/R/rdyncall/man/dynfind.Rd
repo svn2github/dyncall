@@ -18,8 +18,8 @@ a platform-test is usually needed to specify the OS-dependant library file path.
 
 This \emph{library name problem} is encountered via breaking up the library file path into several abstract components:
 
-\tabular{c}{
-\sQuote{location} \sQuote{prefix} \sQuote{libname} \sQuote{suffix} \cr
+\tabular{cccc}{
+  \emph{<location>} \tab \emph{<prefix>} \tab \emph{<libname>} \tab \emph{<suffix>} \cr
 }
 
 By permutation of values in each component and concatenation, a list of possible file paths can be derived.
@@ -59,7 +59,7 @@ On Mac OS X, the search for a library includes the \sQuote{Frameworks} folders a
 in a separate search phase:
 
 \tabular{c}{
-\sQuote{frameworksLocation} \dQuote{Frameworks/} \sQuote{libname} \dQuote{.framework/} \sQuote{libname}
+\emph{<frameworksLocation>} \bold{Frameworks/} \emph{<libname>} \bold{.framework/} \emph{<libname>}
 }
 
 The \sQuote{frameworksLocation} is a vector of locations such as \code{/System/Library/} and \code{/Library/}.

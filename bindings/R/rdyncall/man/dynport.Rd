@@ -2,7 +2,7 @@
 \alias{dynport}
 \alias{loadDynportNamespace}
 \title{Dynamic R Bindings to standard and common C libraries}
-\description{Function to bind APIs of standard and common C libraries to R via dynamically created interface packages
+\description{Function to bind APIs of standard and common C libraries to R via dynamically created interface environment objects
 comprising R wrappers for C functions, object-like macros, enums and data types.
 }
 \usage{
@@ -16,17 +16,23 @@ dynport(portname, portfile=NULL,
 }
 \details{
 \code{dynport} offers a convenient method for binding entire C libraries to R.
-This mechanism runs cross-platform and uses dynamic linkage. This means,
-the run-time library of a choosen binding need to be installed in the system.
-Depending on the OS, some libraries, supported by \code{dynport}, are 
-already installed, but others might need manual intervention. 
-See \link{rdyncall-demos} for OS-specific installation notes.
+This mechanism runs cross-platform and uses dynamic linkage but it implies
+that the run-time library of a choosen binding need to be preinstalled in the system.
+Depending on the OS, the run-time libraries may be preinstalled or require manual installation.
+See \link{rdyncall-demos} for OS-specific installation notes for several C libraries.
 
-The binding method is data-driven using platform-portable specifications, named \emph{DynPort} files.
-\emph{DynPort} files are stored in a repository that is delivered and installed as part of the package installation.
+The binding method is data-driven using platform-portable specifications named \emph{DynPort} files.
+DynPort files are stored in a repository that is installed as part of the package installation.
 When \code{dynport} processes a \emph{DynPort} file given by \code{portname}, 
-an R name space object is created and populated with R wrapper and helper objects
-that implement the interface between R and C. 
+an environment object is created, populated with R wrapper and helper objects
+that make up the interface to the C library, and attached to the search path with the name \code{dynport:<PORTNAME>}.
+Unloading of previously loaded dynport environments is achieved via \code{detach(dynport:<PORTNAME>)}.
+
+Up to \pkg{rdyncall} version 0.7.4, R name space objects were used as containers as described in the article \emph{Foreign Library Interface}, thus 
+dynport \sQuote{packages} appeared as \code{"package:<PORTNAME>"} on the search path. The mechanism to create synthesized R packages at run-time 
+required the use of \code{.Internal} calls.
+But since the use of internal R functions is not permitted for packages distributed on CRAN we downgraded the package to use ordinary environment 
+objects starting with version 0.7.5 until a public interface for the creation of R namespace objects is available.
 
 The following gives a list of currently available \emph{DynPorts}:
 \tabular{ll}{
@@ -49,10 +55,12 @@ The following gives a list of currently available \emph{DynPorts}:
 \code{csound}      \tab Sound programming language and library      \cr
 \code{opencl}      \tab OpenCL (untested)                           \cr
 \code{stdio}       \tab C Standard Library I/O Functions            \cr
+\code{glpk}        \tab GNU Linear Programming Kit                  \cr
+\code{EGL}         \tab Embedded Systems Graphics Library           \cr
 }
 
-As of the current implement, \emph{DynPort} files are actually R scripts
-that perform basically three things:
+As of the current implementation \emph{DynPort} files are R scripts
+that perform up to three tasks:
 
 \itemize{
 \item Functions (and pointer-to-function variables) are mapped via \code{\link{dynbind}} and a description of the C library using a \emph{library signatures}.
@@ -67,29 +75,31 @@ located at the sub-folder \code{"dynports/"} of the package.
 If \code{portfile} is given, then this value is taken as file path (usually
 for testing purpose).
 
-A tool suite, comprising boost wave, GCC-XML, and XSLT, was used to generate the available \emph{DynPort} files automatically
+A tool suite, comprising AWK (was boost wave), GCC Preprocessor, GCC-XML and XSLT, was used to generate the available \emph{DynPort} files automatically
 by extracting type information from C library header files. 
 
 In a future release, the DynPort format will be changed to
-a language-neutral document. For the interested reader: 
+a language-neutral text file document. For the interested reader: 
 A first prototyp is currently available in an FFI extension to the Lua 
 programming language (see \code{luadyncall} subversion sub-tree).
 A third revision (including function types in call signatures, bitfields, arrays, etc..)
 is currently in development.
 }
 \references{
-  Adler, D., Philipp, T. (2008) \emph{DynCall Project}. \cr 
-  \url{http://dyncall.org} \cr
-  Clark, J. (1998). expat - XML Parser Toolkit. \cr
-  \url{http://expat.sourceforge.net} \cr
-  Ikits, M. and Magallon, M. (2002).  The OpenGL Extension Wrangler Library. \cr
-  \url{http://glew.sourceforge.net} \cr
-  Latinga, S. (1998). The Simple DirectMedia Layer Library. \cr 
-  \url{http://www.libsdl.org} \cr
-  Segal, M. and Akeley, K. (1992). The OpenGL Graphics System. A Specification, Version 1.0. \cr
-  \url{http://www.opengl.org} \cr
-  Smith, R. (2001). Open Dynamics Engine. \cr
-  \url{http://www.ode.org} \cr
+  Adler, D. (2012) \dQuote{Foreign Library Interface}, \emph{The R Journal}, \bold{4(1)}, 30--40, June 2012.
+  \url{http://journal.r-project.org/archive/2012-1/RJournal_2012-1_Adler.pdf}
+  
+  Adler, D., Philipp, T. (2008) \emph{DynCall Project}. \url{http://dyncall.org} 
+
+  Clark, J. (1998). expat - XML Parser Toolkit. \url{http://expat.sourceforge.net} 
+
+  Ikits, M. and Magallon, M. (2002).  The OpenGL Extension Wrangler Library. \url{http://glew.sourceforge.net} 
+
+  Latinga, S. (1998). The Simple DirectMedia Layer Library. \url{http://www.libsdl.org} 
+
+  Segal, M. and Akeley, K. (1992). The OpenGL Graphics System. A Specification, Version 1.0. \url{http://www.opengl.org} 
+
+  Smith, R. (2001). Open Dynamics Engine. \url{http://www.ode.org} 
 }
 \examples{
 \donttest{
