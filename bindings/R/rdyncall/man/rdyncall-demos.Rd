@@ -212,7 +212,7 @@ See \url{http://www.opencsw.org} for details on the OpenCSW project.
 \code{GL}        \tab \code{mesalibs} \cr
 \code{GLU}       \tab \code{mesalibs} \cr
 \code{glew}      \tab \code{glew} \cr
-\code{SDL} \tab \code{libsdl} \cr
+\code{SDL} \tab \code{libsdl1_2_0} \cr
 \code{SDL_image} \tab \code{sdlimage} \cr
 \code{SDL_mixer} \tab \code{sdlmixer} \cr
 \code{SDL_net}   \tab \code{sdlnet} \cr
