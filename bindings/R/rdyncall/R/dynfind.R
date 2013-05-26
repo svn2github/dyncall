@@ -17,6 +17,8 @@ dynfind1 <- if (.Platform$OS.type == "windows") {
       handle <- .dynload(paste("lib",name,".so",sep=""),...)
       if (!is.null(handle)) return(handle)
       .dynload(paste("lib",name,sep=""),...)
+      if (!is.null(handle)) return(handle)
+      .dynload(paste(name,sep=""),...)  # needed by Solaris to lookup 'R'.
     }
   }
 }
