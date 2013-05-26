@@ -10,7 +10,7 @@ dynfind1 <- if (.Platform$OS.type == "windows") {
     function(name, ...) {
       handle <- .dynload(paste(name,".framework/",name,sep=""),...)
       if (!is.null(handle)) return(handle)
-      .dynload(paste("lib",name,".dylib",name,sep=""),...)
+      .dynload(paste("lib",name,".dylib",sep=""),...)
     }
   } else {
     function(name, ...) {
