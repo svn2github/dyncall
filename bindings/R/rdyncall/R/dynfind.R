@@ -25,7 +25,7 @@ dynfind1 <- if (.Platform$OS.type == "windows") {
 
 dynfind <- function(libnames, auto.unload = TRUE) {
   for (libname in libnames) {
-    handle <- dynfind1(libname)
+    handle <- dynfind1(libname, auto.unload)
     if (!is.null(handle)) return(handle)
   }
 }
