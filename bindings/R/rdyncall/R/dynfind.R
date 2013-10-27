@@ -1,9 +1,9 @@
 
 dynfind1 <- if (.Platform$OS.type == "windows") {
   function(name, ...) {
-    handle <- .dynload(name,...)
+    handle <- .dynload(paste("lib",name,sep=""),...)
     if (!is.null(handle)) return(handle)
-    .dynload(paste("lib",name,sep=""),...)
+    .dynload(name,...)
   }
 } else {
   if ( Sys.info()[["sysname"]] == "Darwin" ) {
