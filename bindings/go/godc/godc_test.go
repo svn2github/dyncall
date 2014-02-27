@@ -55,7 +55,5 @@ func TestGoDC(t *testing.T) {
 
 	fmt.Printf("Testing dc:\n")
 	fmt.Printf("-----------\n")
-
-	//fmt.Printf("Function count in loaded lib: %d\n", l.Count())
 }
 
