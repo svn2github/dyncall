@@ -31,9 +31,30 @@ func TestGoDC(t *testing.T) {
 		t.FailNow()
 	}
 	defer l.Free()
+
+	if err := l.SymsInit("/usr/lib/libm.so"); err != nil {
+		t.FailNow()
+	}
+	defer l.SymsCleanup()
+
+	fmt.Printf("Testing dl:\n")
+	fmt.Printf("-----------\n")
 	fmt.Printf("Loaded library at address: %p\n", l.lib)
 	fmt.Printf("C sqrt function at address: %p\n", l.FindSymbol("sqrt"))
-	fmt.Printf("C pow function at address: %p\n", l.FindSymbol("pow"))
+	fmt.Printf("C pow function at address: %p\n\n", l.FindSymbol("pow"))
+
+	fmt.Printf("Testing dlSyms:\n")
+	fmt.Printf("---------------\n")
+	fmt.Printf("Symbols in lib: %d\n", l.SymsCount())
+	fmt.Printf("Symbol name for address %p: %s\n", l.FindSymbol("pow"), l.SymsNameFromValue(l.FindSymbol("pow")))
+	fmt.Printf("All symbol names in lib:\n")
+	for i, n := 0, l.SymsCount(); i<n; i++ {
+		fmt.Printf("  %s\n", l.SymsName(i))
+	}
+	fmt.Printf("\n")
+
+	fmt.Printf("Testing dc:\n")
+	fmt.Printf("-----------\n")
 
 	//fmt.Printf("Function count in loaded lib: %d\n", l.Count())
 }

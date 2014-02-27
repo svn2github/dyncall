@@ -32,8 +32,9 @@ import (
 )
 
 type ExtLib struct {
-	lib *C.DLLib
-	cvm *C.DCCallVM
+	lib  *C.DLLib
+	syms *C.DLSyms
+	cvm  *C.DCCallVM
 }
 
 
@@ -52,6 +53,28 @@ func (p *ExtLib) FindSymbol(name string) unsafe.Pointer {
 	return unsafe.Pointer(C.dlFindSymbol(p.lib, C.CString(name)))
 }
 
+
+func (p *ExtLib) SymsInit(path string) error {
+	p.syms = C.dlSymsInit(C.CString(path))
+	if p.syms != nil { return nil }
+	return fmt.Errorf("Can't load %s", path)
+}
+
+func (p *ExtLib) SymsCleanup() {
+	C.dlSymsCleanup(p.syms)
+}
+
+func (p *ExtLib) SymsCount() int {
+	return int(C.dlSymsCount(p.syms))
+}
+
+func (p *ExtLib) SymsName(i int) string {
+	return C.GoString(C.dlSymsName(p.syms, C.int(i)))
+}
+
+func (p *ExtLib) SymsNameFromValue(v unsafe.Pointer) string {
+	return C.GoString(C.dlSymsNameFromValue(p.syms, v))
+}
 
 /*func (p *ExtLib) SecCheck(rb_dcLibHandle* extLib)
 {
