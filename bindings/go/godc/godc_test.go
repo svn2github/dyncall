@@ -23,37 +23,127 @@ package godc
 import (
 	"testing"
 	"fmt"
+	"unsafe"
 )
 
 func TestGoDC(t *testing.T) {
-	l := new(ExtLib)
-	if err := l.Load("/usr/lib/libm.so"); err != nil {
+	lm := new(ExtLib)
+	if err := lm.Load("/usr/lib/libm.so"); err != nil {
 		t.FailNow()
 	}
-	defer l.Free()
+	defer lm.Free()
 
-	if err := l.SymsInit("/usr/lib/libm.so"); err != nil {
+	if err := lm.SymsInit("/usr/lib/libm.so"); err != nil {
 		t.FailNow()
 	}
-	defer l.SymsCleanup()
+	defer lm.SymsCleanup()
 
 	fmt.Printf("Testing dl:\n")
 	fmt.Printf("-----------\n")
-	fmt.Printf("Loaded library at address: %p\n", l.lib)
-	fmt.Printf("C sqrt function at address: %p\n", l.FindSymbol("sqrt"))
-	fmt.Printf("C pow function at address: %p\n\n", l.FindSymbol("pow"))
+	fmt.Printf("Loaded library at address: %p\n", lm.lib)
+	fmt.Printf("C sqrt function at address: %p\n", lm.FindSymbol("sqrt"))
+	fmt.Printf("C pow function at address: %p\n\n", lm.FindSymbol("pow"))
 
 	fmt.Printf("Testing dlSyms:\n")
 	fmt.Printf("---------------\n")
-	fmt.Printf("Symbols in lib: %d\n", l.SymsCount())
-	fmt.Printf("Symbol name for address %p: %s\n", l.FindSymbol("pow"), l.SymsNameFromValue(l.FindSymbol("pow")))
-	fmt.Printf("All symbol names in lib:\n")
-	for i, n := 0, l.SymsCount(); i<n; i++ {
-		fmt.Printf("  %s\n", l.SymsName(i))
+	fmt.Printf("Symbols in libm: %d\n", lm.SymsCount())
+	fmt.Printf("Symbol name for address %p: %s\n", lm.FindSymbol("pow"), lm.SymsNameFromValue(lm.FindSymbol("pow")))
+	fmt.Printf("All symbol names in libm:\n")
+	for i, n := 0, lm.SymsCount(); i<n; i++ {
+		fmt.Printf("  %s\n", lm.SymsName(i))
 	}
 	fmt.Printf("\n")
 
+
+
+	// Another lib
+	lc := new(ExtLib)
+	if err := lc.Load("/usr/lib/libc.so"); err != nil {
+		t.FailNow()
+	}
+	defer lc.Free()
+
+	if err := lc.SymsInit("/usr/lib/libc.so"); err != nil {
+		t.FailNow()
+	}
+	defer lc.SymsCleanup()
+
+	fmt.Printf("Symbols in libc: %d (not listing them here, too many)\n\n", lc.SymsCount())
+
+
+
+	// Call some functions
 	fmt.Printf("Testing dc:\n")
 	fmt.Printf("-----------\n")
+	vm := new(CallVM)
+	if err := vm.InitCallVM(); err != nil {
+		t.FailNow()
+	}
+	defer vm.Free()
+
+	vm.Mode(DC_CALL_C_DEFAULT)
+
+	// Float
+	vm.Reset()
+	vm.ArgFloat(36)
+	fmt.Printf("sqrtf(36) = %f\n", vm.CallFloat(lm.FindSymbol("sqrtf")))
+	vm.Reset() // Test reset, reusing VM
+	vm.ArgDouble(3.6)
+	fmt.Printf("floor(3.6) = %f\n", vm.CallDouble(lm.FindSymbol("floor")))
+
+	// Double
+	vm.Reset()
+	vm.ArgDouble(4.2373)
+	fmt.Printf("sqrt(4.2373) = %f\n", vm.CallDouble(lm.FindSymbol("sqrt")))
+	vm.Reset()
+	vm.ArgDouble(2.373)
+	vm.ArgDouble(-1000) // 2 args
+	fmt.Printf("copysign(2.373, -1000) = %f\n", vm.CallDouble(lm.FindSymbol("copysign")))
+
+	// Strings
+	vm.Reset()
+	vm.ArgPointerToStr("/return/only/this_here")
+	fmt.Printf("basename(\"/return/only/this_here\") = %s\n", vm.CallPointerToStr(lc.FindSymbol("basename")))
+	// Reuse path
+	fmt.Printf("dirname(\"/return/only/this_here\") = %s\n", vm.CallPointerToStr(lc.FindSymbol("dirname")))
+
+	// Integer
+	vm.Reset()
+	vm.ArgInt('a')
+	fmt.Printf("toupper('a') = %c\n", vm.CallInt(lc.FindSymbol("toupper")))
+	vm.Reset()
+	vm.ArgInt('a')
+	fmt.Printf("tolower('a') = %c\n", vm.CallInt(lc.FindSymbol("tolower")))
+	vm.Reset()
+	vm.ArgInt('R')
+	fmt.Printf("toupper('R') = %c\n", vm.CallInt(lc.FindSymbol("toupper")))
+	vm.Reset()
+	vm.ArgInt('R')
+	fmt.Printf("tolower('R') = %c\n", vm.CallInt(lc.FindSymbol("tolower")))
+
+	// Integer return
+	vm.Reset()
+	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
+	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
+	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
+	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
+	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
+	vm.ArgPointerToStr("Tassilo")
+	fmt.Printf("strlen(\"Tassilo\") = %d\n", vm.CallInt(lc.FindSymbol("strlen"))) //@@@ wrong result
+
+	// Ellipse
+	vm.Mode(DC_CALL_C_ELLIPSIS)
+	vm.Reset()
+	buf := make([]byte, 1000)
+	bufPtr := unsafe.Pointer(&buf[0])
+	vm.ArgPointer(bufPtr)
+	vm.ArgPointerToStr("Four:%d | \"Hello\":%s | Pi:%f")
+	vm.Mode(DC_CALL_C_ELLIPSIS_VARARGS)
+	vm.ArgInt(4)
+	vm.ArgPointerToStr("Hello")
+	vm.ArgFloat(3.14)
+	n := vm.CallInt(lc.FindSymbol("sprintf"))
+	fmt.Printf("sprintf(bufPtr, \"Four:%%d | \\\"Hello\\\":%%s | Pi:%%f\", 4, \"Hello\", 3.14) = %d:\n", n)
+	fmt.Printf("  bufPtr: %s\n", string(buf[:n])) //@@@ wrong result
 }
 

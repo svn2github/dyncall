@@ -24,3 +24,7 @@ TYPE CONVERSIONS (and reserved signature char)
   'p' | *,[],unsafe.Pointer | void*              | unsafe.Pointer
   'Z' | string              | void*              | string
 
+
+ToDo:
+- structs
+- callf wrap
