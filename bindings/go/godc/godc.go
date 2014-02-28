@@ -102,39 +102,81 @@ func (p *CallVM) Reset() {
 	C.dcReset(p.cvm)
 }
 
+
+
+// Modes
+const DC_CALL_C_DEFAULT            = C.DC_CALL_C_DEFAULT
+const DC_CALL_C_ELLIPSIS           = C.DC_CALL_C_ELLIPSIS
+const DC_CALL_C_ELLIPSIS_VARARGS   = C.DC_CALL_C_ELLIPSIS_VARARGS
+const DC_CALL_C_X86_CDECL          = C.DC_CALL_C_X86_CDECL
+const DC_CALL_C_X86_WIN32_STD      = C.DC_CALL_C_X86_WIN32_STD
+const DC_CALL_C_X86_WIN32_FAST_MS  = C.DC_CALL_C_X86_WIN32_FAST_MS
+const DC_CALL_C_X86_WIN32_FAST_GNU = C.DC_CALL_C_X86_WIN32_FAST_GNU
+const DC_CALL_C_X86_WIN32_THIS_MS  = C.DC_CALL_C_X86_WIN32_THIS_MS
+const DC_CALL_C_X86_WIN32_THIS_GNU = C.DC_CALL_C_X86_WIN32_THIS_GNU
+const DC_CALL_C_X64_WIN64          = C.DC_CALL_C_X64_WIN64
+const DC_CALL_C_X64_SYSV           = C.DC_CALL_C_X64_SYSV
+const DC_CALL_C_PPC32_DARWIN       = C.DC_CALL_C_PPC32_DARWIN
+const DC_CALL_C_PPC32_OSX          = C.DC_CALL_C_PPC32_OSX
+const DC_CALL_C_ARM_ARM_EABI       = C.DC_CALL_C_ARM_ARM_EABI
+const DC_CALL_C_ARM_THUMB_EABI     = C.DC_CALL_C_ARM_THUMB_EABI
+const DC_CALL_C_ARM_ARMHF          = C.DC_CALL_C_ARM_ARMHF
+const DC_CALL_C_MIPS32_EABI        = C.DC_CALL_C_MIPS32_EABI
+const DC_CALL_C_MIPS32_PSPSDK      = C.DC_CALL_C_MIPS32_PSPSDK
+const DC_CALL_C_PPC32_SYSV         = C.DC_CALL_C_PPC32_SYSV
+const DC_CALL_C_PPC32_LINUX        = C.DC_CALL_C_PPC32_LINUX
+const DC_CALL_C_ARM_ARM            = C.DC_CALL_C_ARM_ARM
+const DC_CALL_C_ARM_THUMB          = C.DC_CALL_C_ARM_THUMB
+const DC_CALL_C_MIPS32_O32         = C.DC_CALL_C_MIPS32_O32
+const DC_CALL_C_MIPS64_N32         = C.DC_CALL_C_MIPS64_N32
+const DC_CALL_C_MIPS64_N64         = C.DC_CALL_C_MIPS64_N64
+const DC_CALL_C_X86_PLAN9          = C.DC_CALL_C_X86_PLAN9
+const DC_CALL_C_SPARC32            = C.DC_CALL_C_SPARC32
+const DC_CALL_C_SPARC64            = C.DC_CALL_C_SPARC64
+const DC_CALL_SYS_DEFAULT          = C.DC_CALL_SYS_DEFAULT
+const DC_CALL_SYS_X86_INT80H_LINUX = C.DC_CALL_SYS_X86_INT80H_LINUX
+const DC_CALL_SYS_X86_INT80H_BSD   = C.DC_CALL_SYS_X86_INT80H_BSD
+
 func (p *CallVM) Mode(mode int) {
 	C.dcMode(p.cvm, C.DCint(mode))
 }
 
+// Error codes
+const DC_ERROR_NONE             = C.DC_ERROR_NONE
+const DC_ERROR_UNSUPPORTED_MODE = C.DC_ERROR_UNSUPPORTED_MODE
+
+
+func (p *CallVM) GetError() int {
+	return int(C.dcGetError(p.cvm))
+}
+
+
+// Args
+func (p *CallVM) ArgBool    (value bool)           { if value==true { C.dcArgBool(p.cvm, C.DC_TRUE) } else { C.dcArgBool(p.cvm, C.DC_FALSE) } }
+func (p *CallVM) ArgChar    (value int8)           { C.dcArgChar    (p.cvm, C.DCchar    (value)) }
+func (p *CallVM) ArgShort   (value int16)          { C.dcArgShort   (p.cvm, C.DCshort   (value)) }
+func (p *CallVM) ArgInt     (value int)            { C.dcArgInt     (p.cvm, C.DCint     (value)) }
+func (p *CallVM) ArgLong    (value int32)          { C.dcArgLong    (p.cvm, C.DClong    (value)) }
+func (p *CallVM) ArgLongLong(value int64)          { C.dcArgLongLong(p.cvm, C.DClonglong(value)) }
+func (p *CallVM) ArgFloat   (value float32)        { C.dcArgFloat   (p.cvm, C.DCfloat   (value)) }
+func (p *CallVM) ArgDouble  (value float64)        { C.dcArgDouble  (p.cvm, C.DCdouble  (value)) }
+func (p *CallVM) ArgPointer (value unsafe.Pointer) { C.dcArgPointer (p.cvm, C.DCpointer (value)) }
+//@@@func (p *CallVM) ArgStruct  (s C.DCstruct*, value unsafe.Pointer)
+
+// Calls
+func (p *CallVM) CallVoid    (funcptr unsafe.Pointer)                {                       C.dcCallVoid    (p.cvm, C.DCpointer(funcptr))  }
+func (p *CallVM) CallBool    (funcptr unsafe.Pointer) bool           { b := (C.dcCallBool(p.cvm, C.DCpointer(funcptr))); if b==C.DC_TRUE { return true } else { return false } }
+func (p *CallVM) CallChar    (funcptr unsafe.Pointer) int8           { return int8          (C.dcCallChar    (p.cvm, C.DCpointer(funcptr))) }
+func (p *CallVM) CallShort   (funcptr unsafe.Pointer) int16          { return int16         (C.dcCallShort   (p.cvm, C.DCpointer(funcptr))) }
+func (p *CallVM) CallInt     (funcptr unsafe.Pointer) int            { return int           (C.dcCallInt     (p.cvm, C.DCpointer(funcptr))) }
+func (p *CallVM) CallLong    (funcptr unsafe.Pointer) int32          { return int32         (C.dcCallLong    (p.cvm, C.DCpointer(funcptr))) }
+func (p *CallVM) CallLongLong(funcptr unsafe.Pointer) int64          { return int64         (C.dcCallLongLong(p.cvm, C.DCpointer(funcptr))) }
+func (p *CallVM) CallFloat   (funcptr unsafe.Pointer) float32        { return float32       (C.dcCallFloat   (p.cvm, C.DCpointer(funcptr))) }
+func (p *CallVM) CallDouble  (funcptr unsafe.Pointer) float64        { return float64       (C.dcCallDouble  (p.cvm, C.DCpointer(funcptr))) }
+func (p *CallVM) CallPointer (funcptr unsafe.Pointer) unsafe.Pointer { return unsafe.Pointer(C.dcCallPointer (p.cvm, C.DCpointer(funcptr))) }
+//@@@func (p *CallVM) CallStruct  (funcptr unsafe.Pointer, s C.DCstruct* s, returnValue unsafe.Pointer)
 
 /*
-DC_API void       dcMode          (DCCallVM* vm, DCint mode);
-
-DC_API void       dcArgBool       (DCCallVM* vm, DCbool     value);
-DC_API void       dcArgChar       (DCCallVM* vm, DCchar     value);
-DC_API void       dcArgShort      (DCCallVM* vm, DCshort    value);
-DC_API void       dcArgInt        (DCCallVM* vm, DCint      value);
-DC_API void       dcArgLong       (DCCallVM* vm, DClong     value);
-DC_API void       dcArgLongLong   (DCCallVM* vm, DClonglong value);
-DC_API void       dcArgFloat      (DCCallVM* vm, DCfloat    value);
-DC_API void       dcArgDouble     (DCCallVM* vm, DCdouble   value);
-DC_API void       dcArgPointer    (DCCallVM* vm, DCpointer  value);
-DC_API void       dcArgStruct     (DCCallVM* vm, DCstruct* s, DCpointer value);
-
-DC_API void       dcCallVoid      (DCCallVM* vm, DCpointer funcptr);
-DC_API DCbool     dcCallBool      (DCCallVM* vm, DCpointer funcptr);
-DC_API DCchar     dcCallChar      (DCCallVM* vm, DCpointer funcptr);
-DC_API DCshort    dcCallShort     (DCCallVM* vm, DCpointer funcptr);
-DC_API DCint      dcCallInt       (DCCallVM* vm, DCpointer funcptr);
-DC_API DClong     dcCallLong      (DCCallVM* vm, DCpointer funcptr);
-DC_API DClonglong dcCallLongLong  (DCCallVM* vm, DCpointer funcptr);
-DC_API DCfloat    dcCallFloat     (DCCallVM* vm, DCpointer funcptr);
-DC_API DCdouble   dcCallDouble    (DCCallVM* vm, DCpointer funcptr);
-DC_API DCpointer  dcCallPointer   (DCCallVM* vm, DCpointer funcptr);
-DC_API void       dcCallStruct    (DCCallVM* vm, DCpointer funcptr, DCstruct* s, DCpointer returnValue);
-
-DC_API DCint      dcGetError      (DCCallVM* vm);
-
 DC_API DCstruct*  dcNewStruct      (DCsize fieldCount, DCint alignment);
 DC_API void       dcStructField    (DCstruct* s, DCint type, DCint alignment, DCsize arrayLength);
 DC_API void       dcSubStruct      (DCstruct* s, DCsize fieldCount, DCint alignment, DCsize arrayLength);  	
@@ -145,3 +187,4 @@ DC_API void       dcFreeStruct     (DCstruct* s);
 
 DC_API DCstruct*  dcDefineStruct  (const char* signature);
 */
+

@@ -3,47 +3,24 @@ Copyright 2014 Tassilo Philipp
 February 23, 2014
 
 
-SIGNATURE FORMAT
+TYPE CONVERSIONS (and reserved signature char)
 
-  format: "xxxxx)y"
+  SIG | FROM GO             | C/C++              | TO GO
+  ----+---------------------+--------------------+----------------
+  'v' |                     | void               | 
+  'B' | bool                | bool               | bool
+  'c' | int8,C.schar        | char               | int8
+  'C' | uint8,byte,C.uchar  | unsigned char      | uint8,byte
+  's' | int16,C.sshort      | short              | int16
+  'S' | uint16,C.ushort     | unsigned short     | uint16
+  'i' | int32,C.sint        | int                | int32
+  'I' | uint32,C.uint       | unsigned int       | uint32
+  'j' | int32,rune,C.slong  | long               | int32,rune
+  'J' | uint32,C.ulong      | unsigned long      | uint32
+  'l' | int64,C.slonglong   | long long          | int64
+  'L' | uint64,C.ulonglong  | unsigned long long | uint64
+  'f' | float32,C.float     | float              | float32
+  'd' | float64,C.double    | double             | float64
+  'p' | *,[],unsafe.Pointer | void*              | unsafe.Pointer
+  'Z' | string              | void*              | string
 
-    x is positional parameter-type charcode
-
-    'B' C++: bool             <- Go: all types @@@
-    'c' C: char               <- Go: int8,C.schar
-    'C' C: unsigned char      <- Go: uint8,byte,C.uchar
-    's' C: short              <- Go: int16,C.sshort
-    'S' C: unsigned short     <- Go: uint16,C.ushort
-    'i' C: int                <- Go: int32,C.sint
-    'I' C: unsigned int       <- Go: uint32,C.uint
-    'j' C: long               <- Go: int32,rune,C.slong
-    'J' C: unsigned long      <- Go: uint32,C.ulong
-    'l' C: long long          <- Go: int64,C.slonglong
-    'L' C: unsigned long long <- Go: uint64,C.ulonglong
-    'f' C: float              <- Go: float32,C.float
-    'd' C: double             <- Go: float64,C.double
-    'p' C: void*              <- Go: *,[],unsafe.Pointer
-    'Z' C: void*              <- Go: string
-
-    y is result-type charcode  
-
-    'v' C: void               -> Go: (nothing)
-    'B' C: bool               -> Go: all types @@@
-    'c' C: char               -> Go: int8
-    'C' C: unsigned char      -> Go: uint8,byte
-    's' C: short              -> Go: int16
-    'S' C: unsigned short     -> Go: uint16
-    'i' C: int                -> Go: int32
-    'I' C: unsigned int       -> Go: uint32
-    'j' C: long               -> Go: int32,rune
-    'J' C: unsigned long      -> Go: uint32
-    'l' C: long long          -> Go: int64
-    'L' C: unsigned long long -> Go: uint64
-    'f' C: float              -> Go: float32
-    'd' C: double             -> Go: float64
-    'p' C: void*              -> Go: unsafe.Pointer
-    'Z' C: void*              -> Go: string
-
-
--> Note that signature suffixes used to indicate calling
--> conventions, are not supported yet! @@@
