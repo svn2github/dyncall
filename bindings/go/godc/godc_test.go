@@ -129,7 +129,7 @@ func TestGoDC(t *testing.T) {
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	vm.ArgPointerToStr("Tassilo")
-	fmt.Printf("strlen(\"Tassilo\") = %d\n", vm.CallInt(lc.FindSymbol("strlen"))) //@@@ wrong result
+	fmt.Printf("strlen(\"Tassilo\") = %d\n", vm.CallInt(lc.FindSymbol("strlen")))
 
 	// Ellipse
 	vm.Mode(DC_CALL_C_ELLIPSIS)
@@ -141,9 +141,9 @@ func TestGoDC(t *testing.T) {
 	vm.Mode(DC_CALL_C_ELLIPSIS_VARARGS)
 	vm.ArgInt(4)
 	vm.ArgPointerToStr("Hello")
-	vm.ArgFloat(3.14)
+	vm.ArgDouble(3.14) // Double, b/c of ... promotion rules
 	n := vm.CallInt(lc.FindSymbol("sprintf"))
 	fmt.Printf("sprintf(bufPtr, \"Four:%%d | \\\"Hello\\\":%%s | Pi:%%f\", 4, \"Hello\", 3.14) = %d:\n", n)
-	fmt.Printf("  bufPtr: %s\n", string(buf[:n])) //@@@ wrong result
+	fmt.Printf("  bufPtr: %s\n", string(buf[:n]))
 }
 

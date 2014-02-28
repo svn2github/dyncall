@@ -168,7 +168,7 @@ func (p *CallVM) ArgLongLong    (value int64)          { C.dcArgLongLong(p.cvm, 
 func (p *CallVM) ArgFloat       (value float32)        { C.dcArgFloat   (p.cvm, C.DCfloat   (value)) }
 func (p *CallVM) ArgDouble      (value float64)        { C.dcArgDouble  (p.cvm, C.DCdouble  (value)) }
 func (p *CallVM) ArgPointer     (value unsafe.Pointer) { C.dcArgPointer (p.cvm, C.DCpointer (value)) }
-func (p *CallVM) ArgPointerToStr(value string)         { s := C.CString(value); defer C.free(unsafe.Pointer(s)); C.dcArgPointer (p.cvm, C.DCpointer(s)) }
+func (p *CallVM) ArgPointerToStr(value string)         { s := C.CString(value); /*LEAK - func probably needs to be removed defer C.free(unsafe.Pointer(s));*/ C.dcArgPointer (p.cvm, C.DCpointer(s)) }
 //@@@func (p *CallVM) ArgStruct  (s C.DCstruct*, value unsafe.Pointer)
 
 // Calls
