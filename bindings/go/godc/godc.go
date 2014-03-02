@@ -158,6 +158,10 @@ func (p *CallVM) GetError() int {
 }
 
 
+// Helper for string/pointer conversion, needed as low-level string alloc needs to be freed in different scope
+func (p *CallVM) AllocCString(value string) unsafe.Pointer { s := C.CString(value); return unsafe.Pointer(s) }
+func (p *CallVM) FreeCString (value unsafe.Pointer)        { C.free(value) }
+
 // Args
 func (p *CallVM) ArgBool        (value bool)           { if value==true { C.dcArgBool(p.cvm, C.DC_TRUE) } else { C.dcArgBool(p.cvm, C.DC_FALSE) } }
 func (p *CallVM) ArgChar        (value int8)           { C.dcArgChar    (p.cvm, C.DCchar    (value)) }
@@ -168,7 +172,6 @@ func (p *CallVM) ArgLongLong    (value int64)          { C.dcArgLongLong(p.cvm, 
 func (p *CallVM) ArgFloat       (value float32)        { C.dcArgFloat   (p.cvm, C.DCfloat   (value)) }
 func (p *CallVM) ArgDouble      (value float64)        { C.dcArgDouble  (p.cvm, C.DCdouble  (value)) }
 func (p *CallVM) ArgPointer     (value unsafe.Pointer) { C.dcArgPointer (p.cvm, C.DCpointer (value)) }
-func (p *CallVM) ArgPointerToStr(value string)         { s := C.CString(value); /*LEAK - func probably needs to be removed defer C.free(unsafe.Pointer(s));*/ C.dcArgPointer (p.cvm, C.DCpointer(s)) }
 //@@@func (p *CallVM) ArgStruct  (s C.DCstruct*, value unsafe.Pointer)
 
 // Calls
@@ -182,7 +185,7 @@ func (p *CallVM) CallLongLong    (funcptr unsafe.Pointer) int64          { retur
 func (p *CallVM) CallFloat       (funcptr unsafe.Pointer) float32        { return float32       (C.dcCallFloat   (p.cvm, C.DCpointer(funcptr))) }
 func (p *CallVM) CallDouble      (funcptr unsafe.Pointer) float64        { return float64       (C.dcCallDouble  (p.cvm, C.DCpointer(funcptr))) }
 func (p *CallVM) CallPointer     (funcptr unsafe.Pointer) unsafe.Pointer { return unsafe.Pointer(C.dcCallPointer (p.cvm, C.DCpointer(funcptr))) }
-func (p *CallVM) CallPointerToStr(funcptr unsafe.Pointer) string         { return C.GoString((*C.char)(C.dcCallPointer (p.cvm, C.DCpointer(funcptr)))) }
+func (p *CallVM) CallPointerToStr(funcptr unsafe.Pointer) string         { return C.GoString((*C.char)(C.dcCallPointer (p.cvm, C.DCpointer(funcptr)))) } // For convenience
 //@@@func (p *CallVM) CallStruct  (funcptr unsafe.Pointer, s C.DCstruct* s, returnValue unsafe.Pointer)
 
 /*

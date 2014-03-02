@@ -102,7 +102,10 @@ func TestGoDC(t *testing.T) {
 
 	// Strings
 	vm.Reset()
-	vm.ArgPointerToStr("/return/only/this_here")
+	cs1 := vm.AllocCString("/return/only/this_here")
+	defer vm.FreeCString(cs1)
+
+	vm.ArgPointer(cs1)
 	fmt.Printf("basename(\"/return/only/this_here\") = %s\n", vm.CallPointerToStr(lc.FindSymbol("basename")))
 	// Reuse path
 	fmt.Printf("dirname(\"/return/only/this_here\") = %s\n", vm.CallPointerToStr(lc.FindSymbol("dirname")))
@@ -123,12 +126,15 @@ func TestGoDC(t *testing.T) {
 
 	// Integer return
 	vm.Reset()
+	cs2 := vm.AllocCString("Tassilo")
+	defer vm.FreeCString(cs2)
+
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
-	vm.ArgPointerToStr("Tassilo")
+	vm.ArgPointer(cs2)
 	fmt.Printf("strlen(\"Tassilo\") = %d\n", vm.CallInt(lc.FindSymbol("strlen")))
 
 	// Ellipse
@@ -136,11 +142,16 @@ func TestGoDC(t *testing.T) {
 	vm.Reset()
 	buf := make([]byte, 1000)
 	bufPtr := unsafe.Pointer(&buf[0])
+	cs3 := vm.AllocCString("Four:%d | \"Hello\":%s | Pi:%f")
+	cs4 := vm.AllocCString("Hello")
+	defer vm.FreeCString(cs4)
+	defer vm.FreeCString(cs3)
+
 	vm.ArgPointer(bufPtr)
-	vm.ArgPointerToStr("Four:%d | \"Hello\":%s | Pi:%f")
+	vm.ArgPointer(cs3)
 	vm.Mode(DC_CALL_C_ELLIPSIS_VARARGS)
 	vm.ArgInt(4)
-	vm.ArgPointerToStr("Hello")
+	vm.ArgPointer(cs4)
 	vm.ArgDouble(3.14) // Double, b/c of ... promotion rules
 	n := vm.CallInt(lc.FindSymbol("sprintf"))
 	fmt.Printf("sprintf(bufPtr, \"Four:%%d | \\\"Hello\\\":%%s | Pi:%%f\", 4, \"Hello\", 3.14) = %d:\n", n)
