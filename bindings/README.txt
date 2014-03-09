@@ -15,6 +15,7 @@ depending on the nature of the language.
   - Statically typed (and no direct way wrap types in a generic way and or RTTI):
 
       Expose all dcArg, etc. calls
+      Expose formatted call ('...') if possible, but as ArgF (instead of CallF), b/c return type is statically typed
 
   - RTTI:
 
