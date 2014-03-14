@@ -3,7 +3,7 @@
  File: bindings/shell.c
  Description: printf(1) style function call mechanism
  License:
- Copyright (c) 2007-2011 Daniel Adler <dadler@uni-goettingen.de>, 
+ Copyright (c) 2007-2014 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
 
  Permission to use, copy, modify, and distribute this software for any
