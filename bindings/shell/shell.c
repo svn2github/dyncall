@@ -29,10 +29,14 @@
 void usage(const char* s)
 {
 	printf(
-		"Usage: %s SO SYM SIG [ARGS]\n"
-		"  where SO is the name of the shared object, SYM is the symbol name, SIG the\n"
-		"  symbol's type signature, and ARGS the arguments.\n",
-		s
+		"Usage: %s SO ls\n"
+		"       %s SO call SYM SIG [ARGS]\n"
+		"  where SO is the name of the shared object.\n"
+		"\n"
+		"  'ls' lists all symbol names in the shared object\n"
+		"  'call' calls function in the shared object, where SYM is the symbol name,\n"
+		"  SIG the symbol's type signature, and ARGS the arguments.\n",
+		s, s
 	);
 }
 
@@ -46,97 +50,127 @@ int main(int argc, char* argv[])
 	void* sym;
 	DCCallVM* vm;
 	DLLib* dlLib;
+	DLSyms* dlSyms;
+	int c, l;
 
 	/* Parse arguments and check validity. */
-	if(argc < 4) { /* Need at least shared object name, symbol name and signature string. */
+	/* Need at least shared object name and action, and symbol name and signature string for call. */
+	if(argc < 2) {
 		usage(argv[0]);
 		return 1;
 	}
 
-	/* Check if number of arguments matches sigstring spec. */
-	/*if(n != argc-4)@@@*/	/* 0 is prog, 1 is lib, 2 is symbol name, 3 is sig */
-
-	libPath = argv[1];
-	symName = argv[2];
-	sig = i = argv[3];
-
-	/* Load library and get a pointer to the symbol to call. */
-	dlLib = dlLoadLibrary(libPath);
-	if(!dlLib) {
-		printf("Can't load \"%s\".\n", libPath);
-		usage(argv[0]);
-		return 1;
-	}
-
-	sym = dlFindSymbol(dlLib, symName);
-	if(!sym) {
-		printf("Can't find symbol \"%s\".\n", symName);
-		dlFreeLibrary(dlLib);
+	c = strcmp(argv[2], "call");
+	l = strcmp(argv[2], "ls");
+	if((c != 0 && l != 0) || (c == 0 && argc < 4)) {
 		usage(argv[0]);
 		return 1;
 	}
 
 
-	vm = dcNewCallVM(4096/*@@@*/);/*@@@ error checking */
-	dcReset(vm);
-
-	while(*i != '\0' && *i != DC_SIGCHAR_ENDARG) {
-		switch(*i) {
-			case DC_SIGCHAR_CC_PREFIX:
-				switch(*++i) {
-					case DC_SIGCHAR_CC_ELLIPSIS:     dcMode(vm, DC_CALL_C_ELLIPSIS);           break;
-					case DC_SIGCHAR_CC_STDCALL:      dcMode(vm, DC_CALL_C_X86_WIN32_STD);      break;
-					case DC_SIGCHAR_CC_FASTCALL_GNU: dcMode(vm, DC_CALL_C_X86_WIN32_FAST_GNU); break;
-					case DC_SIGCHAR_CC_FASTCALL_MS:  dcMode(vm, DC_CALL_C_X86_WIN32_FAST_MS);  break;
-					case DC_SIGCHAR_CC_THISCALL_MS:  dcMode(vm, DC_CALL_C_X86_WIN32_THIS_MS);  break;
-					/* @@@ extend with other modes when they become available */
-				}
-				sig += 2;
-				break;
-
-			case DC_SIGCHAR_BOOL:      dcArgBool    (vm, (DCbool)           atoi    (argv[4+i-sig]        )); break;
-			case DC_SIGCHAR_CHAR:      dcArgChar    (vm, (DCchar)           atoi    (argv[4+i-sig]        )); break;
-			case DC_SIGCHAR_UCHAR:     dcArgChar    (vm, (DCchar)(DCuchar)  atoi    (argv[4+i-sig]        )); break;
-			case DC_SIGCHAR_SHORT:     dcArgShort   (vm, (DCshort)          atoi    (argv[4+i-sig]        )); break;
-			case DC_SIGCHAR_USHORT:    dcArgShort   (vm, (DCshort)(DCushort)atoi    (argv[4+i-sig]        )); break;
-			case DC_SIGCHAR_INT:       dcArgInt     (vm, (DCint)            strtol  (argv[4+i-sig],NULL,10)); break;
-			case DC_SIGCHAR_UINT:      dcArgInt     (vm, (DCint)(DCuint)    strtoul (argv[4+i-sig],NULL,10)); break;
-			case DC_SIGCHAR_LONG:      dcArgLong    (vm, (DClong)           strtol  (argv[4+i-sig],NULL,10)); break;
-			case DC_SIGCHAR_ULONG:     dcArgLong    (vm, (DCulong)          strtoul (argv[4+i-sig],NULL,10)); break;
-			case DC_SIGCHAR_LONGLONG:  dcArgLongLong(vm, (DClonglong)       strtoll (argv[4+i-sig],NULL,10)); break;
-			case DC_SIGCHAR_ULONGLONG: dcArgLongLong(vm, (DCulonglong)      strtoull(argv[4+i-sig],NULL,10)); break;
-			case DC_SIGCHAR_FLOAT:     dcArgFloat   (vm, (DCfloat)          atof    (argv[4+i-sig]        )); break;
-			case DC_SIGCHAR_DOUBLE:    dcArgDouble  (vm, (DCdouble)         atof    (argv[4+i-sig]        )); break;
-			case DC_SIGCHAR_POINTER:   dcArgPointer (vm, (DCpointer)                 argv[4+i-sig]         ); break;
-			case DC_SIGCHAR_STRING:    dcArgPointer (vm, (DCpointer)                 argv[4+i-sig]         ); break;
+	/* List symbols, if 'ls', else it must be 'call', so proceed to call. */
+	if(l == 0) {
+		dlSyms = dlSymsInit(libPath);
+		if(!dlSyms) {
+			printf("Can't load \"%s\".\n", libPath);
+			usage(argv[0]);
+			return 1;
 		}
-		++i;
+
+		/* hacky: reuse c and l */
+		for(c=dlSymsCount(dlSyms), l=0; l<c; ++l)
+			printf("%s\n", dlSymsName(dlSyms, l));
+
+		dlSymsCleanup(dlSyms);
+	}
+	else {
+		/* Check if number of arguments matches sigstring spec. */
+		/*if(n != argc-4)@@@*/	/* 0 is prog, 1 is lib, 2 is symbol name, 3 is sig */
+    
+		libPath = argv[1];
+		symName = argv[3];
+		sig = i = argv[4];
+    
+		/* Load library and get a pointer to the symbol to call. */
+		dlLib = dlLoadLibrary(libPath);
+		if(!dlLib) {
+			printf("Can't load \"%s\".\n", libPath);
+			usage(argv[0]);
+			return 1;
+		}
+    
+		sym = dlFindSymbol(dlLib, symName);
+		if(!sym) {
+			printf("Can't find symbol \"%s\".\n", symName);
+			dlFreeLibrary(dlLib);
+			usage(argv[0]);
+			return 1;
+		}
+    
+    
+		vm = dcNewCallVM(4096/*@@@*/);/*@@@ error checking */
+		dcReset(vm);
+    
+		while(*i != '\0' && *i != DC_SIGCHAR_ENDARG) {
+			switch(*i) {
+				case DC_SIGCHAR_CC_PREFIX:
+					switch(*++i) {
+						case DC_SIGCHAR_CC_ELLIPSIS:     dcMode(vm, DC_CALL_C_ELLIPSIS);           break;
+						case DC_SIGCHAR_CC_STDCALL:      dcMode(vm, DC_CALL_C_X86_WIN32_STD);      break;
+						case DC_SIGCHAR_CC_FASTCALL_GNU: dcMode(vm, DC_CALL_C_X86_WIN32_FAST_GNU); break;
+						case DC_SIGCHAR_CC_FASTCALL_MS:  dcMode(vm, DC_CALL_C_X86_WIN32_FAST_MS);  break;
+						case DC_SIGCHAR_CC_THISCALL_MS:  dcMode(vm, DC_CALL_C_X86_WIN32_THIS_MS);  break;
+						/* @@@ extend with other modes when they become available */
+					}
+					sig += 2;
+					break;
+    
+				case DC_SIGCHAR_BOOL:      dcArgBool    (vm, (DCbool)           atoi    (argv[5+i-sig]        )); break;
+				case DC_SIGCHAR_CHAR:      dcArgChar    (vm, (DCchar)           atoi    (argv[5+i-sig]        )); break;
+				case DC_SIGCHAR_UCHAR:     dcArgChar    (vm, (DCchar)(DCuchar)  atoi    (argv[5+i-sig]        )); break;
+				case DC_SIGCHAR_SHORT:     dcArgShort   (vm, (DCshort)          atoi    (argv[5+i-sig]        )); break;
+				case DC_SIGCHAR_USHORT:    dcArgShort   (vm, (DCshort)(DCushort)atoi    (argv[5+i-sig]        )); break;
+				case DC_SIGCHAR_INT:       dcArgInt     (vm, (DCint)            strtol  (argv[5+i-sig],NULL,10)); break;
+				case DC_SIGCHAR_UINT:      dcArgInt     (vm, (DCint)(DCuint)    strtoul (argv[5+i-sig],NULL,10)); break;
+				case DC_SIGCHAR_LONG:      dcArgLong    (vm, (DClong)           strtol  (argv[5+i-sig],NULL,10)); break;
+				case DC_SIGCHAR_ULONG:     dcArgLong    (vm, (DCulong)          strtoul (argv[5+i-sig],NULL,10)); break;
+				case DC_SIGCHAR_LONGLONG:  dcArgLongLong(vm, (DClonglong)       strtoll (argv[5+i-sig],NULL,10)); break;
+				case DC_SIGCHAR_ULONGLONG: dcArgLongLong(vm, (DCulonglong)      strtoull(argv[5+i-sig],NULL,10)); break;
+				case DC_SIGCHAR_FLOAT:     dcArgFloat   (vm, (DCfloat)          atof    (argv[5+i-sig]        )); break;
+				case DC_SIGCHAR_DOUBLE:    dcArgDouble  (vm, (DCdouble)         atof    (argv[5+i-sig]        )); break;
+				case DC_SIGCHAR_POINTER:   dcArgPointer (vm, (DCpointer)                 argv[5+i-sig]         ); break;
+				case DC_SIGCHAR_STRING:    dcArgPointer (vm, (DCpointer)                 argv[5+i-sig]         ); break;
+			}
+			++i;
+		}
+    
+		if(*i == DC_SIGCHAR_ENDARG)
+			++i;
+    
+		switch(*i) {
+			case '\0':
+			case DC_SIGCHAR_VOID:                       dcCallVoid    (vm,sym) ; break;
+			case DC_SIGCHAR_BOOL:      printf("%d\n",   dcCallBool    (vm,sym)); break;
+			case DC_SIGCHAR_CHAR:      printf("%d\n",   dcCallChar    (vm,sym)); break;
+			case DC_SIGCHAR_UCHAR:     printf("%d\n",   dcCallChar    (vm,sym)); break;
+			case DC_SIGCHAR_SHORT:     printf("%d\n",   dcCallShort   (vm,sym)); break;
+			case DC_SIGCHAR_USHORT:    printf("%d\n",   dcCallShort   (vm,sym)); break;
+			case DC_SIGCHAR_INT:       printf("%d\n",   dcCallInt     (vm,sym)); break;
+			case DC_SIGCHAR_UINT:      printf("%d\n",   dcCallInt     (vm,sym)); break;
+			case DC_SIGCHAR_LONG:      printf("%d\n",   dcCallLong    (vm,sym)); break;
+			case DC_SIGCHAR_ULONG:     printf("%d\n",   dcCallLong    (vm,sym)); break;
+			case DC_SIGCHAR_LONGLONG:  printf("%lld\n", dcCallLongLong(vm,sym)); break;
+			case DC_SIGCHAR_ULONGLONG: printf("%lld\n", dcCallLongLong(vm,sym)); break;
+			case DC_SIGCHAR_FLOAT:     printf("%g\n",   dcCallFloat   (vm,sym)); break;
+			case DC_SIGCHAR_DOUBLE:    printf("%g\n",   dcCallDouble  (vm,sym)); break;
+			case DC_SIGCHAR_POINTER:   printf("%x\n",   dcCallPointer (vm,sym)); break;
+			case DC_SIGCHAR_STRING:    printf(          dcCallPointer (vm,sym)); break;
+		}
+    
+		dlFreeLibrary(dlLib);
+		dcFree(vm);
 	}
 
-	if(*i == DC_SIGCHAR_ENDARG)
-		++i;
-
-	switch(*i) {
-		case '\0':
-		case DC_SIGCHAR_VOID:                       dcCallVoid    (vm,sym) ; break;
-		case DC_SIGCHAR_BOOL:      printf("%d\n",   dcCallBool    (vm,sym)); break;
-		case DC_SIGCHAR_CHAR:      printf("%d\n",   dcCallChar    (vm,sym)); break;
-		case DC_SIGCHAR_UCHAR:     printf("%d\n",   dcCallChar    (vm,sym)); break;
-		case DC_SIGCHAR_SHORT:     printf("%d\n",   dcCallShort   (vm,sym)); break;
-		case DC_SIGCHAR_USHORT:    printf("%d\n",   dcCallShort   (vm,sym)); break;
-		case DC_SIGCHAR_INT:       printf("%d\n",   dcCallInt     (vm,sym)); break;
-		case DC_SIGCHAR_UINT:      printf("%d\n",   dcCallInt     (vm,sym)); break;
-		case DC_SIGCHAR_LONG:      printf("%d\n",   dcCallLong    (vm,sym)); break;
-		case DC_SIGCHAR_ULONG:     printf("%d\n",   dcCallLong    (vm,sym)); break;
-		case DC_SIGCHAR_LONGLONG:  printf("%lld\n", dcCallLongLong(vm,sym)); break;
-		case DC_SIGCHAR_ULONGLONG: printf("%lld\n", dcCallLongLong(vm,sym)); break;
-		case DC_SIGCHAR_FLOAT:     printf("%g\n",   dcCallFloat   (vm,sym)); break;
-		case DC_SIGCHAR_DOUBLE:    printf("%g\n",   dcCallDouble  (vm,sym)); break;
-		case DC_SIGCHAR_POINTER:   printf("%x\n",   dcCallPointer (vm,sym)); break;
-		case DC_SIGCHAR_STRING:    printf(          dcCallPointer (vm,sym)); break;
-	}
-
-	dlFreeLibrary(dlLib);
-	dcFree(vm);
+	return 0;
 }
 
