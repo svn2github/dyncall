@@ -1,7 +1,7 @@
 /*
 
  rbdc.c
- Copyright (c) 2007-2009 Daniel Adler <dadler@uni-goettingen.de>, 
+ Copyright (c) 2007-2014 Daniel Adler <dadler@uni-goettingen.de>, 
                          Tassilo Philipp <tphilipp@potion-studios.com>
 
  Permission to use, copy, modify, and distribute this software for any
@@ -23,6 +23,7 @@
 
 #include <ruby.h>
 #include "../../../dyncall/dyncall/dyncall.h"
+#include "../../../dyncall/dyncallback/dyncall_callback.h"
 #include "../../../dyncall/dynload/dynload.h"
 #include "../../../dyncall/dyncall/dyncall_signature.h"
 
@@ -33,51 +34,98 @@ static VALUE rb_dcExtLib;
 
 typedef struct {
 	void*     lib;
+	void*     syms;
 	DCCallVM* cvm;
 } rb_dcLibHandle;
 
 
-/* Mark-and-sweep GC handlers. */
-static void GCMark_ExtLib(rb_dcLibHandle* extLib)
+/* Allocator for handle and mark-and-sweep GC handlers. */
+static void GCMark_ExtLib(rb_dcLibHandle* h)
 {
 }
 
-
-static void GCSweep_ExtLib(rb_dcLibHandle* extLib)
+static void GCSweep_ExtLib(rb_dcLibHandle* h)
 {
-	if(extLib->lib != NULL)
-		dlFreeLibrary(extLib->lib);
+	if(h->lib  != NULL) dlFreeLibrary(h->lib);
+	if(h->syms != NULL) dlSymsCleanup(h->syms);
 
-	dcFree(extLib->cvm);
-	free(extLib);
+	dcFree(h->cvm);
+	free(h);
 }
 
-
-/* Allocators. */
 static VALUE AllocExtLib(VALUE cl)
 {
-	rb_dcLibHandle* extLib = malloc(sizeof(rb_dcLibHandle));
-	extLib->lib = NULL;
-	extLib->cvm = dcNewCallVM(4096/*@@@*/);
-	return Data_Wrap_Struct(cl, GCMark_ExtLib, GCSweep_ExtLib, extLib);
+	rb_dcLibHandle* h = malloc(sizeof(rb_dcLibHandle));
+	h->lib  = NULL;
+	h->syms = NULL;
+	h->cvm  = dcNewCallVM(4096/*@@@*/);
+	return Data_Wrap_Struct(cl, GCMark_ExtLib, GCSweep_ExtLib, h);
 }
 
 
-/* Methods. */
+/* Helpers */
+static void ExtLib_SecCheckLib(rb_dcLibHandle* h)
+{
+	if(h->lib == NULL)
+		rb_raise(rb_eRuntimeError, "no library loaded - use ExtLib#load");
+}
+
+static void ExtLib_SecCheckSyms(rb_dcLibHandle* h)
+{
+	if(h->syms == NULL)
+		rb_raise(rb_eRuntimeError, "no symbol table initialized - use ExtLib#symsInit");
+}
+
+
+
+/* Methods for lib access */
 static VALUE ExtLib_Load(VALUE self, VALUE path)
 {
 	void* newLib;
-	rb_dcLibHandle* extLib;
-
-	Data_Get_Struct(self, rb_dcLibHandle, extLib);
+	rb_dcLibHandle* h;
 
 	if(TYPE(path) != T_STRING)
 		rb_raise(rb_eRuntimeError, "argument must be of type 'String'");/*@@@ respond to to_s*/
 
+	Data_Get_Struct(self, rb_dcLibHandle, h);
 	newLib = dlLoadLibrary(RSTRING_PTR(path));
-	if(newLib != NULL) {
-		dlFreeLibrary(extLib->lib);
-		extLib->lib = newLib;
+	if(newLib) {
+		dlFreeLibrary(h->lib);
+		h->lib = newLib;
+
+		return self;
+	}
+
+	return Qnil;
+}
+
+static VALUE ExtLib_ExistsQ(VALUE self, VALUE sym)
+{
+	rb_dcLibHandle* h;
+
+	Data_Get_Struct(self, rb_dcLibHandle, h);
+	ExtLib_SecCheckLib(h);
+
+	return dlFindSymbol(h->lib, rb_id2name(SYM2ID(sym))) ? Qtrue : Qfalse;
+}
+
+
+
+/* Methods for syms parsing */
+static VALUE ExtLib_SymsInit(VALUE self, VALUE path)
+{
+	void* newSyms;
+	rb_dcLibHandle* h;
+
+	if(TYPE(path) != T_STRING)
+		rb_raise(rb_eRuntimeError, "argument must be of type 'String'");/*@@@ respond to to_s*/
+
+	Data_Get_Struct(self, rb_dcLibHandle, h);
+	newSyms = dlSymsInit(RSTRING_PTR(path));
+
+	if(newSyms) {
+		dlSymsCleanup(h->syms);
+		h->syms = newSyms;
 
 		return self;
 	}
@@ -86,58 +134,39 @@ static VALUE ExtLib_Load(VALUE self, VALUE path)
 }
 
 
-
-static void ExtLib_SecCheck(rb_dcLibHandle* extLib)
+static VALUE ExtLib_SymsCount(VALUE self)
 {
-	if(extLib->lib == NULL)
-		rb_raise(rb_eRuntimeError, "no library loaded - use ExtLib#load");
+	rb_dcLibHandle* h;
+
+	Data_Get_Struct(self, rb_dcLibHandle, h);
+	ExtLib_SecCheckSyms(h);
+
+	return LONG2NUM(dlSymsCount(h->syms));
 }
 
 
-static VALUE ExtLib_Count(VALUE self)
+static VALUE ExtLib_SymsEach(int argc, VALUE* argv, VALUE self)
 {
-	rb_dcLibHandle* extLib;
-
-	Data_Get_Struct(self, rb_dcLibHandle, extLib);
-
-	ExtLib_SecCheck(extLib);
-
-	return LONG2NUM(dlSymsCount(extLib->lib));
-}
-
-
-static VALUE ExtLib_Each(int argc, VALUE* argv, VALUE self)//@@@ bug
-{
-	rb_dcLibHandle* extLib;
+	rb_dcLibHandle* h;
 	size_t i, c;
-
-	Data_Get_Struct(self, rb_dcLibHandle, extLib);
 
 	if(!rb_block_given_p())
 		rb_raise(rb_eRuntimeError, "no block given");
 
-	ExtLib_SecCheck(extLib);
+	Data_Get_Struct(self, rb_dcLibHandle, h);
+	ExtLib_SecCheckSyms(h);
 
-	c = dlSymsCount(extLib->lib);
+	c = dlSymsCount(h->syms);
 	for(i=0; i<c; ++i)
-		rb_yield(ID2SYM(rb_intern(dlSymsName(extLib->lib, i))));
+		rb_yield(ID2SYM(rb_intern(dlSymsName(h->syms, i))));
 
 	return self;
 }
 
-
-static VALUE ExtLib_ExistsQ(VALUE self, VALUE sym)
-{
-	rb_dcLibHandle* extLib;
-
-	Data_Get_Struct(self, rb_dcLibHandle, extLib);
-
-	ExtLib_SecCheck(extLib);
-
-	return dlFindSymbol(extLib->lib, rb_id2name(SYM2ID(sym))) ? Qtrue : Qfalse;
-}
+/* expose dlSymsName @@@ */
 
 
+/* Methods interfacing with dyncall */
 static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 {
 	/* argv[0] - symbol to call  *
@@ -145,12 +174,12 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 	 * argv[2] - first parameter *
 	 * argv[x] - parameter x-2   */
 
-	rb_dcLibHandle* extLib;
-	DCpointer   fptr;
-	int         i, t, b;
-	VALUE       r;
-	DCCallVM*   cvm;
-	const char* sig;
+	rb_dcLibHandle* h;
+	DCpointer       fptr;
+	int             i, t, b;
+	VALUE           r;
+	DCCallVM*       cvm;
+	const char*     sig;
 
 
 	/* Security checks. */
@@ -163,13 +192,13 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 	if(TYPE(argv[1]) != T_STRING)
 		rb_raise(rb_eRuntimeError, "syntax error - argument 1 must be of type 'String'");
 
-	Data_Get_Struct(self, rb_dcLibHandle, extLib);
-	cvm = extLib->cvm;
+	Data_Get_Struct(self, rb_dcLibHandle, h);
+	cvm = h->cvm;
 
 	if(argc != RSTRING_LEN(argv[1]))	/* Don't count the return value in the signature @@@ write something more secure */
 		rb_raise(rb_eRuntimeError, "number of provided arguments doesn't match signature");
 
-	ExtLib_SecCheck(extLib);
+	ExtLib_SecCheckLib(h);
 
 
 	/* Flush old arguments. */
@@ -177,7 +206,7 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 
 
 	/* Get a pointer to the function and start pushing. */
-	fptr = (DCpointer)dlFindSymbol(extLib->lib, rb_id2name(SYM2ID(argv[0])));
+	fptr = (DCpointer)dlFindSymbol(h->lib, rb_id2name(SYM2ID(argv[0])));
 	sig = RSTRING_PTR(argv[1]);
 
 	for(i=2; i<argc; ++i) {
@@ -266,10 +295,11 @@ void Init_rbdc()
 	rb_define_alloc_func(rb_dcExtLib, AllocExtLib);
 
 	/* Methods. */
-	rb_define_method(rb_dcExtLib, "load",         &ExtLib_Load,     1);
-	rb_define_method(rb_dcExtLib, "symbol_count", &ExtLib_Count,    0);
-	rb_define_method(rb_dcExtLib, "each",         &ExtLib_Each,    -1);
-	rb_define_method(rb_dcExtLib, "exists?",      &ExtLib_ExistsQ,  1);
-	rb_define_method(rb_dcExtLib, "call",         &ExtLib_Call,    -1);
+	rb_define_method(rb_dcExtLib, "load",       &ExtLib_Load,      1);
+	rb_define_method(rb_dcExtLib, "exists?",    &ExtLib_ExistsQ,   1);
+	rb_define_method(rb_dcExtLib, "syms_init",  &ExtLib_SymsInit,  1);
+	rb_define_method(rb_dcExtLib, "syms_count", &ExtLib_SymsCount, 0);
+	rb_define_method(rb_dcExtLib, "syms_each",  &ExtLib_SymsEach, -1);
+	rb_define_method(rb_dcExtLib, "call",       &ExtLib_Call,     -1);
 }
 

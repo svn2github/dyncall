@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
 	spec.summary               = 'C call invoker for ruby.'
 	spec.description           = 'rbdc is a ruby binding to the dyncall and dynload C libraries, allowing programmers to call C functions from ruby without writing any glue code at all.'
 
-	spec.version               = '0.2.0'
+	spec.version               = '0.8.0'
 	spec.required_ruby_version = '>= 1.9.1'
 
 	spec.files                 = FileList['dyncall/**/*', 'bindings/ruby/rbdc/rbdc.c'].to_a

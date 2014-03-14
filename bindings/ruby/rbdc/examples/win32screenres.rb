@@ -12,7 +12,7 @@ require 'rbdc'
 
 l = Dyncall::ExtLib.new
 if l.load('user32') != nil
-	puts 'width:                ' + l.call(:GetSystemMetrics, 'i)i', 0) .to_s
-  puts 'height:               ' + l.call(:GetSystemMetrics, 'i)i', 1) .to_s
+  puts 'width:                ' + l.call(:GetSystemMetrics, 'i)i',  0).to_s
+  puts 'height:               ' + l.call(:GetSystemMetrics, 'i)i',  1).to_s
   puts 'number of monitors:   ' + l.call(:GetSystemMetrics, 'i)i', 80).to_s
 end
