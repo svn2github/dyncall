@@ -110,7 +110,6 @@ static VALUE ExtLib_ExistsQ(VALUE self, VALUE sym)
 }
 
 
-
 /* Methods for syms parsing */
 static VALUE ExtLib_SymsInit(VALUE self, VALUE path)
 {
