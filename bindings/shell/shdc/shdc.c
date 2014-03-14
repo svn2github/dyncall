@@ -24,6 +24,7 @@
 #include "../../dyncall/dynload/dynload.h"
 #include "../../dyncall/dyncall/dyncall_signature.h"
 #include <stdio.h>
+#include <stdlib.h> /* needed on some platforms to make atof work _at_runtime_ */
 
 
 void usage(const char* s)
@@ -68,6 +69,8 @@ int main(int argc, char* argv[])
 	}
 
 
+	libPath = argv[1];
+
 	/* List symbols, if 'ls', else it must be 'call', so proceed to call. */
 	if(l == 0) {
 		dlSyms = dlSymsInit(libPath);
@@ -87,10 +90,6 @@ int main(int argc, char* argv[])
 		/* Check if number of arguments matches sigstring spec. */
 		/*if(n != argc-4)@@@*/	/* 0 is prog, 1 is lib, 2 is symbol name, 3 is sig */
     
-		libPath = argv[1];
-		symName = argv[3];
-		sig = i = argv[4];
-    
 		/* Load library and get a pointer to the symbol to call. */
 		dlLib = dlLoadLibrary(libPath);
 		if(!dlLib) {
@@ -98,6 +97,9 @@ int main(int argc, char* argv[])
 			usage(argv[0]);
 			return 1;
 		}
+    
+		symName = argv[3];
+		sig = i = argv[4];
     
 		sym = dlFindSymbol(dlLib, symName);
 		if(!sym) {
