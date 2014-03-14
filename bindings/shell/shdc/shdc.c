@@ -26,18 +26,22 @@
 #include <stdio.h>
 #include <stdlib.h> /* needed on some platforms to make atof work _at_runtime_ */
 
+#define SHDC_VERSION "0.8"
+
 
 void usage(const char* s)
 {
 	printf(
-		"Usage: %s SO ls\n"
-		"       %s SO call SYM SIG [ARGS]\n"
+		"Usage: %s -l SO\n"
+		"       %s -c SO SYM SIG [ARGS]\n"
+		"       %s -v\n"
 		"  where SO is the name of the shared object.\n"
 		"\n"
-		"  'ls' lists all symbol names in the shared object\n"
-		"  'call' calls function in the shared object, where SYM is the symbol name,\n"
-		"  SIG the symbol's type signature, and ARGS the arguments.\n",
-		s, s
+		"  -l lists all symbol names in the shared object\n"
+		"  -c calls function in the shared object, where SYM is the symbol name,\n"
+		"     SIG the symbol's type signature, and ARGS the arguments.\n"
+		"  -v displays the binding's version\n",
+		s, s, s
 	);
 }
 
@@ -54,6 +58,11 @@ int main(int argc, char* argv[])
 	DLSyms* dlSyms;
 	int c, l;
 
+	if(argc == 2  && strcmp(argv[1], "-v") == 0) {
+		printf(SHDC_VERSION"\n");
+		return 0;
+	}
+
 	/* Parse arguments and check validity. */
 	/* Need at least shared object name and action, and symbol name and signature string for call. */
 	if(argc < 2) {
@@ -61,15 +70,15 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	c = strcmp(argv[2], "call");
-	l = strcmp(argv[2], "ls");
+	c = strcmp(argv[1], "-c");
+	l = strcmp(argv[1], "-l");
 	if((c != 0 && l != 0) || (c == 0 && argc < 4)) {
 		usage(argv[0]);
 		return 1;
 	}
 
 
-	libPath = argv[1];
+	libPath = argv[2];
 
 	/* List symbols, if 'ls', else it must be 'call', so proceed to call. */
 	if(l == 0) {
@@ -88,7 +97,7 @@ int main(int argc, char* argv[])
 	}
 	else {
 		/* Check if number of arguments matches sigstring spec. */
-		/*if(n != argc-4)@@@*/	/* 0 is prog, 1 is lib, 2 is symbol name, 3 is sig */
+		/*if(n != argc-4)@@@*/	/* 0 is prog, 1 is flag, 2 is lib, 3 is symbol name, 4 is sig */
     
 		/* Load library and get a pointer to the symbol to call. */
 		dlLib = dlLoadLibrary(libPath);
