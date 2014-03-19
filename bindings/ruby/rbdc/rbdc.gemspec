@@ -36,6 +36,6 @@ Gem::Specification.new do |spec|
 	spec.version               = '0.8.0'
 	spec.required_ruby_version = '>= 1.9.1'
 
-	spec.files                 = FileList['dyncall/**/*', 'bindings/ruby/rbdc/rbdc.c'].to_a
+	spec.files                 = FileList['dyncall/**/*', 'bindings/ruby/rbdc/rbdc.c'].exclude('dyncall/doc/**/*').exclude('dyncall/test/**/*').to_a
 	spec.extensions            << 'bindings/ruby/rbdc/extconf.rb'
 end

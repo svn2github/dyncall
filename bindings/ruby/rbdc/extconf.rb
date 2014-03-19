@@ -33,7 +33,7 @@ puts 'Building dyncall libraries:'
 Dir.chdir(base_dir) do
 	cmd = case
 		when RUBY_PLATFORM =~ /mswin/  then 'configure.bat && nmake /f Nmakefile'
-		else './configure && env CFLAGS="-fPIC -g" make'
+		else './configure && env CFLAGS="-fPIC" make'
 	end
 	puts cmd
 	raise "'#{cmd}' failed" unless system(cmd)

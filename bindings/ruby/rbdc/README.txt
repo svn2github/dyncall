@@ -5,7 +5,7 @@ Copyright 2007-2014 Tassilo Philipp
 BUILD
 
   Build and install this gem with:
-    gem build rbdc.gemspec && gem install ../../../rbdc-0.2.0.gem
+    (cd ../../../dyncall; make distclean) || (gem build rbdc.gemspec && gem install ../../../rbdc-*.gem)
 
 
 SIGNATURE FORMAT
