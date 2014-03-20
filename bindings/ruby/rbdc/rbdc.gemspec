@@ -30,11 +30,12 @@ Gem::Specification.new do |spec|
 	spec.email                 = 'tphilipp@potion-studios.com'
 	spec.homepage              = 'http://www.dyncall.org'
 
-	spec.summary               = 'C call invoker for ruby.'
-	spec.description           = 'rbdc is a ruby binding to the dyncall and dynload C libraries, allowing programmers to call C functions from ruby without writing any glue code at all.'
+	spec.summary               = 'foreign function interface for C calls'
+	spec.description           = 'Ruby interface to dyncall, allowing programmers to call C functions in shared libraries from ruby without writing any glue code at all (e.g. "l.load(\'/usr/lib/libm.so\'); puts \'pow(2.0, 10.0) = \' + l.call(:pow, \'dd)d\', 2.0, 10.0).to_s")'
 
-	spec.version               = '0.8.3'
+	spec.version               = '0.8.5'
 	spec.required_ruby_version = '>= 1.9.1'
+	spec.license               = 'ISC'
 
 	spec.files                 = FileList['dyncall/**/*', 'bindings/ruby/rbdc/rbdc.c'].exclude('dyncall/doc/**/*').exclude('dyncall/test/**/*').to_a
 	spec.extensions            << 'bindings/ruby/rbdc/extconf.rb'
