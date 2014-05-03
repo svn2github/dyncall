@@ -28,12 +28,14 @@ require 'mkmf'
 dir_config 'rbdc'
 base_dir = '../../../dyncall/'
 
+$CFLAGS << ' -I../../../dyncall/dyncall '
+
 # Build dyncall libs.
 puts 'Building dyncall libraries:'
 Dir.chdir(base_dir) do
 	cmd = case
 		when RUBY_PLATFORM =~ /mswin/  then 'configure.bat && nmake /f Nmakefile'
-		else './configure && env CFLAGS="-fPIC -I../../../dyncall" make'
+		else './configure && echo AAA && pwd && env CFLAGS="-fPIC" make'
 	end
 	puts cmd
 	raise "'#{cmd}' failed" unless system(cmd)
