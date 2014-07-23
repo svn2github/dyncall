@@ -32,6 +32,7 @@ import "C"
 import (
 	"unsafe"
 	"fmt"
+	"reflect"
 )
 
 type ExtLib struct {
@@ -112,45 +113,50 @@ func (p *CallVM) Reset() {
 
 
 // Modes
-const DC_CALL_C_DEFAULT            = C.DC_CALL_C_DEFAULT
-const DC_CALL_C_ELLIPSIS           = C.DC_CALL_C_ELLIPSIS
-const DC_CALL_C_ELLIPSIS_VARARGS   = C.DC_CALL_C_ELLIPSIS_VARARGS
-const DC_CALL_C_X86_CDECL          = C.DC_CALL_C_X86_CDECL
-const DC_CALL_C_X86_WIN32_STD      = C.DC_CALL_C_X86_WIN32_STD
-const DC_CALL_C_X86_WIN32_FAST_MS  = C.DC_CALL_C_X86_WIN32_FAST_MS
-const DC_CALL_C_X86_WIN32_FAST_GNU = C.DC_CALL_C_X86_WIN32_FAST_GNU
-const DC_CALL_C_X86_WIN32_THIS_MS  = C.DC_CALL_C_X86_WIN32_THIS_MS
-const DC_CALL_C_X86_WIN32_THIS_GNU = C.DC_CALL_C_X86_WIN32_THIS_GNU
-const DC_CALL_C_X64_WIN64          = C.DC_CALL_C_X64_WIN64
-const DC_CALL_C_X64_SYSV           = C.DC_CALL_C_X64_SYSV
-const DC_CALL_C_PPC32_DARWIN       = C.DC_CALL_C_PPC32_DARWIN
-const DC_CALL_C_PPC32_OSX          = C.DC_CALL_C_PPC32_OSX
-const DC_CALL_C_ARM_ARM_EABI       = C.DC_CALL_C_ARM_ARM_EABI
-const DC_CALL_C_ARM_THUMB_EABI     = C.DC_CALL_C_ARM_THUMB_EABI
-const DC_CALL_C_ARM_ARMHF          = C.DC_CALL_C_ARM_ARMHF
-const DC_CALL_C_MIPS32_EABI        = C.DC_CALL_C_MIPS32_EABI
-const DC_CALL_C_MIPS32_PSPSDK      = C.DC_CALL_C_MIPS32_PSPSDK
-const DC_CALL_C_PPC32_SYSV         = C.DC_CALL_C_PPC32_SYSV
-const DC_CALL_C_PPC32_LINUX        = C.DC_CALL_C_PPC32_LINUX
-const DC_CALL_C_ARM_ARM            = C.DC_CALL_C_ARM_ARM
-const DC_CALL_C_ARM_THUMB          = C.DC_CALL_C_ARM_THUMB
-const DC_CALL_C_MIPS32_O32         = C.DC_CALL_C_MIPS32_O32
-const DC_CALL_C_MIPS64_N32         = C.DC_CALL_C_MIPS64_N32
-const DC_CALL_C_MIPS64_N64         = C.DC_CALL_C_MIPS64_N64
-const DC_CALL_C_X86_PLAN9          = C.DC_CALL_C_X86_PLAN9
-const DC_CALL_C_SPARC32            = C.DC_CALL_C_SPARC32
-const DC_CALL_C_SPARC64            = C.DC_CALL_C_SPARC64
-const DC_CALL_SYS_DEFAULT          = C.DC_CALL_SYS_DEFAULT
-const DC_CALL_SYS_X86_INT80H_LINUX = C.DC_CALL_SYS_X86_INT80H_LINUX
-const DC_CALL_SYS_X86_INT80H_BSD   = C.DC_CALL_SYS_X86_INT80H_BSD
+const (
+	DC_CALL_C_DEFAULT            = C.DC_CALL_C_DEFAULT
+	DC_CALL_C_ELLIPSIS           = C.DC_CALL_C_ELLIPSIS
+	DC_CALL_C_ELLIPSIS_VARARGS   = C.DC_CALL_C_ELLIPSIS_VARARGS
+	DC_CALL_C_X86_CDECL          = C.DC_CALL_C_X86_CDECL
+	DC_CALL_C_X86_WIN32_STD      = C.DC_CALL_C_X86_WIN32_STD
+	DC_CALL_C_X86_WIN32_FAST_MS  = C.DC_CALL_C_X86_WIN32_FAST_MS
+	DC_CALL_C_X86_WIN32_FAST_GNU = C.DC_CALL_C_X86_WIN32_FAST_GNU
+	DC_CALL_C_X86_WIN32_THIS_MS  = C.DC_CALL_C_X86_WIN32_THIS_MS
+	DC_CALL_C_X86_WIN32_THIS_GNU = C.DC_CALL_C_X86_WIN32_THIS_GNU
+	DC_CALL_C_X64_WIN64          = C.DC_CALL_C_X64_WIN64
+	DC_CALL_C_X64_SYSV           = C.DC_CALL_C_X64_SYSV
+	DC_CALL_C_PPC32_DARWIN       = C.DC_CALL_C_PPC32_DARWIN
+	DC_CALL_C_PPC32_OSX          = C.DC_CALL_C_PPC32_OSX
+	DC_CALL_C_ARM_ARM_EABI       = C.DC_CALL_C_ARM_ARM_EABI
+	DC_CALL_C_ARM_THUMB_EABI     = C.DC_CALL_C_ARM_THUMB_EABI
+	DC_CALL_C_ARM_ARMHF          = C.DC_CALL_C_ARM_ARMHF
+	DC_CALL_C_MIPS32_EABI        = C.DC_CALL_C_MIPS32_EABI
+	DC_CALL_C_MIPS32_PSPSDK      = C.DC_CALL_C_MIPS32_PSPSDK
+	DC_CALL_C_PPC32_SYSV         = C.DC_CALL_C_PPC32_SYSV
+	DC_CALL_C_PPC32_LINUX        = C.DC_CALL_C_PPC32_LINUX
+	DC_CALL_C_ARM_ARM            = C.DC_CALL_C_ARM_ARM
+	DC_CALL_C_ARM_THUMB          = C.DC_CALL_C_ARM_THUMB
+	DC_CALL_C_MIPS32_O32         = C.DC_CALL_C_MIPS32_O32
+	DC_CALL_C_MIPS64_N32         = C.DC_CALL_C_MIPS64_N32
+	DC_CALL_C_MIPS64_N64         = C.DC_CALL_C_MIPS64_N64
+	DC_CALL_C_X86_PLAN9          = C.DC_CALL_C_X86_PLAN9
+	DC_CALL_C_SPARC32            = C.DC_CALL_C_SPARC32
+	DC_CALL_C_SPARC64            = C.DC_CALL_C_SPARC64
+	DC_CALL_SYS_DEFAULT          = C.DC_CALL_SYS_DEFAULT
+	DC_CALL_SYS_X86_INT80H_LINUX = C.DC_CALL_SYS_X86_INT80H_LINUX
+	DC_CALL_SYS_X86_INT80H_BSD   = C.DC_CALL_SYS_X86_INT80H_BSD
+)
+
 
 func (p *CallVM) Mode(mode int) {
 	C.dcMode(p.cvm, C.DCint(mode))
 }
 
 // Error codes
-const DC_ERROR_NONE             = C.DC_ERROR_NONE
-const DC_ERROR_UNSUPPORTED_MODE = C.DC_ERROR_UNSUPPORTED_MODE
+const (
+	DC_ERROR_NONE             = C.DC_ERROR_NONE
+	DC_ERROR_UNSUPPORTED_MODE = C.DC_ERROR_UNSUPPORTED_MODE
+)
 
 
 func (p *CallVM) GetError() int {
@@ -174,6 +180,72 @@ func (p *CallVM) ArgDouble      (value float64)        { C.dcArgDouble  (p.cvm, 
 func (p *CallVM) ArgPointer     (value unsafe.Pointer) { C.dcArgPointer (p.cvm, C.DCpointer (value)) }
 //@@@func (p *CallVM) ArgStruct  (s C.DCstruct*, value unsafe.Pointer)
 
+// "Formatted" args
+//   - first takes Go's types (as they cover all C types dyncall supports) and pushes values accordingly
+//   - second uses a dyncall signature for implicit type conversion/casting, however it uses reflect package and is slower
+// Note that first version doesn't feature calling convention mode switching.
+func (p *CallVM) ArgF_Go(args ...interface{}) error {
+
+	for i, n := 0, len(args); i<n; i++ {
+		switch args[i].(type) {
+			case bool:           p.ArgBool    (              (args[i].(bool          )))
+			case int8:           p.ArgChar    (              (args[i].(int8          )))
+			case uint8/*byte*/:  p.ArgChar    (int8          (args[i].(uint8         )))
+			case int16:          p.ArgShort   (              (args[i].(int16         )))
+			case uint16:         p.ArgShort   (int16         (args[i].(uint16        )))
+			case int:            p.ArgInt     (              (args[i].(int           )))
+			case uint:           p.ArgInt     (int           (args[i].(uint          )))
+			case int32/*rune*/:  p.ArgLong    (              (args[i].(int32         )))
+			case uint32:         p.ArgLong    (int32         (args[i].(uint32        )))
+			case int64:          p.ArgLongLong(              (args[i].(int64         )))
+			case uint64:         p.ArgLongLong(int64         (args[i].(uint64        )))
+			case float32:        p.ArgFloat   (              (args[i].(float32       )))
+			case float64:        p.ArgDouble  (              (args[i].(float64       )))
+			case uintptr:        p.ArgPointer (unsafe.Pointer(args[i].(unsafe.Pointer)))
+			case unsafe.Pointer: p.ArgPointer (              (args[i].(unsafe.Pointer)))
+			default: return fmt.Errorf("Unknown type passed to ArgF_Go")
+		}
+	}
+	return nil
+}
+
+func (p *CallVM) ArgF(signature string, args ...interface{}) {
+
+	tb := reflect.TypeOf((*bool   )(nil)).Elem()
+	ti := reflect.TypeOf((*int64  )(nil)).Elem()
+	tf := reflect.TypeOf((*float64)(nil)).Elem()
+	tp := reflect.TypeOf((*uintptr)(nil)).Elem()
+
+	for i, n := 0, len(signature); i<n; i++ {
+		//@@@ add support for calling convention mode(s)
+		switch s := signature[i]; s {
+			case C.DC_SIGCHAR_BOOL:                              p.ArgBool    (bool          (reflect.ValueOf(args[i]).Convert(tb).Bool   ()))
+			case C.DC_SIGCHAR_CHAR,     C.DC_SIGCHAR_UCHAR:      p.ArgChar    (int8          (reflect.ValueOf(args[i]).Convert(ti).Int    ()))
+			case C.DC_SIGCHAR_INT,      C.DC_SIGCHAR_UINT:       p.ArgInt     (int           (reflect.ValueOf(args[i]).Convert(ti).Int    ()))
+			case C.DC_SIGCHAR_LONG,     C.DC_SIGCHAR_ULONG:      p.ArgLong    (int32         (reflect.ValueOf(args[i]).Convert(ti).Int    ()))
+			case C.DC_SIGCHAR_LONGLONG, C.DC_SIGCHAR_ULONGLONG:  p.ArgLongLong(int64         (reflect.ValueOf(args[i]).Convert(ti).Int    ()))
+			case C.DC_SIGCHAR_FLOAT:                             p.ArgFloat   (float32       (reflect.ValueOf(args[i]).Convert(tf).Float  ()))
+			case C.DC_SIGCHAR_DOUBLE:                            p.ArgDouble  (float64       (reflect.ValueOf(args[i]).Convert(tf).Float  ()))
+			case C.DC_SIGCHAR_POINTER,  C.DC_SIGCHAR_STRING:     p.ArgPointer (unsafe.Pointer(reflect.ValueOf(args[i]).Convert(tp).Pointer()))
+			case C.DC_SIGCHAR_ENDARG:                            return
+		}
+		// Faster, but doesn't do cross-type conversions.
+		//switch s := signature[i]; s {
+		//	case C.DC_SIGCHAR_BOOL:                              p.ArgBool    (args[i].(bool          ))
+		//	case C.DC_SIGCHAR_CHAR,     C.DC_SIGCHAR_UCHAR:      p.ArgChar    (args[i].(int8          ))
+		//	case C.DC_SIGCHAR_SHORT,    C.DC_SIGCHAR_USHORT:     p.ArgShort   (args[i].(int16         ))
+		//	case C.DC_SIGCHAR_INT,      C.DC_SIGCHAR_UINT:       p.ArgInt     (args[i].(int           ))
+		//	case C.DC_SIGCHAR_LONG,     C.DC_SIGCHAR_ULONG:      p.ArgLong    (args[i].(int32         ))
+		//	case C.DC_SIGCHAR_LONGLONG, C.DC_SIGCHAR_ULONGLONG:  p.ArgLongLong(args[i].(int64         ))
+		//	case C.DC_SIGCHAR_FLOAT:                             p.ArgFloat   (args[i].(float32       ))
+		//	case C.DC_SIGCHAR_DOUBLE:                            p.ArgDouble  (args[i].(float64       ))
+		//	case C.DC_SIGCHAR_POINTER,  C.DC_SIGCHAR_STRING:     p.ArgPointer (args[i].(unsafe.Pointer))
+		//	case C.DC_SIGCHAR_ENDARG:                            return
+		//}
+	}
+}
+
+
 // Calls
 func (p *CallVM) CallVoid        (funcptr unsafe.Pointer)                {                       C.dcCallVoid    (p.cvm, C.DCpointer(funcptr))  }
 func (p *CallVM) CallBool        (funcptr unsafe.Pointer) bool           { b := (C.dcCallBool(p.cvm, C.DCpointer(funcptr))); if b==C.DC_TRUE { return true } else { return false } }
@@ -187,6 +259,14 @@ func (p *CallVM) CallDouble      (funcptr unsafe.Pointer) float64        { retur
 func (p *CallVM) CallPointer     (funcptr unsafe.Pointer) unsafe.Pointer { return unsafe.Pointer(C.dcCallPointer (p.cvm, C.DCpointer(funcptr))) }
 func (p *CallVM) CallPointerToStr(funcptr unsafe.Pointer) string         { return C.GoString((*C.char)(C.dcCallPointer (p.cvm, C.DCpointer(funcptr)))) } // For convenience
 //@@@func (p *CallVM) CallStruct  (funcptr unsafe.Pointer, s C.DCstruct* s, returnValue unsafe.Pointer)
+
+// "Formatted" calls
+//@@@func (p *CallVM) Call(result, funcptr unsafe.Pointer, signature string, args ...interface{}) {
+//@@@...
+//@@@}
+
+
+//void dcCallF (DCCallVM* vm, DCValue* result, DCpointer funcptr, const DCsigchar* signature, ...);
 
 /*
 DC_API DCstruct*  dcNewStruct      (DCsize fieldCount, DCint alignment);

@@ -24,6 +24,7 @@ import (
 	"testing"
 	"fmt"
 	"unsafe"
+	"math"
 )
 
 func TestGoDC(t *testing.T) {
@@ -83,22 +84,35 @@ func TestGoDC(t *testing.T) {
 
 	vm.Mode(DC_CALL_C_DEFAULT)
 
+
 	// Float
 	vm.Reset()
 	vm.ArgFloat(36)
-	fmt.Printf("sqrtf(36) = %f\n", vm.CallFloat(lm.FindSymbol("sqrtf")))
+	rf := vm.CallFloat(lm.FindSymbol("sqrtf"))
+	fmt.Printf("sqrtf(36) = %f\n", rf)
+	if(rf != 6.0) { t.FailNow() }
+
 	vm.Reset() // Test reset, reusing VM
 	vm.ArgDouble(3.6)
-	fmt.Printf("floor(3.6) = %f\n", vm.CallDouble(lm.FindSymbol("floor")))
+	rd := vm.CallDouble(lm.FindSymbol("floor"))
+	fmt.Printf("floor(3.6) = %f\n", rd)
+	if(rd != 3.0) { t.FailNow() }
+
 
 	// Double
 	vm.Reset()
 	vm.ArgDouble(4.2373)
-	fmt.Printf("sqrt(4.2373) = %f\n", vm.CallDouble(lm.FindSymbol("sqrt")))
+	rd = vm.CallDouble(lm.FindSymbol("sqrt"))
+	fmt.Printf("sqrt(4.2373) = %f\n", rd)
+	if(math.Abs(rd - 2.05847) > 0.00001) { t.FailNow() }
+
 	vm.Reset()
 	vm.ArgDouble(2.373)
 	vm.ArgDouble(-1000) // 2 args
-	fmt.Printf("copysign(2.373, -1000) = %f\n", vm.CallDouble(lm.FindSymbol("copysign")))
+	rd = vm.CallDouble(lm.FindSymbol("copysign"))
+	fmt.Printf("copysign(2.373, -1000) = %f\n", rd)
+	if(rd != -2.373) { t.FailNow() }
+
 
 	// Strings
 	vm.Reset()
@@ -106,23 +120,40 @@ func TestGoDC(t *testing.T) {
 	defer vm.FreeCString(cs1)
 
 	vm.ArgPointer(cs1)
-	fmt.Printf("basename(\"/return/only/this_here\") = %s\n", vm.CallPointerToStr(lc.FindSymbol("basename")))
+	rs := vm.CallPointerToStr(lc.FindSymbol("basename"))
+	fmt.Printf("basename(\"/return/only/this_here\") = %s\n", rs)
+	if(rs != "this_here") { t.FailNow() }
 	// Reuse path
-	fmt.Printf("dirname(\"/return/only/this_here\") = %s\n", vm.CallPointerToStr(lc.FindSymbol("dirname")))
+	rs = vm.CallPointerToStr(lc.FindSymbol("dirname"))
+	fmt.Printf("dirname(\"/return/only/this_here\") = %s\n", rs)
+	if(rs != "/return/only") { t.FailNow() }
+
 
 	// Integer
 	vm.Reset()
 	vm.ArgInt('a')
-	fmt.Printf("toupper('a') = %c\n", vm.CallInt(lc.FindSymbol("toupper")))
+	ri := vm.CallInt(lc.FindSymbol("toupper"))
+	fmt.Printf("toupper('a') = %c\n", ri)
+	if(ri != 'A') { t.FailNow() }
+
 	vm.Reset()
 	vm.ArgInt('a')
-	fmt.Printf("tolower('a') = %c\n", vm.CallInt(lc.FindSymbol("tolower")))
+	ri = vm.CallInt(lc.FindSymbol("tolower"))
+	fmt.Printf("tolower('a') = %c\n", ri)
+	if(ri != 'a') { t.FailNow() }
+
 	vm.Reset()
 	vm.ArgInt('R')
+	ri = vm.CallInt(lc.FindSymbol("toupper"))
 	fmt.Printf("toupper('R') = %c\n", vm.CallInt(lc.FindSymbol("toupper")))
+	if(ri != 'R') { t.FailNow() }
+
 	vm.Reset()
 	vm.ArgInt('R')
+	ri = vm.CallInt(lc.FindSymbol("tolower"))
 	fmt.Printf("tolower('R') = %c\n", vm.CallInt(lc.FindSymbol("tolower")))
+	if(ri != 'r') { t.FailNow() }
+
 
 	// Integer return
 	vm.Reset()
@@ -135,7 +166,38 @@ func TestGoDC(t *testing.T) {
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	fmt.Printf("rand() = %d\n", vm.CallInt(lc.FindSymbol("rand")))
 	vm.ArgPointer(cs2)
-	fmt.Printf("strlen(\"Tassilo\") = %d\n", vm.CallInt(lc.FindSymbol("strlen")))
+	ri = vm.CallInt(lc.FindSymbol("strlen"))
+	fmt.Printf("strlen(\"Tassilo\") = %d\n", ri)
+	if(ri != 7) { t.FailNow() }
+
+
+	// Formatted - with signature/conversion
+	vm.Reset()
+	vm.ArgF("dd)d", 3.14, -2000) // 2 args, second passed as int, but ArgF will convert
+	rd = vm.CallDouble(lm.FindSymbol("copysign"))
+	fmt.Printf("dd)d: copysign(3.14, -2000) = %f\n", rd)
+	if(rd != -3.14) { t.FailNow() }
+
+	// Formatted - without signature/conversion
+	vm.Reset()
+	vm.ArgF("dd)d", -31.4, 42.4) // 2 args, second passed as int, but ArgF will convert
+	rd = vm.CallDouble(lm.FindSymbol("copysign"))
+	fmt.Printf("dd)d: copysign(-31.4, 42.4) = %f\n", rd)
+	if(rd != 31.4) { t.FailNow() }
+
+	// Formatted - use Go's types, pass unsupported type, should return an error
+	vm.Reset()
+	err := vm.ArgF_Go(6.14, vm)
+	fmt.Printf("ArgF_Go: copysign(6.14, <unsupported type>) should return error: %t\n", err != nil)
+	if(err == nil) { t.FailNow() }
+
+	// Formatted - use Go's types
+	vm.Reset()
+	vm.ArgF_Go(-61.4, 42.4) // 2 args, both need to be correct or undefined behaviour
+	rd = vm.CallDouble(lm.FindSymbol("copysign"))
+	fmt.Printf("copysign(-61.4, 42.4) = %f\n", rd)
+	if(rd != 61.4) { t.FailNow() }
+
 
 	// Ellipse
 	vm.Mode(DC_CALL_C_ELLIPSIS)
@@ -153,8 +215,15 @@ func TestGoDC(t *testing.T) {
 	vm.ArgInt(4)
 	vm.ArgPointer(cs4)
 	vm.ArgDouble(3.14) // Double, b/c of ... promotion rules
-	n := vm.CallInt(lc.FindSymbol("sprintf"))
-	fmt.Printf("sprintf(bufPtr, \"Four:%%d | \\\"Hello\\\":%%s | Pi:%%f\", 4, \"Hello\", 3.14) = %d:\n", n)
-	fmt.Printf("  bufPtr: %s\n", string(buf[:n]))
+	ri = vm.CallInt(lc.FindSymbol("sprintf"))
+	fmt.Printf("sprintf(bufPtr, \"Four:%%d | \\\"Hello\\\":%%s | Pi:%%f\", 4, \"Hello\", 3.14) = %d:\n", ri)
+	fmt.Printf("  bufPtr: %s\n", string(buf[/*slice printed bytes*/:ri]))
+	if(ri != 36) { t.FailNow() }
+
+
+//@@@ untested:
+// - ArgF and ArgF_Go with strings
+// - ArgF and ArgF_Go with bools
+// - ...
 }
 
