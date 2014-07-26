@@ -211,6 +211,8 @@ static VALUE ExtLib_Call(int argc, VALUE* argv, VALUE self)
 	for(i=2; i<argc; ++i) {
 		t = TYPE(argv[i]);
 
+		//@@@ add support for calling convention mode(s)
+
 		switch(sig[i-2]) {
 			case DC_SIGCHAR_BOOL:
 				b = 1;

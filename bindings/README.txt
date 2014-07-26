@@ -30,9 +30,10 @@ Code style
       Expose all dcArg, etc. calls
       Expose formatted call ('...') if possible, but as ArgF (instead of CallF), b/c return type is statically typed
 
-  - RTTI:
+  - with RTTI:
 
-      Write a single call function and let users pass arguments, directly
+      Write a single call function and let users pass arguments, directly - if needed for type-conversion, this
+      should be done via call signature
 
 
 
@@ -52,3 +53,4 @@ Code style
  - Function overloading or default arguments
 
      Use if available to define things like CallVM stack size; use independently named functions, otherwise
+
