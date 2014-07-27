@@ -1,6 +1,6 @@
 
 
-dynbind("pcap", "
+dynbind( c("pcap","pcap.so.0.8") , "
 pcap_activate(*<pcap>)i;
 pcap_breakloop(*<pcap>)v;
 pcap_can_set_rfmon(*<pcap>)i;
