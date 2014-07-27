@@ -47,7 +47,7 @@ getw(*<__sFILE>)i;
 pclose(*<__sFILE>)i;
 perror(*c)v;
 popen(*c*c)*<__sFILE>;
-printf(*c)i;
+printf(_e*c)i;
 putc(i*<__sFILE>)i;
 putc_unlocked(i*<__sFILE>)i;
 putchar(i)i;
