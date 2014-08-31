@@ -15,11 +15,11 @@ priv/erldc.so: c_src/dyncallnif.c
 
 priv/erldc_testtargets.so: c_src/erldctesttargets.c
 	[ -d priv ] || mkdir priv
-	cc -o $@ -shared -fPIC $<
+	cc -o $@ -shared -fPIC c_src/erldctesttargets.c
 
 ebin/dyncall.beam: src/dyncall.erl
 	[ -d ebin ] || mkdir ebin
-	erlc +debug_info -o ebin $<
+	erlc +debug_info -o ebin src/dyncall.erl
 
 # TODO: compile src/dyncall.app.src
 # How erlang.mk does it - too gnu?
