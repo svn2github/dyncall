@@ -1,15 +1,15 @@
-ERLANG_INST_DIR = /usr/lib64/erlang
+# ERLANG_INC is used for -I, below, so add paths where it might be on linux, freebsd, etc.
+ERLANG_INC=-I /usr/lib64/erlang/usr/include -I /usr/local/lib/erlang/usr/include
 DYNCALL_SRC_PATH=../../../dyncall
 
 OUTPUTS = priv/erldc.so ebin/dyncall.beam
 
 all: $(OUTPUTS)
 
-# -lm is temporary until dynload is implemented
 priv/erldc.so: c_src/dyncallnif.c
 	[ -d priv ] || mkdir priv
 	cc -o $@ -fPIC -shared \
-	-I $(ERLANG_INST_DIR)/usr/include -I $(DYNCALL_SRC_PATH) \
+	$(ERLANG_INC) -I $(DYNCALL_SRC_PATH) \
 	$(DYNCALL_SRC_PATH)/dyncall/*.o \
 	c_src/dyncallnif.c
 
