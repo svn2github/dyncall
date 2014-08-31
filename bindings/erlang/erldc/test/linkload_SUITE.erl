@@ -23,7 +23,7 @@ create_vm_badsz(_) ->
 
 load_lib(_) ->
     {ok,Lib} = dyncall:load_library("libm"),
-    true = is_integer(Lib).
+    true = is_binary(Lib).
     
 no_such_lib(_) ->
     {error,lib_not_found} = dyncall:load_library("foobarbaz").

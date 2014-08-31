@@ -7,14 +7,12 @@
 /************ Begin NIF initialization *******/
 
 #define MAX_VMS 256
-#define MAX_LIBS 256
 #define MAX_LIBPATH_SZ 128
 #define MAX_SYMBOL_NAME_SZ 32
 #define MAX_STRING_ARG_SZ 1024
 
 typedef struct {
   DCCallVM* vms[MAX_VMS];
-  void* libs[MAX_LIBS];
 } NifState;
 
 ErlNifResourceType* g_ptrrestype;
@@ -37,9 +35,6 @@ static int nifload(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info) {
   for(i=0; i<MAX_VMS; i++) {
     data->vms[i] = NULL;
   }
-  for(i=0; i<MAX_LIBS; i++) {
-    data->libs[i] = NULL;
-  }
   *priv_data = data;
 
   return 0;
@@ -55,12 +50,6 @@ static void nifunload(ErlNifEnv* env, void* priv_data) {
   for(i=0; i<MAX_VMS; i++) {
     if(data->vms[i]) {
       dcFree(data->vms[i]);
-    }
-  }
-
-  for(i=0; i<MAX_LIBS; i++) {
-    if(data->libs[i]) {
-      enif_free(data->libs[i]);
     }
   }
 
@@ -157,36 +146,30 @@ void dlopen_err(void* arg, const char* msg){
 static ERL_NIF_TERM load_library(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   MAYBE_RET_BAD_STRING_ARG(path,0,MAX_LIBPATH_SZ,ATOM_INVALID_LIB)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  int i=0, slot= -1;
-  for(i=0; i<MAX_LIBS; i++) {
-    if(data->libs[i] == NULL) {
-      slot = i;
-      break;
-    }
-  }
+  void* libptr = enif_dlopen(path, dlopen_err, NULL);
 
-  // Error if all slots used
-  if(slot == -1) RETURN_ERROR(ATOM_TOO_MANY_LIBS)
-
-  data->libs[slot] = enif_dlopen(path, dlopen_err, NULL);
-  
   // Error if dlLoadLibrary returned NULL
-  if(!data->libs[slot]) RETURN_ERROR(ATOM_LIB_NOT_FOUND)
+  if(!libptr) RETURN_ERROR(ATOM_LIB_NOT_FOUND)
+
+  size_t sz = sizeof(void*);
+  DCpointer ptr_persistent_lib = enif_alloc_resource(g_ptrrestype,sz);
+  memcpy(ptr_persistent_lib,&libptr,sz);
+  ERL_NIF_TERM retterm = enif_make_resource(env,ptr_persistent_lib);
+  enif_release_resource(ptr_persistent_lib);
   
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
-			  enif_make_int(env,slot)
+			  retterm
 			  );
 }
 
 static ERL_NIF_TERM find_symbol(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(libslot,0,MAX_LIBS,ATOM_INVALID_LIB)
   MAYBE_RET_BAD_STRING_ARG(path,1,MAX_SYMBOL_NAME_SZ,ATOM_INVALID_SYMBOL)
 
-  NifState* data = (NifState*)enif_priv_data(env);
+  void** libptr;
+  if(!enif_get_resource(env, argv[0], g_ptrrestype, (void**)&libptr)) RETURN_ERROR(ATOM_INVALID_LIB)
 
-  void* symptr = enif_dlsym(data->libs[libslot],path,dlopen_err,NULL);
+  void* symptr = enif_dlsym(*libptr,path,dlopen_err,NULL);
 
   size_t sz = sizeof(void*);
   DCpointer ptr_persistent_symbol = enif_alloc_resource(g_ptrrestype,sz);
