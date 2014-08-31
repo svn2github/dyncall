@@ -1,18 +1,15 @@
-=TODO
-- implement struct
+TODO
+- functions in dyncall_callf.h
 - use/test dcGetError
   - error codes into .hrl
 - Call modes
 - replace load_nif + on_load with something less awkward.  Consider
   removing on_load entirely and requiring dir as arg to dyncall:load_nif
+  ... actually, this is probably fine, see asn1 app's nif
 - make install
 - Makefile compiles src/dyncall.app.src
 - move limits (e.g. MAX_VMS) into makefile so tests can have the value too.
-  - then, test limits
-  - or, replace fixed-length arrays with proper vectors 
-    - enif_tsd_key_create and friends?
-    - or, does dyncall have something?
-  - or, replace with _resource handles, with each handle type being
+  - replace with _resource handles, with each handle type being
     a dedicated resource
 
 BUILDING

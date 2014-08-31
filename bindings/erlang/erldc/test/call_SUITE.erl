@@ -72,7 +72,7 @@ call_double_bad_sym(_) ->
     {ok,_Sqrt} = dyncall:find_symbol(Libm, "sqrt"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
     ok = dyncall:arg_double(CallVm,49.0),
-    {error,invalid_symbol} = dyncall:call_double(CallVm,12). %% assuming 12 is bad after preceding tests
+    {error,invalid_arg} = dyncall:call_double(CallVm,12). %% assuming 12 is bad after preceding tests
 
 
 %% Tests on sqrtf
