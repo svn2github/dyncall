@@ -1,8 +1,8 @@
 #include "erl_nif.h"
 #include "dyncall/dyncall.h"
 
-#include <math.h>
 #include <string.h>
+#include <stdio.h>
 
 /************ Begin NIF initialization *******/
 
@@ -493,15 +493,16 @@ static ERL_NIF_TERM arg_ptr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
                                                         ptr_dtor,ERL_NIF_RT_TAKEOVER,
                                                         NULL);
 
-  void* ptr;
-  if(!enif_get_resource(env, argv[1], ptrrestype, &ptr)) RETURN_ERROR(ATOM_INVALID_ARG)
+  void** ptr;
+  if(!enif_get_resource(env, argv[1], ptrrestype, (void**)&ptr)) RETURN_ERROR(ATOM_INVALID_ARG)
 
   NifState* data = (NifState*)enif_priv_data(env);
   DCCallVM* vm = data->vms[vmslot];
 
   if(!vm) RETURN_ERROR(ATOM_INVALID_VM);
 
-  dcArgPointer(vm,ptr);
+  /* printf("Pointer is %p\n",*(char**)ptr); */
+  dcArgPointer(vm,*ptr);
   return enif_make_atom(env,ATOM_OK);
 }
 

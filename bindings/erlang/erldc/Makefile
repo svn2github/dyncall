@@ -1,5 +1,5 @@
 ERLANG_INST_DIR = /usr/lib64/erlang
-DYNCALL_SRC_PATH=../dyncall/trunk/dyncall
+DYNCALL_SRC_PATH=../../../dyncall
 
 OUTPUTS = priv/erldc.so ebin/dyncall.beam
 

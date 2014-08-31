@@ -163,13 +163,13 @@ ret_ptr_arg_int__ret_void_arg_ptr(_) ->
     {ok,Ptr} = dyncall:call_ptr(CallVm,Sym),
 
     %% Comes out as <<>> (opaque)
-    io:format("Pointer is ~p~n",[Ptr]),
+    %% io:format("Pointer in erl is ~p~n",[Ptr]),
 
-    %% {ok,Sym2} = dyncall:find_symbol(Lib, "coolsetstr"),
-    %% {ok,CallVm2} = dyncall:new_call_vm(?VMSZ),
-    %% ok = dyncall:arg_ptr(CallVm2,Ptr),
-    %% ok = dyncall:arg_string(CallVm2,"Barbaz"),
-    %% ok = dyncall:call_void(CallVm2,Sym2),
+    {ok,Sym2} = dyncall:find_symbol(Lib, "coolsetstr"),
+    {ok,CallVm2} = dyncall:new_call_vm(?VMSZ),
+    ok = dyncall:arg_ptr(CallVm2,Ptr),
+    ok = dyncall:arg_string(CallVm2,"Barbaz"),
+    ok = dyncall:call_void(CallVm2,Sym2),
 
     {ok,Sym3} = dyncall:find_symbol(Lib, "coolfree"),
     {ok,CallVm3} = dyncall:new_call_vm(?VMSZ),

@@ -22,7 +22,9 @@ long long subtract_four(long long in) {
 }
 
 void* coolmalloc(int sz) {
-  return malloc(sz);
+  void* ptr = malloc(sz);
+  /* printf("I've allocated at addr %p\n",ptr); */
+  return ptr;
 }
 
 void coolsetstr(void* buf, char* val) {

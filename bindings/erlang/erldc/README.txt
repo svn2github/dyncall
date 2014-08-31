@@ -1,5 +1,4 @@
-TODO
-- fix arg_ptr/call_ptr
+=TODO
 - implement struct
 - use/test dcGetError
   - error codes into .hrl
