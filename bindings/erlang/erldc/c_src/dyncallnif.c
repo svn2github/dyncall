@@ -6,20 +6,19 @@
 
 /************ Begin NIF initialization *******/
 
-#define MAX_VMS 256
 #define MAX_LIBPATH_SZ 128
 #define MAX_SYMBOL_NAME_SZ 32
 #define MAX_STRING_ARG_SZ 1024
 
-typedef struct {
-  DCCallVM* vms[MAX_VMS];
-} NifState;
-
-ErlNifResourceType* g_ptrrestype;
+ErlNifResourceType *g_ptrrestype, *g_vmrestype;
 
 static void noop_dtor(ErlNifEnv* env, void* obj) {
   // When erlang gc's a ptr, no-op since we can't know how to free it.
   // Likewise with symbols, etc.
+}
+static void vm_dtor(ErlNifEnv* env, void* obj) {
+  void** ptr = (void**)obj;
+  dcFree(*ptr);
 }
 
 static int nifload(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info) {
@@ -30,32 +29,14 @@ static int nifload(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info) {
                                                         noop_dtor,ERL_NIF_RT_CREATE,
                                                         NULL);
 
-  NifState* data = (NifState*)enif_alloc(sizeof(NifState));
-  int i;
-  for(i=0; i<MAX_VMS; i++) {
-    data->vms[i] = NULL;
-  }
-  *priv_data = data;
+  // Works like g_ptrrestype, but requires a dtor that calls dcFree
+  g_vmrestype = enif_open_resource_type(env,"dyncall","vmpointer",
+                                                        vm_dtor,ERL_NIF_RT_CREATE,
+                                                        NULL);
 
   return 0;
 }
 
-static void nifunload(ErlNifEnv* env, void* priv_data) {
-
-  if(!priv_data) return;
-
-  NifState* data = (NifState*)priv_data;
-
-  int i;
-  for(i=0; i<MAX_VMS; i++) {
-    if(data->vms[i]) {
-      dcFree(data->vms[i]);
-    }
-  }
-
-  enif_free(priv_data);
-
-}
 /************ End NIF initialization *******/
 
 #define ATOM_OK "ok"
@@ -73,23 +54,6 @@ static void nifunload(ErlNifEnv* env, void* priv_data) {
 
 static ERL_NIF_TERM new_call_vm(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  int i=0, slot= -1;
-  for(i=0; i<MAX_VMS; i++) {
-    if(data->vms[i] == NULL) {
-      slot = i;
-      break;
-    }
-  }
-
-  // Error if all slots used
-  if(slot == -1) {
-    return enif_make_tuple2(env,
-			    enif_make_atom(env,ATOM_ERROR),
-			    enif_make_atom(env,ATOM_TOO_MANY_VMS)
-			    );
-  }
-
   long vmsz = 0;
   if(!enif_get_long(env, argv[0], &vmsz)) {
     return enif_make_tuple2(env,
@@ -99,30 +63,18 @@ static ERL_NIF_TERM new_call_vm(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
   }
 
   DCCallVM* vm = dcNewCallVM( vmsz );
-  data->vms[slot] = vm;
-  dcMode(vm, DC_CALL_C_DEFAULT);
-  dcReset(vm);
+
+  size_t sz = sizeof(DCCallVM*);
+  DCpointer ptr_persistent_vm = enif_alloc_resource(g_vmrestype,sz);
+  memcpy(ptr_persistent_vm,&vm,sz);
+  ERL_NIF_TERM retterm = enif_make_resource(env,ptr_persistent_vm);
+  enif_release_resource(ptr_persistent_vm);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
-			  enif_make_int(env,slot)
+                          retterm
 			  );
 }
-
-#define MAYBE_RET_BAD_INT_ARG(indexvar,argi,limit,retatom) \
-  int indexvar = -1; \
-  if(!enif_get_int(env, argv[argi], &indexvar)) { \
-    return enif_make_tuple2(env, \
-			    enif_make_atom(env,ATOM_ERROR), \
-			    enif_make_atom(env,retatom) \
-			    ); \
-  } \
-  if(indexvar < 0 || indexvar >= limit) { \
-    return enif_make_tuple2(env, \
-			    enif_make_atom(env,ATOM_ERROR), \
-			    enif_make_atom(env,retatom) \
-			    ); \
-  }
   
 #define MAYBE_RET_BAD_STRING_ARG(indexvar,argi,limit,retatom) \
   char indexvar[limit]; \
@@ -139,14 +91,10 @@ static ERL_NIF_TERM new_call_vm(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
 			    enif_make_atom(env,code) \
 			    );
 
-  
-void dlopen_err(void* arg, const char* msg){
-}
-
 static ERL_NIF_TERM load_library(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   MAYBE_RET_BAD_STRING_ARG(path,0,MAX_LIBPATH_SZ,ATOM_INVALID_LIB)
 
-  void* libptr = enif_dlopen(path, dlopen_err, NULL);
+  void* libptr = enif_dlopen(path, NULL, NULL);
 
   // Error if dlLoadLibrary returned NULL
   if(!libptr) RETURN_ERROR(ATOM_LIB_NOT_FOUND)
@@ -186,35 +134,29 @@ static ERL_NIF_TERM find_symbol(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
 			  );
 }
 
+#define GET_VM void** vmptr; \
+  if(!enif_get_resource(env, argv[0], g_vmrestype, (void**)&vmptr)) RETURN_ERROR(ATOM_INVALID_VM); \
+  if(!*vmptr) RETURN_ERROR(ATOM_INVALID_VM);
 
 static ERL_NIF_TERM arg_double(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   double arg = -1.0;
   if(!enif_get_double(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgDouble(vm,arg);
+  dcArgDouble(*vmptr,arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_double(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCdouble ret = dcCallDouble(vm,*symptr);
+  DCdouble ret = dcCallDouble(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -223,33 +165,23 @@ static ERL_NIF_TERM call_double(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
 }
 
 static ERL_NIF_TERM arg_float(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   double arg = -1.0;
   if(!enif_get_double(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgFloat(vm,(float)arg);
+  dcArgFloat(*vmptr,(float)arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_float(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCfloat ret = dcCallFloat(vm,*symptr);
+  DCfloat ret = dcCallFloat(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -258,33 +190,23 @@ static ERL_NIF_TERM call_float(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv
 }
 
 static ERL_NIF_TERM arg_int(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   int arg = -1;
   if(!enif_get_int(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgInt(vm,arg);
+  dcArgInt(*vmptr,arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_int(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCint ret = dcCallInt(vm,*symptr);
+  DCint ret = dcCallInt(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -293,33 +215,23 @@ static ERL_NIF_TERM call_int(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
 }
 
 static ERL_NIF_TERM arg_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   int arg = -1;
   if(!enif_get_int(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgChar(vm,(char)arg);
+  dcArgChar(*vmptr,(char)arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCchar ret = dcCallChar(vm,*symptr);
+  DCchar ret = dcCallChar(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -332,33 +244,23 @@ static ERL_NIF_TERM call_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[
 #define ATOM_FALSE "false"
 
 static ERL_NIF_TERM arg_bool(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   char arg[BOOL_BUF_SZ];
   if(!enif_get_atom(env, argv[1], arg, BOOL_BUF_SZ, ERL_NIF_LATIN1)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgBool(vm,!strcmp(arg,ATOM_TRUE));
+  dcArgBool(*vmptr,!strcmp(arg,ATOM_TRUE));
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_bool(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCbool ret = dcCallBool(vm,*symptr);
+  DCbool ret = dcCallBool(*vmptr,*symptr);
   char* retstr = ret ? ATOM_TRUE : ATOM_FALSE;
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -367,33 +269,23 @@ static ERL_NIF_TERM call_bool(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[
 }
 
 static ERL_NIF_TERM arg_short(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   int arg = -1;
   if(!enif_get_int(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgShort(vm,(short)arg);
+  dcArgShort(*vmptr,(short)arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_short(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCshort ret = dcCallShort(vm,*symptr);
+  DCshort ret = dcCallShort(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -402,33 +294,23 @@ static ERL_NIF_TERM call_short(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv
 }
 
 static ERL_NIF_TERM arg_long(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   long int arg = -1;
   if(!enif_get_long(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgLong(vm,arg);
+  dcArgLong(*vmptr,arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_long(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DClong ret = dcCallLong(vm,*symptr);
+  DClong ret = dcCallLong(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -437,35 +319,23 @@ static ERL_NIF_TERM call_long(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[
 }
 
 static ERL_NIF_TERM arg_longlong(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
+
   ErlNifSInt64 arg = -1;
   if(!enif_get_int64(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
-
-  dcArgLongLong(vm,arg);
+  dcArgLongLong(*vmptr,arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_longlong(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-  /* MAYBE_RET_BAD_INT_ARG(symslot,1,MAX_SYMS,ATOM_INVALID_SYMBOL) */
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-  /* void* sym = data->syms[symslot]; */
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DClonglong ret = dcCallLongLong(vm,*symptr);
+  DClonglong ret = dcCallLongLong(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -474,38 +344,24 @@ static ERL_NIF_TERM call_longlong(ErlNifEnv* env, int argc, const ERL_NIF_TERM a
 }
 
 static ERL_NIF_TERM arg_ptr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM);
-  ErlNifResourceType* ptrrestype = enif_open_resource_type(env,"dyncall","pointer",
-                                                        noop_dtor,ERL_NIF_RT_TAKEOVER,
-                                                        NULL);
+  GET_VM;
 
   void** ptr;
-  if(!enif_get_resource(env, argv[1], ptrrestype, (void**)&ptr)) RETURN_ERROR(ATOM_INVALID_ARG)
+  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&ptr)) RETURN_ERROR(ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  dcArgPointer(*vmptr,*ptr);
 
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM);
-
-  /* printf("Pointer is %p\n",*(char**)ptr); */
-  dcArgPointer(vm,*ptr);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_ptr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG);
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCpointer ptr = dcCallPointer(vm,*symptr);
+  DCpointer ptr = dcCallPointer(*vmptr,*symptr);
   size_t sz = sizeof(DCpointer);
 
   DCpointer ptr_persistent = enif_alloc_resource(g_ptrrestype,sz);
@@ -520,50 +376,33 @@ static ERL_NIF_TERM call_ptr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]
 }
 
 static ERL_NIF_TERM call_void(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  dcCallVoid(vm,*symptr);
+  dcCallVoid(*vmptr,*symptr);
 
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM arg_string(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
+  GET_VM;
   MAYBE_RET_BAD_STRING_ARG(arg,1,MAX_STRING_ARG_SZ,ATOM_INVALID_ARG)
 
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM);
-
-  dcArgPointer(vm,arg);
+  dcArgPointer(*vmptr,arg);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM call_string(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-
-  MAYBE_RET_BAD_INT_ARG(vmslot,0,MAX_VMS,ATOM_INVALID_VM)
-
-  NifState* data = (NifState*)enif_priv_data(env);
-  DCCallVM* vm = data->vms[vmslot];
+  GET_VM;
 
   void** symptr;
   if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!vm) RETURN_ERROR(ATOM_INVALID_VM)
   if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
 
-  DCpointer ret = dcCallPointer(vm,*symptr);
+  DCpointer ret = dcCallPointer(*vmptr,*symptr);
 
   return enif_make_tuple2(env,
 			  enif_make_atom(env,ATOM_OK),
@@ -598,4 +437,4 @@ static ErlNifFunc nif_funcs[] = {
   {"call_string", 2, call_string}
 };
 
-ERL_NIF_INIT(dyncall,nif_funcs,&nifload,NULL,NULL,&nifunload)
+ERL_NIF_INIT(dyncall,nif_funcs,&nifload,NULL,NULL,NULL)

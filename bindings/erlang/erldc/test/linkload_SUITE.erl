@@ -16,7 +16,7 @@ all() ->
 
 create_vm(_) ->
     {ok,Vm} = dyncall:new_call_vm(?VMSZ),
-    true = is_integer(Vm).
+    true = is_binary(Vm).
 
 create_vm_badsz(_) ->
     {error,bad_vm_size} = dyncall:new_call_vm("Hello badarg").

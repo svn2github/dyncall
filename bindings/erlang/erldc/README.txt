@@ -8,9 +8,7 @@ TODO
   ... actually, this is probably fine, see asn1 app's nif
 - make install
 - Makefile compiles src/dyncall.app.src
-- move limits (e.g. MAX_VMS) into makefile so tests can have the value too.
-  - replace with _resource handles, with each handle type being
-    a dedicated resource
+- vm reset
 
 BUILDING
 'make DYNCALL_SRC_PATH=../dyncall ERLANG_INST_DIR=/erlang/in/this/dir all' to build
