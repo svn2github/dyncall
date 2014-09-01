@@ -3,14 +3,6 @@
 
 -define(VMSZ, 1024).
 
-%% Need arg:
-%% non-string ptr? null?
-%% struct?
-
-%% Need return:
-%% non-string ptr?
-%% struct?
-
 all() ->
     [
      ret_double_arg_double,

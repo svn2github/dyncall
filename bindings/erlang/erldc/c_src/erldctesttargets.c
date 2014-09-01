@@ -21,6 +21,14 @@ long long subtract_four(long long in) {
   return in - 4;
 }
 
+int add_seven(int in) {
+  return in + 7;
+}
+
+int add_one(int in) {
+  return in + 1;
+}
+
 void* coolmalloc(int sz) {
   void* ptr = malloc(sz);
   /* printf("I've allocated at addr %p\n",ptr); */

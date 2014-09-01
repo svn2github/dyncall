@@ -1,14 +1,10 @@
 TODO
 - functions in dyncall_callf.h
-- use/test dcGetError
-  - error codes into .hrl
-- Call modes
 - replace load_nif + on_load with something less awkward.  Consider
   removing on_load entirely and requiring dir as arg to dyncall:load_nif
   ... actually, this is probably fine, see asn1 app's nif
 - make install
 - Makefile compiles src/dyncall.app.src
-- vm reset
 
 BUILDING
 'make DYNCALL_SRC_PATH=../dyncall ERLANG_INST_DIR=/erlang/in/this/dir all' to build

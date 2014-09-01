@@ -1,6 +1,10 @@
 -module(dyncall).
 
--export([ load_library/1,
+-export([ 
+          mode/2,
+          get_error/1,
+          reset/1,
+          load_library/1,
 	  find_symbol/2,
 	  new_call_vm/1,
 	  arg_double/2,
@@ -132,4 +136,17 @@ arg_string(_Vm, _String) ->
 -spec call_string(Vm :: pos_integer(), Sym :: pos_integer()) -> {ok, Result :: string()} | {error, _Reason}.
 call_string(_Vm, _Sym) ->
     {error,"NIF library not loaded"}.
+
+-spec mode(Vm :: pos_integer(), Mode :: pos_integer()) -> ok | {error, _Reason}.
+mode(_Vm, _Mode) ->
+    {error,"NIF library not loaded"}.
+
+-spec get_error(Vm :: pos_integer()) -> {ok, ErrorCode :: pos_integer()} | {error, _Reason}.
+get_error(_Vm) ->
+    {error,"NIF library not loaded"}.
+
+-spec reset(Vm :: pos_integer()) -> ok | {error, _Reason}.
+reset(_Vm) ->
+    {error,"NIF library not loaded"}.
+
 

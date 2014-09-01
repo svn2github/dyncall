@@ -117,7 +117,7 @@ static ERL_NIF_TERM find_symbol(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
   void** libptr;
   if(!enif_get_resource(env, argv[0], g_ptrrestype, (void**)&libptr)) RETURN_ERROR(ATOM_INVALID_LIB)
 
-  void* symptr = enif_dlsym(*libptr,path,dlopen_err,NULL);
+  void* symptr = enif_dlsym(*libptr,path,NULL,NULL);
 
   size_t sz = sizeof(void*);
   DCpointer ptr_persistent_symbol = enif_alloc_resource(g_ptrrestype,sz);
@@ -410,8 +410,39 @@ static ERL_NIF_TERM call_string(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
 			  );
 }
 
+static ERL_NIF_TERM mode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+
+  int mode = -1;
+  if(!enif_get_int(env, argv[1], &mode)) RETURN_ERROR(ATOM_INVALID_ARG)
+
+  dcMode(*vmptr,mode);
+  return enif_make_atom(env,ATOM_OK);
+}
+
+static ERL_NIF_TERM get_error(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+
+  DCint ret = dcGetError(*vmptr);
+
+  return enif_make_tuple2(env,
+			  enif_make_atom(env,ATOM_OK),
+			  enif_make_int(env,ret)
+			  );
+}
+
+static ERL_NIF_TERM reset(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+
+  dcReset(*vmptr);
+  return enif_make_atom(env,ATOM_OK);
+}
+
 static ErlNifFunc nif_funcs[] = {
   {"new_call_vm", 1, new_call_vm},
+  {"mode", 2, mode},
+  {"get_error", 1, get_error},
+  {"reset", 1, reset},
   {"load_library", 1, load_library},
   {"find_symbol", 2, find_symbol},
   {"arg_double", 2, arg_double},

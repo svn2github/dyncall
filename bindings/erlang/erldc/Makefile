@@ -46,7 +46,8 @@ tests: $(OUTPUTS) priv/erldc_testtargets.so
 	mkdir -p log
 	# Add priv to runtime ld path so we get test targets
 	export LD_LIBRARY_PATH=$$(pwd)/priv:${LD_LIBRARY_PATH}; \
-		ct_run -pa ebin -logdir log -suite linkload_SUITE call_SUITE
+		ct_run -pa ebin -logdir log \
+			-suite linkload_SUITE call_SUITE misc_SUITE
 	rm -f test/*.beam
 
 clean:
