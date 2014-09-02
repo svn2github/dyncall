@@ -18,17 +18,7 @@ priv/erldc_testtargets.so: c_src/erldctesttargets.c
 	cc -o $@ -shared -fPIC c_src/erldctesttargets.c
 
 ebin/dyncall.beam: src/dyncall.erl
-	[ -d ebin ] || mkdir ebin
 	erlc +debug_info -o ebin src/dyncall.erl
-
-# TODO: compile src/dyncall.app.src
-# How erlang.mk does it - too gnu?
-# app: ebin/$(PROJECT).app
-# 	$(eval MODULES := $(shell find ebin -type f -name \*.beam \
-# 		| sed "s/ebin\//'/;s/\.beam/',/" | sed '$$s/.$$//'))
-# 	$(appsrc_verbose) cat src/$(PROJECT).app.src \
-# 		| sed "s/{modules,[[:space:]]*\[\]}/{modules, \[$(MODULES)\]}/" \
-# 		> ebin/$(PROJECT).app
 
 # Dialyzer, credit to erlang.mk 
 DIALYZER_OPTS ?= -Werror_handling -Wrace_conditions \
@@ -51,6 +41,6 @@ tests: $(OUTPUTS) priv/erldc_testtargets.so
 	rm -f test/*.beam
 
 clean:
-	rm -rf priv/* ebin/* test/*.beam
+	rm -rf priv/* ebin/*.beam test/*.beam
 
 .PHONY: clean all tests build-plt dialyze
