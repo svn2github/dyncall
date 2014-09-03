@@ -2,7 +2,15 @@
 ERLANG_INC=-I /usr/lib64/erlang/usr/include -I /usr/local/lib/erlang/usr/include
 DYNCALL_SRC_PATH=../../../dyncall
 
-OUTPUTS = priv/erldc.so ebin/dyncall.beam
+# Be sure to 'make clean' after changing the version
+VERSION=0.1
+
+OUTPUTS = priv/erldc.so ebin/dyncall.beam ebin/erldc.app
+
+# Used by install target.  Default empty DESTDIR is for a real install to root filesystem (/).
+# Override DESTDIR for testing or for a staged install
+DESTDIR=
+ERLANG_INST_DIR=/usr/lib64/erlang
 
 all: $(OUTPUTS)
 
@@ -19,6 +27,9 @@ priv/erldc_testtargets.so: c_src/erldctesttargets.c
 
 ebin/dyncall.beam: src/dyncall.erl
 	erlc +debug_info -o ebin src/dyncall.erl
+
+ebin/erldc.app: src/erldc.app.src
+	sed -e 's/---VERSION---/$(VERSION)/' src/erldc.app.src >$@
 
 # Dialyzer, credit to erlang.mk 
 DIALYZER_OPTS ?= -Werror_handling -Wrace_conditions \
@@ -41,6 +52,21 @@ tests: $(OUTPUTS) priv/erldc_testtargets.so
 	rm -f test/*.beam
 
 clean:
-	rm -rf priv/* ebin/*.beam test/*.beam
+	rm -rf priv/* ebin/* test/*.beam
 
-.PHONY: clean all tests build-plt dialyze
+# Convention appears to be install binaries and source, but not tests or build-related things
+install: $(OUTPUTS)
+	appdir=$(DESTDIR)$(ERLANG_INST_DIR)/lib/erldc-$(VERSION); \
+	install -d $$appdir $$appdir/ebin $$appdir/priv $$appdir/src $$appdir/c_src $$appdir/include; \
+	install README.txt $$appdir; \
+	install src/*.erl $$appdir/src; \
+	install include/*.hrl $$appdir/include; \
+	install c_src/*.c $$appdir/c_src; \
+	install ebin/* $$appdir/ebin; \
+	install priv/erldc.so $$appdir/priv
+
+uninstall:
+	appdir=$(DESTDIR)$(ERLANG_INST_DIR)/lib/erldc-$(VERSION); \
+	rm -rf $$appdir
+
+.PHONY: clean all tests build-plt dialyze install uninstall

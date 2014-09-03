@@ -1,6 +1,6 @@
 {application, erldc,
  [{description, "Call native functions dynamically"},
-  {vsn, "0.1"},
+  {vsn, "---VERSION---"},
   {modules, [dyncall]}
  ]}.
   
