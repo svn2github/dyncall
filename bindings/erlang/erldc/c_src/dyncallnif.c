@@ -1,5 +1,6 @@
 #include "erl_nif.h"
 #include "dyncall/dyncall.h"
+#include "dyncall/dyncall_signature.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -8,6 +9,7 @@
 
 #define MAX_LIBPATH_SZ 128
 #define MAX_SYMBOL_NAME_SZ 32
+#define MAX_FORMAT_STRING_SZ 100
 #define MAX_STRING_ARG_SZ 1024
 
 ErlNifResourceType *g_ptrrestype, *g_vmrestype;
@@ -43,14 +45,14 @@ static int nifload(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info) {
 #define ATOM_ERROR "error"
 
 #define ATOM_LIB_NOT_FOUND "lib_not_found"
-#define ATOM_TOO_MANY_VMS "max_vms_exceeded"
-#define ATOM_TOO_MANY_LIBS "max_libs_exceeded"
 #define ATOM_SYMBOL_NOT_FOUND "symbol_not_found"
 #define ATOM_BADSZ "bad_vm_size"
 #define ATOM_INVALID_VM "invalid_vm"
 #define ATOM_INVALID_LIB "invalid_lib"
 #define ATOM_INVALID_SYMBOL "invalid_symbol"
+#define ATOM_INVALID_FORMAT "invalid_format"
 #define ATOM_INVALID_ARG "invalid_arg"
+#define ATOM_NOT_IMPLEMENTED "not_implemented"
 
 static ERL_NIF_TERM new_call_vm(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 
@@ -134,280 +136,366 @@ static ERL_NIF_TERM find_symbol(ErlNifEnv* env, int argc, const ERL_NIF_TERM arg
 			  );
 }
 
-#define GET_VM void** vmptr; \
-  if(!enif_get_resource(env, argv[0], g_vmrestype, (void**)&vmptr)) RETURN_ERROR(ATOM_INVALID_VM); \
-  if(!*vmptr) RETURN_ERROR(ATOM_INVALID_VM);
-
-static ERL_NIF_TERM arg_double(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  double arg = -1.0;
-  if(!enif_get_double(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgDouble(*vmptr,arg);
-  return enif_make_atom(env,ATOM_OK);
-}
-
-static ERL_NIF_TERM call_double(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCdouble ret = dcCallDouble(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_double(env,ret)
-			  );
-}
-
-static ERL_NIF_TERM arg_float(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  double arg = -1.0;
-  if(!enif_get_double(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgFloat(*vmptr,(float)arg);
-  return enif_make_atom(env,ATOM_OK);
-}
-
-static ERL_NIF_TERM call_float(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCfloat ret = dcCallFloat(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_double(env,ret)
-			  );
-}
-
-static ERL_NIF_TERM arg_int(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  int arg = -1;
-  if(!enif_get_int(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgInt(*vmptr,arg);
-  return enif_make_atom(env,ATOM_OK);
-}
-
-static ERL_NIF_TERM call_int(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCint ret = dcCallInt(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_int(env,ret)
-			  );
-}
-
-static ERL_NIF_TERM arg_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  int arg = -1;
-  if(!enif_get_int(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgChar(*vmptr,(char)arg);
-  return enif_make_atom(env,ATOM_OK);
-}
-
-static ERL_NIF_TERM call_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
-  GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCchar ret = dcCallChar(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_int(env,ret)
-			  );
-}
-
 #define BOOL_BUF_SZ 6
 #define ATOM_TRUE "true"
 #define ATOM_FALSE "false"
 
+static void exec_call(ErlNifEnv* env, void* vm, void* sym, char rettype,ERL_NIF_TERM *retvalue, char** error_atom) {
+  if(!sym) {
+    *error_atom = ATOM_INVALID_SYMBOL;
+    return;
+  }
+
+  DCpointer pret;
+  DCfloat fret;
+  DCdouble dret;
+  DCint iret;
+  DCbool bret;
+  DCshort sret;
+  DClong lret;
+  DClonglong llret;
+
+  char* tmpstr;
+  size_t sz;
+  DCpointer ptr_persistent;
+
+  switch(rettype) {
+  case DC_SIGCHAR_VOID:
+    dcCallVoid(vm,sym);
+    return;
+  case DC_SIGCHAR_BOOL:
+    bret = dcCallBool(vm,sym);
+    tmpstr = bret ? ATOM_TRUE : ATOM_FALSE;
+    *retvalue = enif_make_atom(env,tmpstr);
+    return;
+  case DC_SIGCHAR_UCHAR:
+    *error_atom=ATOM_NOT_IMPLEMENTED;
+    return;
+  case DC_SIGCHAR_SHORT:
+    sret = dcCallShort(vm,sym);
+    *retvalue = enif_make_int(env,sret);
+    return;
+  case DC_SIGCHAR_USHORT:
+    *error_atom=ATOM_NOT_IMPLEMENTED;
+    return;
+  case DC_SIGCHAR_CHAR:
+  case DC_SIGCHAR_INT:
+    iret = dcCallInt(vm,sym);
+    *retvalue = enif_make_int(env,iret);
+    return;
+  case DC_SIGCHAR_UINT:
+    *error_atom=ATOM_NOT_IMPLEMENTED;
+    return;
+  case DC_SIGCHAR_LONG:
+    lret = dcCallLong(vm,sym);
+    *retvalue = enif_make_long(env,lret);
+    return;
+  case DC_SIGCHAR_ULONG:
+    *error_atom=ATOM_NOT_IMPLEMENTED;
+    return;
+  case DC_SIGCHAR_LONGLONG:
+    llret = dcCallLongLong(vm,sym);
+    *retvalue = enif_make_int64(env,llret);
+    return;
+  case DC_SIGCHAR_ULONGLONG:
+    *error_atom=ATOM_NOT_IMPLEMENTED;
+    return;
+  case DC_SIGCHAR_FLOAT:
+    fret = dcCallFloat(vm,sym);
+    *retvalue = enif_make_double(env,fret);
+    return;
+  case DC_SIGCHAR_DOUBLE:
+    dret = dcCallDouble(vm,sym);
+    *retvalue = enif_make_double(env,dret);
+    return;
+  case DC_SIGCHAR_POINTER:
+    pret = dcCallPointer(vm,sym);
+    sz = sizeof(DCpointer);
+
+    ptr_persistent = enif_alloc_resource(g_ptrrestype,sz);
+    memcpy(ptr_persistent,&pret,sz);
+    *retvalue = enif_make_resource(env,ptr_persistent);
+    enif_release_resource(ptr_persistent);
+    return;
+  case DC_SIGCHAR_STRING:
+    pret = dcCallPointer(vm,sym);
+    *retvalue = enif_make_string(env,pret,ERL_NIF_LATIN1);
+    break;
+  case DC_SIGCHAR_STRUCT:
+    *error_atom=ATOM_NOT_IMPLEMENTED;
+    return;
+  default:
+    *error_atom=ATOM_INVALID_FORMAT;
+    return;
+  }
+}
+
+
+static void exec_arg(ErlNifEnv* env,void* vm,char argtype,ERL_NIF_TERM argterm,char** error_atom) {
+    long int larg = -1;
+    int iarg = -1;
+    char sarg[MAX_STRING_ARG_SZ];
+    double darg = -1.0;
+    char barg[BOOL_BUF_SZ];
+    ErlNifSInt64 llarg = -1;
+    void** parg;
+
+    switch(argtype) {
+    case DC_SIGCHAR_BOOL:
+      if(!enif_get_atom(env, argterm, barg, BOOL_BUF_SZ, ERL_NIF_LATIN1)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgBool(vm,!strcmp(barg,ATOM_TRUE));
+      break;
+    case DC_SIGCHAR_CHAR:
+      if(!enif_get_int(env, argterm, &iarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgChar(vm,iarg);
+      break;
+    case DC_SIGCHAR_UCHAR:
+      *error_atom = ATOM_NOT_IMPLEMENTED;
+      return;
+    case DC_SIGCHAR_SHORT:
+      if(!enif_get_int(env, argterm, &iarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgShort(vm,iarg);
+      break;
+    case DC_SIGCHAR_USHORT:
+      *error_atom = ATOM_NOT_IMPLEMENTED;
+      return;
+    case DC_SIGCHAR_INT:
+      if(!enif_get_int(env, argterm, &iarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgInt(vm,iarg);
+      break;
+    case DC_SIGCHAR_UINT:
+      *error_atom = ATOM_NOT_IMPLEMENTED;
+      return;
+    case DC_SIGCHAR_LONG:
+      if(!enif_get_long(env, argterm, &larg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgLong(vm,larg);
+      break;
+    case DC_SIGCHAR_ULONG:
+      *error_atom = ATOM_NOT_IMPLEMENTED;
+      return;
+    case DC_SIGCHAR_LONGLONG:
+      if(!enif_get_int64(env, argterm, &llarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgLongLong(vm,llarg);
+      break;
+    case DC_SIGCHAR_ULONGLONG:
+      *error_atom = ATOM_NOT_IMPLEMENTED;
+      return;
+    case DC_SIGCHAR_FLOAT:
+      if(!enif_get_double(env, argterm, &darg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgFloat(vm,(float)darg);
+      break;
+    case DC_SIGCHAR_DOUBLE:
+      if(!enif_get_double(env, argterm, &darg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgDouble(vm,darg);
+      break;
+    case DC_SIGCHAR_POINTER:
+      if(!enif_get_resource(env, argterm, g_ptrrestype, (void**)&parg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgPointer(vm,*parg);
+      break;
+    case DC_SIGCHAR_STRING:
+      if(!enif_get_string(env, argterm, sarg, MAX_STRING_ARG_SZ, ERL_NIF_LATIN1)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgPointer(vm,sarg);
+      break;
+    case DC_SIGCHAR_STRUCT:
+      *error_atom = ATOM_NOT_IMPLEMENTED;
+      return;
+    default:
+      *error_atom = ATOM_INVALID_FORMAT;
+      return;
+    }
+}
+
+#define GET_VM void** vmptr; \
+  if(!enif_get_resource(env, argv[0], g_vmrestype, (void**)&vmptr)) RETURN_ERROR(ATOM_INVALID_VM); \
+  if(!*vmptr) RETURN_ERROR(ATOM_INVALID_VM);
+
+#define GET_SYM void** symptr; \
+  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG);
+
+#define EXEC_CALL(typechar) ERL_NIF_TERM retvalue; \
+  char* error_atom = NULL; \
+  exec_call(env,*vmptr,*symptr,typechar,&retvalue,&error_atom);
+
+#define MAKE_CALL_RETURN if(error_atom) RETURN_ERROR(error_atom); \
+  return enif_make_tuple2(env, \
+			  enif_make_atom(env,ATOM_OK), \
+			  retvalue \
+			  );
+
+#define EXEC_ARG(typechar) char* error_atom = NULL; \
+  exec_arg(env,*vmptr,typechar,argv[1],&error_atom);
+
+#define MAKE_ARG_RETURN if(error_atom) RETURN_ERROR(error_atom); \
+  return enif_make_atom(env,ATOM_OK);
+
+
+static ERL_NIF_TERM arg_double(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  EXEC_ARG(DC_SIGCHAR_DOUBLE);
+  MAKE_ARG_RETURN;
+}
+
+static ERL_NIF_TERM call_double(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_DOUBLE);
+  MAKE_CALL_RETURN;
+}
+
+static ERL_NIF_TERM arg_float(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  EXEC_ARG(DC_SIGCHAR_FLOAT);
+  MAKE_ARG_RETURN;
+}
+
+static ERL_NIF_TERM call_float(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_FLOAT);
+  MAKE_CALL_RETURN;
+}
+
+static ERL_NIF_TERM arg_int(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  EXEC_ARG(DC_SIGCHAR_INT);
+  MAKE_ARG_RETURN;
+}
+
+static ERL_NIF_TERM call_int(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_INT);
+  MAKE_CALL_RETURN;
+}
+
+static ERL_NIF_TERM arg_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  EXEC_ARG(DC_SIGCHAR_CHAR);
+  MAKE_ARG_RETURN;
+}
+
+static ERL_NIF_TERM call_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_CHAR);
+  MAKE_CALL_RETURN;
+}
+
 static ERL_NIF_TERM arg_bool(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  char arg[BOOL_BUF_SZ];
-  if(!enif_get_atom(env, argv[1], arg, BOOL_BUF_SZ, ERL_NIF_LATIN1)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgBool(*vmptr,!strcmp(arg,ATOM_TRUE));
-  return enif_make_atom(env,ATOM_OK);
+  EXEC_ARG(DC_SIGCHAR_BOOL);
+  MAKE_ARG_RETURN;
 }
 
 static ERL_NIF_TERM call_bool(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCbool ret = dcCallBool(*vmptr,*symptr);
-  char* retstr = ret ? ATOM_TRUE : ATOM_FALSE;
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_atom(env,retstr)
-			  );
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_BOOL);
+  MAKE_CALL_RETURN;
 }
 
 static ERL_NIF_TERM arg_short(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  int arg = -1;
-  if(!enif_get_int(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgShort(*vmptr,(short)arg);
-  return enif_make_atom(env,ATOM_OK);
+  EXEC_ARG(DC_SIGCHAR_SHORT);
+  MAKE_ARG_RETURN;
 }
 
 static ERL_NIF_TERM call_short(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCshort ret = dcCallShort(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_int(env,ret)
-			  );
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_SHORT);
+  MAKE_CALL_RETURN;
 }
 
 static ERL_NIF_TERM arg_long(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  long int arg = -1;
-  if(!enif_get_long(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgLong(*vmptr,arg);
-  return enif_make_atom(env,ATOM_OK);
+  EXEC_ARG(DC_SIGCHAR_LONG);
+  MAKE_ARG_RETURN;
 }
 
 static ERL_NIF_TERM call_long(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DClong ret = dcCallLong(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_long(env,ret)
-			  );
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_LONG);
+  MAKE_CALL_RETURN;
 }
 
 static ERL_NIF_TERM arg_longlong(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  ErlNifSInt64 arg = -1;
-  if(!enif_get_int64(env, argv[1], &arg)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgLongLong(*vmptr,arg);
-  return enif_make_atom(env,ATOM_OK);
+  EXEC_ARG(DC_SIGCHAR_LONGLONG);
+  MAKE_ARG_RETURN;
 }
 
 static ERL_NIF_TERM call_longlong(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DClonglong ret = dcCallLongLong(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_int64(env,ret)
-			  );
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_LONGLONG);
+  MAKE_CALL_RETURN;
 }
 
 static ERL_NIF_TERM arg_ptr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  void** ptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&ptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-
-  dcArgPointer(*vmptr,*ptr);
-
-  return enif_make_atom(env,ATOM_OK);
+  EXEC_ARG(DC_SIGCHAR_POINTER);
+  MAKE_ARG_RETURN;
 }
 
 static ERL_NIF_TERM call_ptr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG);
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCpointer ptr = dcCallPointer(*vmptr,*symptr);
-  size_t sz = sizeof(DCpointer);
-
-  DCpointer ptr_persistent = enif_alloc_resource(g_ptrrestype,sz);
-  memcpy(ptr_persistent,&ptr,sz);
-  ERL_NIF_TERM retterm = enif_make_resource(env,ptr_persistent);
-  enif_release_resource(ptr_persistent);
-  
-  return enif_make_tuple2(env,
-        		  enif_make_atom(env,ATOM_OK),
-                          retterm
-        		  );
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_POINTER);
+  MAKE_CALL_RETURN;
 }
 
 static ERL_NIF_TERM call_void(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_VOID);
 
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  dcCallVoid(*vmptr,*symptr);
-
+  if(error_atom) RETURN_ERROR(error_atom);
   return enif_make_atom(env,ATOM_OK);
 }
 
 static ERL_NIF_TERM arg_string(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-  MAYBE_RET_BAD_STRING_ARG(arg,1,MAX_STRING_ARG_SZ,ATOM_INVALID_ARG)
-
-  dcArgPointer(*vmptr,arg);
-  return enif_make_atom(env,ATOM_OK);
+  EXEC_ARG(DC_SIGCHAR_STRING);
+  MAKE_ARG_RETURN;
 }
 
 static ERL_NIF_TERM call_string(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   GET_VM;
-
-  void** symptr;
-  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
-  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
-
-  DCpointer ret = dcCallPointer(*vmptr,*symptr);
-
-  return enif_make_tuple2(env,
-			  enif_make_atom(env,ATOM_OK),
-			  enif_make_string(env,(char*)ret, ERL_NIF_LATIN1)
-			  );
+  GET_SYM;
+  EXEC_CALL(DC_SIGCHAR_STRING);
+  MAKE_CALL_RETURN;
 }
 
 static ERL_NIF_TERM mode(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
@@ -438,6 +526,89 @@ static ERL_NIF_TERM reset(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   return enif_make_atom(env,ATOM_OK);
 }
 
+static void process_formatted_args(ErlNifEnv* env,void* vm,char** format,ERL_NIF_TERM arglist,char** error_atom) {
+
+  ERL_NIF_TERM remaining = arglist;
+
+  char sigchar;
+  char* onechar = *format;
+  while((sigchar=*onechar)) {
+    if(sigchar==DC_SIGCHAR_ENDARG) break;
+
+    // If the format has more items than the arg list,
+    // fail and call it a bad format.
+    ERL_NIF_TERM first, rest;
+    if(!enif_get_list_cell(env, remaining, &first, &rest)) {
+      *error_atom = ATOM_INVALID_FORMAT;
+      return;
+    }
+    
+    exec_arg(env,vm,sigchar,first,error_atom);
+
+    remaining = rest;
+    onechar++;
+  }
+
+  // There are more args, but the format was exhausted
+  if(!enif_is_empty_list(env,remaining)) {
+    *error_atom = ATOM_INVALID_FORMAT;
+    return;
+  }
+
+  *format = onechar;
+}
+
+static ERL_NIF_TERM argf(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+  MAYBE_RET_BAD_STRING_ARG(format,1,MAX_FORMAT_STRING_SZ,ATOM_INVALID_FORMAT);
+
+  char* formatretyped = format;
+  char* error_atom = NULL;
+  process_formatted_args(env,*vmptr,&formatretyped, argv[2], &error_atom);
+
+  if(error_atom) {
+    RETURN_ERROR(error_atom);
+  } else return enif_make_atom(env,ATOM_OK);
+}
+
+static ERL_NIF_TERM callf(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
+  GET_VM;
+
+  void** symptr;
+  if(!enif_get_resource(env, argv[1], g_ptrrestype, (void**)&symptr)) RETURN_ERROR(ATOM_INVALID_ARG)
+  if(!*symptr) RETURN_ERROR(ATOM_INVALID_SYMBOL)
+
+  MAYBE_RET_BAD_STRING_ARG(format,2,MAX_FORMAT_STRING_SZ,ATOM_INVALID_FORMAT);
+
+  char* formatretyped = format;
+  char* error_atom = NULL;
+  process_formatted_args(env,*vmptr,&formatretyped, argv[3], &error_atom);
+
+  if(error_atom) {
+    RETURN_ERROR(error_atom);
+  }
+
+  // Get return type char, skip )
+  char rettypechar = *(formatretyped+1);
+
+  ERL_NIF_TERM retval;
+
+  exec_call(env,*vmptr,*symptr,rettypechar,&retval,&error_atom);
+  
+  if(error_atom) {
+    RETURN_ERROR(error_atom);
+  }
+
+  if(rettypechar == DC_SIGCHAR_VOID) {
+    return enif_make_atom(env,ATOM_OK);
+  }
+
+  return enif_make_tuple2(env,
+                          enif_make_atom(env,ATOM_OK),
+                          retval
+                          );
+}
+
 static ErlNifFunc nif_funcs[] = {
   {"new_call_vm", 1, new_call_vm},
   {"mode", 2, mode},
@@ -465,7 +636,10 @@ static ErlNifFunc nif_funcs[] = {
   {"call_ptr", 2, call_ptr},
   {"call_void", 2, call_void},
   {"arg_string", 2, arg_string},
-  {"call_string", 2, call_string}
+  {"call_string", 2, call_string},
+
+  {"argf", 3, argf},
+  {"callf", 4, callf}
 };
 
 ERL_NIF_INIT(dyncall,nif_funcs,&nifload,NULL,NULL,NULL)
