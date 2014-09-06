@@ -184,37 +184,45 @@ static void exec_call(ErlNifEnv* env, void* vm, void* sym, char rettype,ERL_NIF_
     tmpstr = bret ? ATOM_TRUE : ATOM_FALSE;
     *retvalue = enif_make_atom(env,tmpstr);
     return;
+  case DC_SIGCHAR_CHAR:
+    iret = dcCallChar(vm,sym);
+    *retvalue = enif_make_int(env,(char)iret);
+    return;
   case DC_SIGCHAR_UCHAR:
-    *error_atom=ATOM_NOT_IMPLEMENTED;
+    iret = dcCallChar(vm,sym);
+    *retvalue = enif_make_int(env,(unsigned char)iret);
     return;
   case DC_SIGCHAR_SHORT:
     sret = dcCallShort(vm,sym);
     *retvalue = enif_make_int(env,sret);
     return;
   case DC_SIGCHAR_USHORT:
-    *error_atom=ATOM_NOT_IMPLEMENTED;
+    sret = dcCallShort(vm,sym);
+    *retvalue = enif_make_int(env,(unsigned short)sret);
     return;
-  case DC_SIGCHAR_CHAR:
   case DC_SIGCHAR_INT:
     iret = dcCallInt(vm,sym);
     *retvalue = enif_make_int(env,iret);
     return;
   case DC_SIGCHAR_UINT:
-    *error_atom=ATOM_NOT_IMPLEMENTED;
+    iret = dcCallInt(vm,sym);
+    *retvalue = enif_make_int(env,(unsigned int)iret);
     return;
   case DC_SIGCHAR_LONG:
     lret = dcCallLong(vm,sym);
     *retvalue = enif_make_long(env,lret);
     return;
   case DC_SIGCHAR_ULONG:
-    *error_atom=ATOM_NOT_IMPLEMENTED;
+    lret = dcCallLong(vm,sym);
+    *retvalue = enif_make_long(env,(unsigned long)lret);
     return;
   case DC_SIGCHAR_LONGLONG:
     llret = dcCallLongLong(vm,sym);
     *retvalue = enif_make_int64(env,llret);
     return;
   case DC_SIGCHAR_ULONGLONG:
-    *error_atom=ATOM_NOT_IMPLEMENTED;
+    llret = dcCallLongLong(vm,sym);
+    *retvalue = enif_make_int64(env,(unsigned long long)llret);
     return;
   case DC_SIGCHAR_FLOAT:
     fret = dcCallFloat(vm,sym);
@@ -248,6 +256,7 @@ static void exec_call(ErlNifEnv* env, void* vm, void* sym, char rettype,ERL_NIF_
 
 
 static void exec_arg(ErlNifEnv* env,void* vm,char argtype,ERL_NIF_TERM argterm,char** error_atom) {
+    char carg;
     long int larg = -1;
     int iarg = -1;
     char sarg[MAX_STRING_ARG_SZ];
@@ -269,21 +278,29 @@ static void exec_arg(ErlNifEnv* env,void* vm,char argtype,ERL_NIF_TERM argterm,c
         *error_atom = ATOM_INVALID_ARG;
         return;
       }
-      dcArgChar(vm,iarg);
+      dcArgChar(vm,(char)iarg);
       break;
     case DC_SIGCHAR_UCHAR:
-      *error_atom = ATOM_NOT_IMPLEMENTED;
-      return;
+      if(!enif_get_int(env, argterm, &iarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgInt(vm,(unsigned char)iarg);
+      break;
     case DC_SIGCHAR_SHORT:
       if(!enif_get_int(env, argterm, &iarg)) {
         *error_atom = ATOM_INVALID_ARG;
         return;
       }
-      dcArgShort(vm,iarg);
+      dcArgShort(vm,(short)iarg);
       break;
     case DC_SIGCHAR_USHORT:
-      *error_atom = ATOM_NOT_IMPLEMENTED;
-      return;
+      if(!enif_get_int(env, argterm, &iarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgShort(vm,(unsigned short)iarg);
+      break;
     case DC_SIGCHAR_INT:
       if(!enif_get_int(env, argterm, &iarg)) {
         *error_atom = ATOM_INVALID_ARG;
@@ -292,8 +309,12 @@ static void exec_arg(ErlNifEnv* env,void* vm,char argtype,ERL_NIF_TERM argterm,c
       dcArgInt(vm,iarg);
       break;
     case DC_SIGCHAR_UINT:
-      *error_atom = ATOM_NOT_IMPLEMENTED;
-      return;
+      if(!enif_get_int(env, argterm, &iarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgInt(vm,(unsigned int)iarg);
+      break;
     case DC_SIGCHAR_LONG:
       if(!enif_get_long(env, argterm, &larg)) {
         *error_atom = ATOM_INVALID_ARG;
@@ -302,8 +323,12 @@ static void exec_arg(ErlNifEnv* env,void* vm,char argtype,ERL_NIF_TERM argterm,c
       dcArgLong(vm,larg);
       break;
     case DC_SIGCHAR_ULONG:
-      *error_atom = ATOM_NOT_IMPLEMENTED;
-      return;
+      if(!enif_get_long(env, argterm, &larg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgLong(vm,(unsigned long)larg);
+      break;
     case DC_SIGCHAR_LONGLONG:
       if(!enif_get_int64(env, argterm, &llarg)) {
         *error_atom = ATOM_INVALID_ARG;
@@ -312,8 +337,12 @@ static void exec_arg(ErlNifEnv* env,void* vm,char argtype,ERL_NIF_TERM argterm,c
       dcArgLongLong(vm,llarg);
       break;
     case DC_SIGCHAR_ULONGLONG:
-      *error_atom = ATOM_NOT_IMPLEMENTED;
-      return;
+      if(!enif_get_int64(env, argterm, &llarg)) {
+        *error_atom = ATOM_INVALID_ARG;
+        return;
+      }
+      dcArgLongLong(vm,(unsigned long long)llarg);
+      break;
     case DC_SIGCHAR_FLOAT:
       if(!enif_get_double(env, argterm, &darg)) {
         *error_atom = ATOM_INVALID_ARG;

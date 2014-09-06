@@ -22,6 +22,7 @@ char get_next_char(char in) {
 }
 
 unsigned char get_next_char_u(unsigned char in) {
+  /* printf("In c, sum is %d\n",in+1); */
   return in+1;
 }
 

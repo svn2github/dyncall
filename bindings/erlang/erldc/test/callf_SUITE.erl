@@ -45,7 +45,7 @@ argf_one(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
     {ok,Sym} = dyncall:find_symbol(Libm, "several_args"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
-    ok = dyncall:argf(CallVm,"jcZf)Z",[-125,91,"foo",6.2]),
+    ok = dyncall:argf(CallVm,"jcZf)Z",[-125,$[,"foo",6.2]),
     {ok,"Your args were -125, [, foo, 6.2"} = dyncall:call_string(CallVm,Sym).    
 
 argf_excessive_format(_) ->
@@ -91,15 +91,15 @@ callf_char(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
     {ok,Sym} = dyncall:find_symbol(Libm, "get_next_char"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
-    {ok,222} = 
-        dyncall:callf(CallVm,Sym,"c)c",[221]).    
+    {ok,120} = 
+        dyncall:callf(CallVm,Sym,"c)c",[119]).    
 
 callf_uchar(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
     {ok,Sym} = dyncall:find_symbol(Libm, "get_next_char_u"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
-    {error,not_implemented} = 
-        dyncall:callf(CallVm,Sym,"C)C",[11]).    
+    {ok,222} = 
+        dyncall:callf(CallVm,Sym,"C)C",[221]).    
 
 callf_short(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
@@ -112,7 +112,7 @@ callf_ushort(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
     {ok,Sym} = dyncall:find_symbol(Libm, "times_three_u"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
-    {error,not_implemented} = 
+    {ok,12} = 
         dyncall:callf(CallVm,Sym,"S)S",[4]).    
 
 callf_int(_) ->
@@ -126,7 +126,7 @@ callf_uint(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
     {ok,Sym} = dyncall:find_symbol(Libm, "dual_increment_u"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
-    {error,not_implemented} = 
+    {ok,6} = 
         dyncall:callf(CallVm,Sym,"I)I",[4]).    
 
 callf_long(_) ->
@@ -140,7 +140,7 @@ callf_ulong(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
     {ok,Sym} = dyncall:find_symbol(Libm, "add_nineteen_u"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
-    {error,not_implemented} = 
+    {ok,23} = 
         dyncall:callf(CallVm,Sym,"J)J",[4]).    
 
 callf_longlong(_) ->
@@ -154,7 +154,7 @@ callf_ulonglong(_) ->
     {ok,Libm} = dyncall:load_library("erldc_testtargets"),
     {ok,Sym} = dyncall:find_symbol(Libm, "subtract_four_u"),
     {ok,CallVm} = dyncall:new_call_vm(?VMSZ),
-    {error,not_implemented} = 
+    {ok,5} = 
         dyncall:callf(CallVm,Sym,"L)L",[9]).
 
 callf_float(_) ->
