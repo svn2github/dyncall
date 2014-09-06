@@ -34,3 +34,6 @@ TODO
 ====
 
 
+AUTHORS
+=======
+Erik Mackdanz <erikmack@gmail.com>
