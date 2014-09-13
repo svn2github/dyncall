@@ -53,7 +53,7 @@ tests: $(OUTPUTS) priv/erldc_testtargets.so
 	rm -f test/*.beam
 
 clean:
-	rm -rf priv/* ebin/* test/*.beam
+	rm -rf priv ebin/* test/*.beam log
 
 # Convention appears to be install binaries and source, but not tests or build-related things
 install: $(OUTPUTS)
