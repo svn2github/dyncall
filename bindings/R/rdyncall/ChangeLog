@@ -2,11 +2,10 @@ ChangeLog for R Package rdyncall
 -------------------------------------------------------------------------------
 
 0.8   [2014-09-19]:
- o improved shared library lookup in 'dynfind'
- o fixes for ARMv7 Thumb-2 code 
- o fixed for SPARC v7/v8 and optimized call kernel for v9 ABIs
- o improved x64 ABI implementation
- o improved mips o32 ABI implementation
+ o reimplemented 'simplified' version of dynfind
+ o added dynports: pcap
+ o minor documentation update for SDL installation on Solaris/OpenCSW
+ o fixes for ARMv7 Thumb-2 ISA and SPARC-v7/v9, x86_64-x64 and mips-o32 ABIs
 
 0.7.5 [2012-09-12]:
  o added: support for new ARM ABI 'armhf' (ARM hardfloat).
