@@ -3,6 +3,7 @@ R_malloc        Using R's memory allocator directly in R (dynbind demo)
 blink		Simple SDL,OpenGL demonstration - a blinking screen (dynport demo)
 SDL             3D Rotating Cube Demo using SDL,OpenGL and GLU. (dynport demo)
 randomfield	Scientific Computations using OpenGL: Rendering 512x512 random field by blending 5000 point sprites (dynport demo)
+randomfield2	Scientific Computations using OpenGL: Rendering 512x512 random field by blending 5000 point sprites (dynport demo)
 expat           Parsing XML using expat and callbacks (callback demo) 
 callbacks       Creating a callback and call it via .dyncall (dyncall and callback demo) 
 factorial       Factorial computation via recursive .dyncall calls to callback objects.

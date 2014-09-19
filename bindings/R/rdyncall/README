@@ -8,7 +8,7 @@ Building R package from subversion source tree
   $ svn co http://dyncall.org/svn/dyncall/trunk/bindings/R/rdyncall
 
 2. install dyncall sources under rdyncall/src
-  $ ( cd rdyncall ; sh ./bootstrap )
+  $ ( cd rdyncall ; sh ./tools/bootstrap )
 
 3. build & install it
   $ R CMD build rdyncall
