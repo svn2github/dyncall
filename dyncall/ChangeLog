@@ -2,15 +2,15 @@ This file lists bigger/noteworthy changes, only...
 
 Version 0.9 (upcoming)
 dyncall:
-  o ARM64 support (AAPCS64: Linux, iOS)
-  o PPC64 support (thanks Masanori)
+  o ARM64 support (AAPCS64 on Linux, Apple's callconv based on AAPCS64 on iOS)
+  o PPC64 support (thanks Masanori!)
   o introduced dcArgF and dcVArgF for flexible/convenient argument binding (works
     like dcCallF/dcVCallF without the function call)
   o added -fPIC by default for FreeBSD
   o PPC32 linux syscall support
 dyncallback:
-  o ARM64 support (AAPCS64: Linux, iOS)
-  o PPC64 support (thanks Masanori)
+  o ARM64 support (AAPCS64 on Linux, Apple's callconv based on AAPCS64 on iOS)
+  o PPC64 support (thanks Masanori!)
   o PPC32 System V support (Linux)
   o fix for PPC32 Darwin/OS X
   o more intuitive specification of callback return type
@@ -19,6 +19,10 @@ doc:
   o added PPC64 support info
 tests:
   o callf test also tests new argf interface
+buildsys:
+  o more flexible and build for tests and 'pack' target for convenience
+  o fixes/additions for OS X universal builds
+  o helper script for generic .elf -> EBOOT.PBP creation for PSP
 bindings:
   o erldc: Erlang binding (thanks Erik)
 
