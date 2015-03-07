@@ -4,7 +4,6 @@
  Library: dyncall
  File: dyncall/dyncall_call_arm64.S
  Description: Call Kernel for ARM 64-bit Architecture (aka ARM64, AArch64)
- Authors: DA
  License:
 
    Copyright (c) 2007-2015 Daniel Adler <dadler@uni-goettingen.de>, 
@@ -23,6 +22,7 @@
    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
+
 
 
 #include "../portasm/portasm-arm.S"
