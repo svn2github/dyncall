@@ -2,8 +2,8 @@
 
  Package: dyncall
  Library: dyncallback
- File: dyncallback/dyncall_args_arm64.c
- Description: Callback's Arguments VM - Implementation for Apple's ARM64 / ARMv8 / AAPCS64 
+ File: dyncallback/dyncall_args_arm64_apple.c
+ Description: Callback's Arguments VM - Implementation for Apple's ARM64 / ARMv8 / AAPCS64
  License:
 
    Copyright (c) 2007-2015 Daniel Adler <dadler@uni-goettingen.de>,
@@ -22,6 +22,7 @@
    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 */
+
 #include "dyncall_args.h"
 
 #include <stdint.h>
