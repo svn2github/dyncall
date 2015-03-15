@@ -151,6 +151,7 @@ case ${TARGET:=`uname`} in
     # open distributions often don't come with default cc and CC, check for common alternatives.
     printf "CC=` (which cc || which gcc || which clang  ) | grep -v '^no '`\n" >>$C
     printf "CXX=`(which CC || which g++ || which clang++) | grep -v '^no '`\n" >>$C # C++ compiler traditionally named CC
+    printf "CCC=${CXX}\n" >>$C # Sun make's rules use CCC for c++ compiler
     printf "LDLIBS=-lm\n" >>$C
     ;;
   Minix)
