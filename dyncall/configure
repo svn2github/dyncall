@@ -148,10 +148,9 @@ case ${TARGET:=`uname`} in
     printf "LDFLAGS=-Wl,-syslibroot ${SDKROOT}\n" >>$C
     ;;
   SunOS)
-    X=`type CC 2>/dev/null`
-    if [ $? -eq 0 ]; then
-      printf "CXX=CC\n" >>$C
-    fi
+    # open distributions often don't come with default cc and CC, check for common alternatives.
+    printf "CC=` (which cc || which gcc || which clang  ) | grep -v '^no '`\n" >>$C
+    printf "CXX=`(which CC || which g++ || which clang++) | grep -v '^no '`\n" >>$C # C++ compiler traditionally named CC
     printf "LDLIBS=-lm\n" >>$C
     ;;
   Minix)
@@ -167,9 +166,9 @@ case ${TARGET:=`uname`} in
     printf "CFLAGS=-I${SDKROOT}/include/\n" >>$C
     printf "CXXFLAGS=-I${SDKROOT}/include/\n" >>$C
     # Pulling in dyncall libs below is a hack, for some reason psp-ld is super-picky about order.
-	# Use your C lib of choice, from the PSPSDK, or...
+    # Use your C lib of choice, from the PSPSDK, or...
     #printf "LDLIBS=-L${SDKROOT}/lib/ -L`dirname ${FULL}`/dyncall -L`dirname ${FULL}`/dyncallback -ldyncall_s -ldyncallback_s -lm -lpspdebug -lpspdisplay -lpspge -lpspctrl -lpspsdk -lstdc++ -lpsplibc -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpsputility -lpspuser \n" >>$C
-	# ... newlib.
+    # ... newlib.
     printf "LDLIBS=-L${SDKROOT}/lib/ -L`dirname ${FULL}`/dyncall -L`dirname ${FULL}`/dyncallback -ldyncall_s -ldyncallback_s -lm -lpspdebug -lpspdisplay -lpspge -lpspctrl -lpspsdk -lstdc++ -lc       -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpsputility -lpspuser \n" >>$C
     ;;
 esac
