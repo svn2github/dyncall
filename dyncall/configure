@@ -88,7 +88,7 @@ case ${TARGET:=`uname`} in
     	printf "ARFLAGS=-static -o\n" >>$C
 	else
     	printf "AR=ar\n" >>$C
-    	printf "ARFLAGS=rs\n" >>$C
+    	printf "ARFLAGS=rs\n" >>$C # 's' is crucial for universal binary archives
 	fi
     if [ `uname -n` = 'iPhone' ]; then # building on iPhone itself, uname yields Darwin (gcc setup for current/correct arch)
       printf "CC=gcc\n" >>$C
@@ -134,6 +134,7 @@ case ${TARGET:=`uname`} in
           ;;
       esac
     fi
+	printf "ARFLAGS=rs\n" >>$C # 's' is crucial for universal binary archives
     printf "ASFLAGS=${ARCHS} -isysroot ${SDKROOT}\n" >>$C
     printf "CFLAGS=${ARCHS} -isysroot ${SDKROOT}\n" >>$C
     printf "CXXFLAGS=${ARCHS} -isysroot ${SDKROOT}\n" >>$C
