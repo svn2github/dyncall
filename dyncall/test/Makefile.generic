@@ -4,7 +4,7 @@ ALL_C=plain call_suite suite callf syscall nm resolve_self thunk malloc_wx callb
 .PHONY: all clean run-tests install distclean ${ALL} 
 all clean install: 
 	${MAKE} TARGET=$@ ${ALL}
-${ALL}:
+${ALL}::
 	cd $@ && ${MAKE} ${TARGET}
 run-tests: all
 	${VPATH}/run-build.sh ${ALL} | grep "result:"

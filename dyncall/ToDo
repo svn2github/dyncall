@@ -16,6 +16,7 @@
       - callf
 - fix Minix/x86 callbacks (see callback_suite)
 - fix Linux/rpi callbacks (call_suite)
+- armhf callback support
 
 build-system:
 -------------
@@ -39,7 +40,6 @@ dyncall:
   * linux
 - other syscalls
 
-
 dynload:
 --------
 - bug: test/nm crashes on qemu mips linux o32 debian etch
@@ -52,7 +52,6 @@ dynload:
 
 dyncallback:
 ------------
-- armhf support
 - callback_plain's return value not correct anymore on NDS (maybe just broken testcode?)
 - add MIPS callbacks for eabi, n32, o32 (thunks are working)
 - finish PPC32 callbacks (see bugs section, below)
@@ -107,6 +106,7 @@ bugs:
 
 missing implementations (descending priority):
 ----------------------------------------------
+- riscv
 - itanium
 - 68k, 88k, 6502, etc.
 - alpha
@@ -122,8 +122,8 @@ missing implementations (descending priority):
 - arc
 - seaforth
 
-available hardware for outstanding ports:
------------------------------------------
+available exotic hardware for outstanding ports:
+------------------------------------------------
 - 68k: Tassilo's old Palm m100 (MC68EZ328 (16MHz))
 - sh4: Tassilo's Dreamcast
 - sigmatel stmp3550b: Daniel's iPod Nano
